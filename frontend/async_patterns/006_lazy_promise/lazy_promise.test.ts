@@ -1,21 +1,21 @@
-import { createDeferred } from "./lazy_promise";
+import { createDeferred } from './lazy_promise';
 
-describe("createDeferred", () => {
-  it("should resolve externally", async () => {
+describe('createDeferred', () => {
+  it('should resolve externally', async () => {
     const deferred = createDeferred<number>();
     deferred.resolve(42);
 
     await expect(deferred.promise).resolves.toBe(42);
   });
 
-  it("should reject externally", async () => {
+  it('should reject externally', async () => {
     const deferred = createDeferred<number>();
-    deferred.reject(new Error("fail"));
+    deferred.reject(new Error('fail'));
 
-    await expect(deferred.promise).rejects.toThrow("fail");
+    await expect(deferred.promise).rejects.toThrow('fail');
   });
 
-  it("should remain pending until resolved", async () => {
+  it('should remain pending until resolved', async () => {
     const deferred = createDeferred<string>();
     let settled = false;
 
@@ -26,12 +26,12 @@ describe("createDeferred", () => {
     await Promise.resolve();
     expect(settled).toBe(false);
 
-    deferred.resolve("done");
+    deferred.resolve('done');
     await deferred.promise;
     expect(settled).toBe(true);
   });
 
-  it("should ignore multiple resolves", async () => {
+  it('should ignore multiple resolves', async () => {
     const deferred = createDeferred<number>();
     deferred.resolve(1);
     deferred.resolve(2);

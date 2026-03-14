@@ -16,5 +16,11 @@ export function createFormWizard(options: FormWizardOptions): {
   getData: () => Record<string, any>;
   destroy: () => void;
 } {
-  return { next: () => false, prev() {}, getCurrentStep: () => 0, getData: () => ({}), destroy() {} };
+  return {
+    next: () => false,
+    prev() {},
+    getCurrentStep: () => 0,
+    getData: () => ({}),
+    destroy() {},
+  };
 }

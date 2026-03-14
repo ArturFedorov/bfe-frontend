@@ -1,7 +1,11 @@
-import { createFileExplorer, FileNode, FileExplorerOptions } from "./fileExplorer";
+import {
+  createFileExplorer,
+  FileNode,
+  FileExplorerOptions,
+} from './fileExplorer';
 
 function setupDOM() {
-  const container = document.createElement("div");
+  const container = document.createElement('div');
   document.body.appendChild(container);
   return container;
 }
@@ -11,7 +15,7 @@ function teardownDOM(container: HTMLElement) {
 }
 
 function getNodeElements(container: HTMLElement) {
-  return Array.from(container.querySelectorAll("[data-node]"));
+  return Array.from(container.querySelectorAll('[data-node]'));
 }
 
 function getFolderElements(container: HTMLElement) {
@@ -23,26 +27,26 @@ function getFileElements(container: HTMLElement) {
 }
 
 function getChildren(folderEl: Element) {
-  return folderEl.querySelector("[data-children]") as HTMLElement | null;
+  return folderEl.querySelector('[data-children]') as HTMLElement | null;
 }
 
 const data: FileNode[] = [
   {
-    name: "src",
-    type: "folder",
+    name: 'src',
+    type: 'folder',
     children: [
-      { name: "index.ts", type: "file" },
+      { name: 'index.ts', type: 'file' },
       {
-        name: "utils",
-        type: "folder",
-        children: [{ name: "helpers.ts", type: "file" }],
+        name: 'utils',
+        type: 'folder',
+        children: [{ name: 'helpers.ts', type: 'file' }],
       },
     ],
   },
-  { name: "README.md", type: "file" },
+  { name: 'README.md', type: 'file' },
 ];
 
-describe("createFileExplorer", () => {
+describe('createFileExplorer', () => {
   let container: HTMLElement;
 
   beforeEach(() => {
@@ -53,7 +57,7 @@ describe("createFileExplorer", () => {
     teardownDOM(container);
   });
 
-  it("should render the tree structure", () => {
+  it('should render the tree structure', () => {
     createFileExplorer({ container, data });
 
     const nodes = getNodeElements(container);
@@ -66,27 +70,27 @@ describe("createFileExplorer", () => {
     expect(files.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("should render folder names and file names", () => {
+  it('should render folder names and file names', () => {
     createFileExplorer({ container, data });
 
-    expect(container.textContent).toContain("src");
-    expect(container.textContent).toContain("README.md");
+    expect(container.textContent).toContain('src');
+    expect(container.textContent).toContain('README.md');
   });
 
-  it("should toggle folder expand/collapse on click", () => {
+  it('should toggle folder expand/collapse on click', () => {
     createFileExplorer({ container, data });
 
     const folders = getFolderElements(container);
     const srcFolder = folders.find((f) =>
-      f.textContent?.includes("src")
+      f.textContent?.includes('src'),
     ) as HTMLElement;
 
     srcFolder.click();
     const childrenContainer = getChildren(srcFolder);
     if (childrenContainer) {
       const isVisible =
-        childrenContainer.style.display !== "none" &&
-        !childrenContainer.classList.contains("hidden");
+        childrenContainer.style.display !== 'none' &&
+        !childrenContainer.classList.contains('hidden');
       expect(isVisible).toBe(true);
     }
 
@@ -94,62 +98,62 @@ describe("createFileExplorer", () => {
     const childrenAfter = getChildren(srcFolder);
     if (childrenAfter) {
       const isHidden =
-        childrenAfter.style.display === "none" ||
-        childrenAfter.classList.contains("hidden");
+        childrenAfter.style.display === 'none' ||
+        childrenAfter.classList.contains('hidden');
       expect(isHidden).toBe(true);
     }
   });
 
-  it("should select a node on click", () => {
+  it('should select a node on click', () => {
     const explorer = createFileExplorer({ container, data });
 
     const files = getFileElements(container);
     const readmeFile = files.find((f) =>
-      f.textContent?.includes("README.md")
+      f.textContent?.includes('README.md'),
     ) as HTMLElement;
 
     readmeFile.click();
 
     const selected = explorer.getSelected();
     expect(selected).not.toBeNull();
-    expect(selected!.name).toBe("README.md");
+    expect(selected!.name).toBe('README.md');
   });
 
-  it("should call onSelect callback when a node is clicked", () => {
+  it('should call onSelect callback when a node is clicked', () => {
     const onSelect = jest.fn();
     createFileExplorer({ container, data, onSelect });
 
     const files = getFileElements(container);
     const readmeFile = files.find((f) =>
-      f.textContent?.includes("README.md")
+      f.textContent?.includes('README.md'),
     ) as HTMLElement;
 
     readmeFile.click();
 
     expect(onSelect).toHaveBeenCalledTimes(1);
     expect(onSelect).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "README.md", type: "file" })
+      expect.objectContaining({ name: 'README.md', type: 'file' }),
     );
   });
 
-  it("should return null from getSelected() when nothing is selected", () => {
+  it('should return null from getSelected() when nothing is selected', () => {
     const explorer = createFileExplorer({ container, data });
 
     expect(explorer.getSelected()).toBeNull();
   });
 
-  it("should render nested folders", () => {
+  it('should render nested folders', () => {
     createFileExplorer({ container, data });
 
-    expect(container.textContent).toContain("utils");
-    expect(container.textContent).toContain("helpers.ts");
+    expect(container.textContent).toContain('utils');
+    expect(container.textContent).toContain('helpers.ts');
   });
 
-  it("should clean up DOM on destroy()", () => {
+  it('should clean up DOM on destroy()', () => {
     const explorer = createFileExplorer({ container, data });
 
     explorer.destroy();
 
-    expect(container.innerHTML).toBe("");
+    expect(container.innerHTML).toBe('');
   });
 });

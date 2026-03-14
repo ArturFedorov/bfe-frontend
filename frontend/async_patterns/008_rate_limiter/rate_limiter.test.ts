@@ -1,6 +1,6 @@
-import { createRateLimiter } from "./rate_limiter";
+import { createRateLimiter } from './rate_limiter';
 
-describe("createRateLimiter", () => {
+describe('createRateLimiter', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -9,7 +9,7 @@ describe("createRateLimiter", () => {
     jest.useRealTimers();
   });
 
-  it("should allow up to maxTokens immediately", async () => {
+  it('should allow up to maxTokens immediately', async () => {
     const limiter = createRateLimiter(3, 1);
 
     const r1 = limiter.acquire();
@@ -21,7 +21,7 @@ describe("createRateLimiter", () => {
     await expect(r3).resolves.toBeUndefined();
   });
 
-  it("should block when tokens are exhausted", async () => {
+  it('should block when tokens are exhausted', async () => {
     const limiter = createRateLimiter(1, 1);
     let secondAcquired = false;
 
@@ -34,7 +34,7 @@ describe("createRateLimiter", () => {
     expect(secondAcquired).toBe(false);
   });
 
-  it("should refill tokens over time", async () => {
+  it('should refill tokens over time', async () => {
     const limiter = createRateLimiter(1, 1);
     let acquired = false;
 
@@ -51,7 +51,7 @@ describe("createRateLimiter", () => {
     expect(acquired).toBe(true);
   });
 
-  it("should queue concurrent requests in FIFO order", async () => {
+  it('should queue concurrent requests in FIFO order', async () => {
     const limiter = createRateLimiter(1, 1);
     const order: number[] = [];
 

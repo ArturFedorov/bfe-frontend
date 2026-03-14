@@ -9,6 +9,9 @@ export interface AccordionOptions {
   allowMultiple?: boolean;
 }
 
-export function createAccordion(options: AccordionOptions): { toggle: (index: number) => void; destroy: () => void } {
+export function createAccordion(options: AccordionOptions): {
+  toggle: (index: number) => void;
+  destroy: () => void;
+} {
   return { toggle() {}, destroy() {} };
 }

@@ -12,5 +12,11 @@ export function createCarousel(options: CarouselOptions): {
   getCurrentIndex: () => number;
   destroy: () => void;
 } {
-  return { next() {}, prev() {}, goTo() {}, getCurrentIndex: () => 0, destroy() {} };
+  return {
+    next() {},
+    prev() {},
+    goTo() {},
+    getCurrentIndex: () => 0,
+    destroy() {},
+  };
 }

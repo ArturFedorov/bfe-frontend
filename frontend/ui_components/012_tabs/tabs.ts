@@ -9,6 +9,10 @@ export interface TabOptions {
   defaultIndex?: number;
 }
 
-export function createTabs(options: TabOptions): { setActive: (index: number) => void; getActive: () => number; destroy: () => void } {
+export function createTabs(options: TabOptions): {
+  setActive: (index: number) => void;
+  getActive: () => number;
+  destroy: () => void;
+} {
   return { setActive() {}, getActive: () => 0, destroy() {} };
 }

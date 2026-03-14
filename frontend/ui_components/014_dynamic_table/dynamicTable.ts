@@ -9,8 +9,14 @@ export function createTable(options: TableOptions): {
   addRow: (row: Record<string, any>) => void;
   removeRow: (index: number) => void;
   getData: () => Record<string, any>[];
-  sort: (column: string, direction: "asc" | "desc") => void;
+  sort: (column: string, direction: 'asc' | 'desc') => void;
   destroy: () => void;
 } {
-  return { addRow() {}, removeRow() {}, getData: () => [], sort() {}, destroy() {} };
+  return {
+    addRow() {},
+    removeRow() {},
+    getData: () => [],
+    sort() {},
+    destroy() {},
+  };
 }

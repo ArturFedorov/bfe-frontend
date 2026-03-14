@@ -10,5 +10,10 @@ export function createSpreadsheet(options: SpreadsheetOptions): {
   getCellDisplay: (row: number, col: number) => string;
   destroy: () => void;
 } {
-  return { setCell() {}, getCell: () => "", getCellDisplay: () => "", destroy() {} };
+  return {
+    setCell() {},
+    getCell: () => '',
+    getCellDisplay: () => '',
+    destroy() {},
+  };
 }

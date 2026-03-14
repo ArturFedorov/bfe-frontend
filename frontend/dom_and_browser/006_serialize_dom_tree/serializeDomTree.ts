@@ -5,9 +5,9 @@ export interface DOMNode {
 }
 
 export function serialize(node: DOMNode): string {
-  return "";
+  return '';
 }
 
 export function deserialize(json: string): DOMNode {
-  return { tag: "" };
+  return { tag: '' };
 }

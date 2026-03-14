@@ -1,7 +1,7 @@
-import { myCall, myApply } from "./function_call_apply";
+import { myCall, myApply } from './function_call_apply';
 
-describe("myCall", () => {
-  test("should call with this context", () => {
+describe('myCall', () => {
+  test('should call with this context', () => {
     const obj = { x: 10 };
     function getX(this: any) {
       return this.x;
@@ -9,21 +9,21 @@ describe("myCall", () => {
     expect(myCall(getX, obj)).toBe(10);
   });
 
-  test("should pass arguments", () => {
+  test('should pass arguments', () => {
     function add(a: number, b: number) {
       return a + b;
     }
     expect(myCall(add, null, 3, 4)).toBe(7);
   });
 
-  test("should handle null thisArg", () => {
+  test('should handle null thisArg', () => {
     function greet(name: string) {
       return `hi ${name}`;
     }
-    expect(myCall(greet, null, "world")).toBe("hi world");
+    expect(myCall(greet, null, 'world')).toBe('hi world');
   });
 
-  test("should work with no arguments", () => {
+  test('should work with no arguments', () => {
     function returnFive() {
       return 5;
     }
@@ -31,8 +31,8 @@ describe("myCall", () => {
   });
 });
 
-describe("myApply", () => {
-  test("should call with this context", () => {
+describe('myApply', () => {
+  test('should call with this context', () => {
     const obj = { x: 20 };
     function getX(this: any) {
       return this.x;
@@ -40,21 +40,21 @@ describe("myApply", () => {
     expect(myApply(getX, obj)).toBe(20);
   });
 
-  test("should pass array arguments", () => {
+  test('should pass array arguments', () => {
     function add(a: number, b: number) {
       return a + b;
     }
     expect(myApply(add, null, [3, 4])).toBe(7);
   });
 
-  test("should handle null thisArg", () => {
+  test('should handle null thisArg', () => {
     function greet(name: string) {
       return `hi ${name}`;
     }
-    expect(myApply(greet, null, ["world"])).toBe("hi world");
+    expect(myApply(greet, null, ['world'])).toBe('hi world');
   });
 
-  test("should work with no args array", () => {
+  test('should work with no args array', () => {
     function returnTen() {
       return 10;
     }

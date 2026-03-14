@@ -35,16 +35,25 @@ function simulateDragDrop(source: HTMLElement, target: HTMLElement) {
   };
 
   source.dispatchEvent(
-    new DragEvent('dragstart', { bubbles: true, dataTransfer: dataTransfer as any })
+    new DragEvent('dragstart', {
+      bubbles: true,
+      dataTransfer: dataTransfer as any,
+    }),
   );
   target.dispatchEvent(
-    new DragEvent('dragover', { bubbles: true, dataTransfer: dataTransfer as any })
+    new DragEvent('dragover', {
+      bubbles: true,
+      dataTransfer: dataTransfer as any,
+    }),
   );
   target.dispatchEvent(
-    new DragEvent('drop', { bubbles: true, dataTransfer: dataTransfer as any })
+    new DragEvent('drop', { bubbles: true, dataTransfer: dataTransfer as any }),
   );
   source.dispatchEvent(
-    new DragEvent('dragend', { bubbles: true, dataTransfer: dataTransfer as any })
+    new DragEvent('dragend', {
+      bubbles: true,
+      dataTransfer: dataTransfer as any,
+    }),
   );
 }
 

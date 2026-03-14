@@ -1,7 +1,7 @@
-import { createSlider, SliderOptions } from "./slider";
+import { createSlider, SliderOptions } from './slider';
 
 function setupDOM() {
-  const container = document.createElement("div");
+  const container = document.createElement('div');
   document.body.appendChild(container);
   return container;
 }
@@ -11,14 +11,14 @@ function teardownDOM(container: HTMLElement) {
 }
 
 function getTrack(container: HTMLElement) {
-  return container.querySelector("[data-slider-track]") as HTMLElement | null;
+  return container.querySelector('[data-slider-track]') as HTMLElement | null;
 }
 
 function getThumb(container: HTMLElement) {
-  return container.querySelector("[data-slider-thumb]") as HTMLElement | null;
+  return container.querySelector('[data-slider-thumb]') as HTMLElement | null;
 }
 
-describe("createSlider", () => {
+describe('createSlider', () => {
   let container: HTMLElement;
 
   beforeEach(() => {
@@ -29,53 +29,53 @@ describe("createSlider", () => {
     teardownDOM(container);
   });
 
-  it("should render a track and thumb", () => {
+  it('should render a track and thumb', () => {
     createSlider({ container });
 
     expect(getTrack(container)).not.toBeNull();
     expect(getThumb(container)).not.toBeNull();
   });
 
-  it("should use initialValue", () => {
+  it('should use initialValue', () => {
     const slider = createSlider({ container, initialValue: 50 });
 
     expect(slider.getValue()).toBe(50);
   });
 
-  it("should default to min value when no initialValue", () => {
+  it('should default to min value when no initialValue', () => {
     const slider = createSlider({ container, min: 10, max: 90 });
 
     expect(slider.getValue()).toBe(10);
   });
 
-  it("should return current value via getValue()", () => {
+  it('should return current value via getValue()', () => {
     const slider = createSlider({ container, initialValue: 30 });
 
     expect(slider.getValue()).toBe(30);
   });
 
-  it("should update value via setValue()", () => {
+  it('should update value via setValue()', () => {
     const slider = createSlider({ container, min: 0, max: 100 });
 
     slider.setValue(75);
     expect(slider.getValue()).toBe(75);
   });
 
-  it("should clamp value to min", () => {
+  it('should clamp value to min', () => {
     const slider = createSlider({ container, min: 10, max: 90 });
 
     slider.setValue(5);
     expect(slider.getValue()).toBe(10);
   });
 
-  it("should clamp value to max", () => {
+  it('should clamp value to max', () => {
     const slider = createSlider({ container, min: 10, max: 90 });
 
     slider.setValue(100);
     expect(slider.getValue()).toBe(90);
   });
 
-  it("should snap to nearest step", () => {
+  it('should snap to nearest step', () => {
     const slider = createSlider({
       container,
       min: 0,
@@ -87,7 +87,7 @@ describe("createSlider", () => {
     expect(slider.getValue()).toBe(30);
   });
 
-  it("should call onChange when value changes via setValue", () => {
+  it('should call onChange when value changes via setValue', () => {
     const onChange = jest.fn();
     const slider = createSlider({ container, onChange });
 
@@ -95,7 +95,7 @@ describe("createSlider", () => {
     expect(onChange).toHaveBeenCalledWith(50);
   });
 
-  it("should not call onChange when setValue sets same value", () => {
+  it('should not call onChange when setValue sets same value', () => {
     const onChange = jest.fn();
     const slider = createSlider({ container, initialValue: 50, onChange });
 
@@ -103,14 +103,14 @@ describe("createSlider", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("should simulate drag changing value", () => {
+  it('should simulate drag changing value', () => {
     const onChange = jest.fn();
     createSlider({ container, min: 0, max: 100, onChange });
 
     const track = getTrack(container)!;
     const thumb = getThumb(container)!;
 
-    Object.defineProperty(track, "getBoundingClientRect", {
+    Object.defineProperty(track, 'getBoundingClientRect', {
       value: () => ({
         left: 0,
         right: 200,
@@ -121,20 +121,20 @@ describe("createSlider", () => {
       }),
     });
 
-    thumb.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+    thumb.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
     document.dispatchEvent(
-      new MouseEvent("mousemove", { clientX: 100, bubbles: true })
+      new MouseEvent('mousemove', { clientX: 100, bubbles: true }),
     );
-    document.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
 
     expect(onChange).toHaveBeenCalledWith(50);
   });
 
-  it("should clean up DOM on destroy()", () => {
+  it('should clean up DOM on destroy()', () => {
     const slider = createSlider({ container });
 
     slider.destroy();
 
-    expect(container.innerHTML).toBe("");
+    expect(container.innerHTML).toBe('');
   });
 });

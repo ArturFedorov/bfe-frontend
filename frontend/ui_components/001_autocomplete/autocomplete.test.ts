@@ -67,36 +67,55 @@ describe('createAutocomplete', () => {
     const items = getItems();
     (items[0] as HTMLElement).click();
     const dropdown = getDropdown();
-    const isHidden = !dropdown || dropdown.children.length === 0 || (dropdown as HTMLElement).style.display === 'none';
+    const isHidden =
+      !dropdown ||
+      dropdown.children.length === 0 ||
+      (dropdown as HTMLElement).style.display === 'none';
     expect(isHidden).toBe(true);
   });
 
   test('keyboard navigation: ArrowDown highlights next item', () => {
     const { input } = setup();
     typeInto(input, 'a');
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+    );
     const items = getItems();
-    const highlighted = document.querySelector('[data-autocomplete-item][data-active="true"], [data-autocomplete-item].active');
+    const highlighted = document.querySelector(
+      '[data-autocomplete-item][data-active="true"], [data-autocomplete-item].active',
+    );
     expect(highlighted).toBeTruthy();
   });
 
   test('keyboard navigation: ArrowUp highlights previous item', () => {
     const { input } = setup();
     typeInto(input, 'a');
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+    );
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+    );
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }),
+    );
     const items = getItems();
     const activeItem = items[0];
-    const isActive = activeItem.getAttribute('data-active') === 'true' || activeItem.classList.contains('active');
+    const isActive =
+      activeItem.getAttribute('data-active') === 'true' ||
+      activeItem.classList.contains('active');
     expect(isActive).toBe(true);
   });
 
   test('keyboard navigation: Enter selects highlighted item', () => {
     const { input, onSelect } = setup();
     typeInto(input, 'a');
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+    );
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
+    );
     expect(onSelect).toHaveBeenCalled();
   });
 

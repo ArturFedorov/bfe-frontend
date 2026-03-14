@@ -1,4 +1,4 @@
-import { throttle } from "./throttle";
+import { throttle } from './throttle';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -8,8 +8,8 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-describe("throttle", () => {
-  test("should invoke immediately on leading edge by default", () => {
+describe('throttle', () => {
+  test('should invoke immediately on leading edge by default', () => {
     const fn = jest.fn();
     const throttled = throttle(fn, 100);
 
@@ -17,7 +17,7 @@ describe("throttle", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should invoke at the end of the wait (trailing) by default", () => {
+  test('should invoke at the end of the wait (trailing) by default', () => {
     const fn = jest.fn();
     const throttled = throttle(fn, 100);
 
@@ -29,23 +29,23 @@ describe("throttle", () => {
     expect(fn).toHaveBeenCalledTimes(2);
   });
 
-  test("should skip calls made during the wait period", () => {
+  test('should skip calls made during the wait period', () => {
     const fn = jest.fn();
     const throttled = throttle(fn, 100);
 
-    throttled("a");
-    throttled("b");
-    throttled("c");
+    throttled('a');
+    throttled('b');
+    throttled('c');
 
     expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn).toHaveBeenCalledWith("a");
+    expect(fn).toHaveBeenCalledWith('a');
 
     jest.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledTimes(2);
-    expect(fn).toHaveBeenLastCalledWith("c");
+    expect(fn).toHaveBeenLastCalledWith('c');
   });
 
-  test("should not invoke on leading edge when leading is false", () => {
+  test('should not invoke on leading edge when leading is false', () => {
     const fn = jest.fn();
     const throttled = throttle(fn, 100, { leading: false });
 
@@ -56,7 +56,7 @@ describe("throttle", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should not invoke on trailing edge when trailing is false", () => {
+  test('should not invoke on trailing edge when trailing is false', () => {
     const fn = jest.fn();
     const throttled = throttle(fn, 100, { trailing: false });
 
@@ -68,7 +68,7 @@ describe("throttle", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should preserve this context", () => {
+  test('should preserve this context', () => {
     const fn = jest.fn();
     const throttled = throttle(fn, 100);
 
@@ -78,7 +78,7 @@ describe("throttle", () => {
     expect(fn.mock.instances[0]).toBe(obj);
   });
 
-  test("should pass the latest args to trailing call", () => {
+  test('should pass the latest args to trailing call', () => {
     const fn = jest.fn();
     const throttled = throttle(fn, 100);
 
@@ -90,7 +90,7 @@ describe("throttle", () => {
     expect(fn).toHaveBeenLastCalledWith(3);
   });
 
-  test("should allow a new leading call after wait expires", () => {
+  test('should allow a new leading call after wait expires', () => {
     const fn = jest.fn();
     const throttled = throttle(fn, 100);
 

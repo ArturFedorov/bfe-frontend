@@ -4,6 +4,10 @@ export interface ProgressBarOptions {
   animated?: boolean;
 }
 
-export function createProgressBar(options: ProgressBarOptions): { setValue: (value: number) => void; getValue: () => number; destroy: () => void } {
+export function createProgressBar(options: ProgressBarOptions): {
+  setValue: (value: number) => void;
+  getValue: () => number;
+  destroy: () => void;
+} {
   return { setValue() {}, getValue: () => 0, destroy() {} };
 }

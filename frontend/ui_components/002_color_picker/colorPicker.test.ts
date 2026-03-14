@@ -21,7 +21,9 @@ function getSwatches(container: HTMLElement) {
 }
 
 function getActiveSwatch(container: HTMLElement) {
-  return container.querySelector('[data-color].active, [data-color][data-selected="true"]');
+  return container.querySelector(
+    '[data-color].active, [data-color][data-selected="true"]',
+  );
 }
 
 afterEach(() => {

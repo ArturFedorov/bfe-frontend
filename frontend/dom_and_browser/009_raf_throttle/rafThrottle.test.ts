@@ -1,6 +1,6 @@
-import { rafThrottle } from "./rafThrottle";
+import { rafThrottle } from './rafThrottle';
 
-describe("rafThrottle", () => {
+describe('rafThrottle', () => {
   let rafCallbacks: (() => void)[];
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe("rafThrottle", () => {
     cbs.forEach((cb) => cb());
   }
 
-  it("should call the function on next animation frame", () => {
+  it('should call the function on next animation frame', () => {
     const fn = jest.fn();
     const throttled = rafThrottle(fn);
 
@@ -34,7 +34,7 @@ describe("rafThrottle", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  it("should skip intermediate calls and only use the latest", () => {
+  it('should skip intermediate calls and only use the latest', () => {
     const fn = jest.fn();
     const throttled = rafThrottle(fn);
 
@@ -47,18 +47,18 @@ describe("rafThrottle", () => {
     expect(fn).toHaveBeenCalledWith(3);
   });
 
-  it("should pass latest arguments", () => {
+  it('should pass latest arguments', () => {
     const fn = jest.fn();
     const throttled = rafThrottle(fn);
 
-    throttled("a", "b");
-    throttled("c", "d");
+    throttled('a', 'b');
+    throttled('c', 'd');
 
     flushRAF();
-    expect(fn).toHaveBeenCalledWith("c", "d");
+    expect(fn).toHaveBeenCalledWith('c', 'd');
   });
 
-  it("should preserve this context", () => {
+  it('should preserve this context', () => {
     const obj = {
       value: 42,
       fn: jest.fn(function (this: any) {

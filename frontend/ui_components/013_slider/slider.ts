@@ -7,6 +7,10 @@ export interface SliderOptions {
   onChange?: (value: number) => void;
 }
 
-export function createSlider(options: SliderOptions): { getValue: () => number; setValue: (value: number) => void; destroy: () => void } {
+export function createSlider(options: SliderOptions): {
+  getValue: () => number;
+  setValue: (value: number) => void;
+  destroy: () => void;
+} {
   return { getValue: () => 0, setValue() {}, destroy() {} };
 }

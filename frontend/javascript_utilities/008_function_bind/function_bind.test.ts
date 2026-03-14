@@ -1,7 +1,7 @@
-import { myBind } from "./function_bind";
+import { myBind } from './function_bind';
 
-describe("myBind", () => {
-  test("should bind this context", () => {
+describe('myBind', () => {
+  test('should bind this context', () => {
     const obj = { x: 42 };
     function getX(this: any) {
       return this.x;
@@ -10,7 +10,7 @@ describe("myBind", () => {
     expect(bound()).toBe(42);
   });
 
-  test("should support partial application", () => {
+  test('should support partial application', () => {
     function add(a: number, b: number) {
       return a + b;
     }
@@ -18,7 +18,7 @@ describe("myBind", () => {
     expect(add5(3)).toBe(8);
   });
 
-  test("should combine bound and call-time args", () => {
+  test('should combine bound and call-time args', () => {
     function sum(a: number, b: number, c: number) {
       return a + b + c;
     }
@@ -26,7 +26,7 @@ describe("myBind", () => {
     expect(partial(3)).toBe(6);
   });
 
-  test("should work with empty bound args", () => {
+  test('should work with empty bound args', () => {
     function identity(x: number) {
       return x;
     }
@@ -34,15 +34,15 @@ describe("myBind", () => {
     expect(bound(99)).toBe(99);
   });
 
-  test("should bind to null this", () => {
+  test('should bind to null this', () => {
     function greet(name: string) {
       return `hello ${name}`;
     }
     const bound = myBind(greet, null);
-    expect(bound("world")).toBe("hello world");
+    expect(bound('world')).toBe('hello world');
   });
 
-  test("should support chained bind", () => {
+  test('should support chained bind', () => {
     function add(a: number, b: number, c: number) {
       return a + b + c;
     }

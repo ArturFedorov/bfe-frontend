@@ -9,5 +9,5 @@ export function createColorPicker(options: ColorPickerOptions): {
   setColor: (color: string) => void;
   destroy: () => void;
 } {
-  return { getColor: () => "", setColor() {}, destroy() {} };
+  return { getColor: () => '', setColor() {}, destroy() {} };
 }

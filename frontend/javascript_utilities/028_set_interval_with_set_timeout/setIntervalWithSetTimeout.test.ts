@@ -1,4 +1,4 @@
-import { mySetInterval } from "./setIntervalWithSetTimeout";
+import { mySetInterval } from './setIntervalWithSetTimeout';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -8,8 +8,8 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-describe("mySetInterval", () => {
-  test("should call callback repeatedly", () => {
+describe('mySetInterval', () => {
+  test('should call callback repeatedly', () => {
     const fn = jest.fn();
     mySetInterval(fn, 100);
 
@@ -17,7 +17,7 @@ describe("mySetInterval", () => {
     expect(fn).toHaveBeenCalledTimes(3);
   });
 
-  test("should call callback at the correct delay intervals", () => {
+  test('should call callback at the correct delay intervals', () => {
     const fn = jest.fn();
     mySetInterval(fn, 200);
 
@@ -31,7 +31,7 @@ describe("mySetInterval", () => {
     expect(fn).toHaveBeenCalledTimes(3);
   });
 
-  test("clear should stop further executions", () => {
+  test('clear should stop further executions', () => {
     const fn = jest.fn();
     const interval = mySetInterval(fn, 100);
 
@@ -44,15 +44,15 @@ describe("mySetInterval", () => {
     expect(fn).toHaveBeenCalledTimes(2);
   });
 
-  test("should pass additional arguments to callback", () => {
+  test('should pass additional arguments to callback', () => {
     const fn = jest.fn();
-    mySetInterval(fn, 100, "a", 42);
+    mySetInterval(fn, 100, 'a', 42);
 
     jest.advanceTimersByTime(100);
-    expect(fn).toHaveBeenCalledWith("a", 42);
+    expect(fn).toHaveBeenCalledWith('a', 42);
   });
 
-  test("should not call callback immediately", () => {
+  test('should not call callback immediately', () => {
     const fn = jest.fn();
     mySetInterval(fn, 100);
 

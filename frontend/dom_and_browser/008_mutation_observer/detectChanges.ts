@@ -1,5 +1,5 @@
 export interface Change {
-  type: "add" | "remove" | "update";
+  type: 'add' | 'remove' | 'update';
   path: string;
   oldValue?: any;
   newValue?: any;

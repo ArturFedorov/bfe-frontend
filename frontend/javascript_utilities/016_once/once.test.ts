@@ -1,7 +1,7 @@
-import { once } from "./once";
+import { once } from './once';
 
-describe("once", () => {
-  test("should call the function on the first invocation", () => {
+describe('once', () => {
+  test('should call the function on the first invocation', () => {
     const fn = jest.fn(() => 42);
     const onceFn = once(fn);
 
@@ -9,7 +9,7 @@ describe("once", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should return the first result on subsequent calls", () => {
+  test('should return the first result on subsequent calls', () => {
     const fn = jest.fn(() => 42);
     const onceFn = once(fn);
 
@@ -19,7 +19,7 @@ describe("once", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should pass arguments to the function", () => {
+  test('should pass arguments to the function', () => {
     const fn = jest.fn((a: number, b: number) => a + b);
     const onceFn = once(fn);
 
@@ -27,7 +27,7 @@ describe("once", () => {
     expect(fn).toHaveBeenCalledWith(2, 3);
   });
 
-  test("should preserve this context", () => {
+  test('should preserve this context', () => {
     const fn = jest.fn(function (this: any) {
       return this.value;
     });
@@ -37,7 +37,7 @@ describe("once", () => {
     expect(obj.onceFn()).toBe(99);
   });
 
-  test("should return undefined result if fn returns undefined", () => {
+  test('should return undefined result if fn returns undefined', () => {
     const fn = jest.fn(() => undefined);
     const onceFn = once(fn);
 
@@ -46,7 +46,7 @@ describe("once", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should not call fn again even with different arguments", () => {
+  test('should not call fn again even with different arguments', () => {
     const fn = jest.fn((x: number) => x * 2);
     const onceFn = once(fn);
 

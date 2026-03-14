@@ -5,7 +5,8 @@ import { createModal, ModalOptions } from './modal';
 
 function setup(overrides: Partial<ModalOptions> = {}) {
   const contentEl = document.createElement('div');
-  contentEl.innerHTML = '<button class="btn1">OK</button><button class="btn2">Cancel</button>';
+  contentEl.innerHTML =
+    '<button class="btn1">OK</button><button class="btn2">Cancel</button>';
   const onClose = jest.fn();
   const options: ModalOptions = {
     content: contentEl,
@@ -60,7 +61,9 @@ describe('createModal', () => {
   test('Escape key closes modal', () => {
     const { modal, onClose } = setup();
     modal.open();
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
+    );
     const m = getModal();
     expect(!m || !isVisible(m)).toBe(true);
     expect(onClose).toHaveBeenCalled();
@@ -69,7 +72,9 @@ describe('createModal', () => {
   test('Escape key does not close when closeOnEsc is false', () => {
     const { modal } = setup({ closeOnEsc: false });
     modal.open();
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
+    );
     expect(isVisible(getModal())).toBe(true);
   });
 
@@ -95,11 +100,16 @@ describe('createModal', () => {
     const { modal } = setup();
     modal.open();
     const modalEl = getModal()!;
-    const focusable = modalEl.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const focusable = modalEl.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
     expect(focusable.length).toBeGreaterThan(0);
     const last = focusable[focusable.length - 1];
     last.focus();
-    const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+    const tabEvent = new KeyboardEvent('keydown', {
+      key: 'Tab',
+      bubbles: true,
+    });
     modalEl.dispatchEvent(tabEvent);
   });
 

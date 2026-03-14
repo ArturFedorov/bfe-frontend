@@ -21,7 +21,9 @@ function getStars(container: HTMLElement) {
 }
 
 function getFilledStars(container: HTMLElement) {
-  return container.querySelectorAll('[data-star].filled, [data-star].active, [data-star][data-filled="true"]');
+  return container.querySelectorAll(
+    '[data-star].filled, [data-star].active, [data-star][data-filled="true"]',
+  );
 }
 
 afterEach(() => {
@@ -57,8 +59,12 @@ describe('createStarRating', () => {
   test('hover highlights stars', () => {
     const { container } = setup();
     const stars = getStars(container);
-    (stars[1] as HTMLElement).dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-    const highlighted = container.querySelectorAll('[data-star].hover, [data-star].active, [data-star][data-hover="true"]');
+    (stars[1] as HTMLElement).dispatchEvent(
+      new MouseEvent('mouseenter', { bubbles: true }),
+    );
+    const highlighted = container.querySelectorAll(
+      '[data-star].hover, [data-star].active, [data-star][data-hover="true"]',
+    );
     expect(highlighted.length).toBeGreaterThanOrEqual(2);
   });
 
@@ -83,7 +89,10 @@ describe('createStarRating', () => {
   });
 
   test('readonly prevents click from changing rating', () => {
-    const { container, rating, onChange } = setup({ readonly: true, initialRating: 2 });
+    const { container, rating, onChange } = setup({
+      readonly: true,
+      initialRating: 2,
+    });
     const stars = getStars(container);
     (stars[4] as HTMLElement).click();
     expect(rating.getRating()).toBe(2);

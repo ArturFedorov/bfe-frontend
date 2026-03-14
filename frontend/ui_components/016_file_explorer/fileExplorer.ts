@@ -1,6 +1,6 @@
 export interface FileNode {
   name: string;
-  type: "file" | "folder";
+  type: 'file' | 'folder';
   children?: FileNode[];
 }
 
@@ -10,6 +10,9 @@ export interface FileExplorerOptions {
   onSelect?: (node: FileNode) => void;
 }
 
-export function createFileExplorer(options: FileExplorerOptions): { getSelected: () => FileNode | null; destroy: () => void } {
+export function createFileExplorer(options: FileExplorerOptions): {
+  getSelected: () => FileNode | null;
+  destroy: () => void;
+} {
   return { getSelected: () => null, destroy() {} };
 }

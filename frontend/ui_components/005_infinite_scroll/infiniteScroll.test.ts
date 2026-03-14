@@ -14,12 +14,20 @@ function createItems(count: number): HTMLElement[] {
 
 function setup(overrides: Partial<InfiniteScrollOptions> = {}) {
   const container = document.createElement('div');
-  Object.defineProperty(container, 'clientHeight', { value: 500, writable: true });
-  Object.defineProperty(container, 'scrollHeight', { value: 1000, writable: true });
+  Object.defineProperty(container, 'clientHeight', {
+    value: 500,
+    writable: true,
+  });
+  Object.defineProperty(container, 'scrollHeight', {
+    value: 1000,
+    writable: true,
+  });
   Object.defineProperty(container, 'scrollTop', { value: 0, writable: true });
   document.body.appendChild(container);
 
-  const loadMore = jest.fn<Promise<HTMLElement[]>, []>().mockResolvedValue(createItems(5));
+  const loadMore = jest
+    .fn<Promise<HTMLElement[]>, []>()
+    .mockResolvedValue(createItems(5));
 
   const options: InfiniteScrollOptions = {
     container,
@@ -59,9 +67,12 @@ describe('createInfiniteScroll', () => {
 
   test('shows loading indicator while loading', async () => {
     let resolveLoad!: (items: HTMLElement[]) => void;
-    const loadMore = jest.fn(() => new Promise<HTMLElement[]>((resolve) => {
-      resolveLoad = resolve;
-    }));
+    const loadMore = jest.fn(
+      () =>
+        new Promise<HTMLElement[]>((resolve) => {
+          resolveLoad = resolve;
+        }),
+    );
     const { container } = setup({ loadMore });
     simulateScrollToBottom(container);
     await Promise.resolve();
@@ -72,7 +83,9 @@ describe('createInfiniteScroll', () => {
   });
 
   test('stops loading when loadMore returns empty array', async () => {
-    const loadMore = jest.fn<Promise<HTMLElement[]>, []>().mockResolvedValue([]);
+    const loadMore = jest
+      .fn<Promise<HTMLElement[]>, []>()
+      .mockResolvedValue([]);
     const { container } = setup({ loadMore });
     simulateScrollToBottom(container);
     await Promise.resolve();
@@ -84,13 +97,21 @@ describe('createInfiniteScroll', () => {
   });
 
   test('threshold controls trigger point', async () => {
-    const loadMore = jest.fn<Promise<HTMLElement[]>, []>().mockResolvedValue(createItems(2));
+    const loadMore = jest
+      .fn<Promise<HTMLElement[]>, []>()
+      .mockResolvedValue(createItems(2));
     const { container } = setup({ loadMore, threshold: 50 });
-    Object.defineProperty(container, 'scrollTop', { value: 400, writable: true });
+    Object.defineProperty(container, 'scrollTop', {
+      value: 400,
+      writable: true,
+    });
     container.dispatchEvent(new Event('scroll'));
     await Promise.resolve();
     expect(loadMore).not.toHaveBeenCalled();
-    Object.defineProperty(container, 'scrollTop', { value: 460, writable: true });
+    Object.defineProperty(container, 'scrollTop', {
+      value: 460,
+      writable: true,
+    });
     container.dispatchEvent(new Event('scroll'));
     await Promise.resolve();
     expect(loadMore).toHaveBeenCalled();
@@ -106,9 +127,12 @@ describe('createInfiniteScroll', () => {
 
   test('does not call loadMore while already loading', async () => {
     let resolveLoad!: (items: HTMLElement[]) => void;
-    const loadMore = jest.fn(() => new Promise<HTMLElement[]>((resolve) => {
-      resolveLoad = resolve;
-    }));
+    const loadMore = jest.fn(
+      () =>
+        new Promise<HTMLElement[]>((resolve) => {
+          resolveLoad = resolve;
+        }),
+    );
     const { container } = setup({ loadMore });
     simulateScrollToBottom(container);
     await Promise.resolve();

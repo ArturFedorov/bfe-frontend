@@ -1,4 +1,4 @@
-import { createTimerManager } from "./clearAllTimers";
+import { createTimerManager } from './clearAllTimers';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -8,8 +8,8 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-describe("createTimerManager", () => {
-  test("should track and execute setTimeout", () => {
+describe('createTimerManager', () => {
+  test('should track and execute setTimeout', () => {
     const manager = createTimerManager();
     const fn = jest.fn();
     manager.setTimeout(fn, 100);
@@ -18,7 +18,7 @@ describe("createTimerManager", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should track and execute setInterval", () => {
+  test('should track and execute setInterval', () => {
     const manager = createTimerManager();
     const fn = jest.fn();
     manager.setInterval(fn, 100);
@@ -27,7 +27,7 @@ describe("createTimerManager", () => {
     expect(fn).toHaveBeenCalledTimes(3);
   });
 
-  test("clearAll should cancel all active timers", () => {
+  test('clearAll should cancel all active timers', () => {
     const manager = createTimerManager();
     const timeoutFn = jest.fn();
     const intervalFn = jest.fn();
@@ -44,7 +44,7 @@ describe("createTimerManager", () => {
     expect(intervalFn).not.toHaveBeenCalled();
   });
 
-  test("new timers after clearAll should work normally", () => {
+  test('new timers after clearAll should work normally', () => {
     const manager = createTimerManager();
     const fn1 = jest.fn();
     const fn2 = jest.fn();

@@ -9,22 +9,23 @@ function setup(data?: CheckboxNode[]) {
   const defaultData: CheckboxNode[] = [
     {
       label: 'Fruits',
-      children: [
-        { label: 'Apple' },
-        { label: 'Banana' },
-        { label: 'Cherry' },
-      ],
+      children: [{ label: 'Apple' }, { label: 'Banana' }, { label: 'Cherry' }],
     },
   ];
   const tree = createNestedCheckboxes(container, data ?? defaultData);
   return { container, tree };
 }
 
-function getCheckboxByLabel(container: HTMLElement, label: string): HTMLInputElement | null {
+function getCheckboxByLabel(
+  container: HTMLElement,
+  label: string,
+): HTMLInputElement | null {
   const labels = container.querySelectorAll('label');
   for (const lbl of labels) {
     if (lbl.textContent?.includes(label)) {
-      const checkbox = lbl.querySelector('input[type="checkbox"]') || lbl.previousElementSibling;
+      const checkbox =
+        lbl.querySelector('input[type="checkbox"]') ||
+        lbl.previousElementSibling;
       if (checkbox && checkbox instanceof HTMLInputElement) return checkbox;
     }
   }
@@ -117,10 +118,7 @@ describe('createNestedCheckboxes', () => {
         children: [
           {
             label: 'Level1',
-            children: [
-              { label: 'Level2A' },
-              { label: 'Level2B' },
-            ],
+            children: [{ label: 'Level2A' }, { label: 'Level2B' }],
           },
         ],
       },

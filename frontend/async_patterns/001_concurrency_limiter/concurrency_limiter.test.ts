@@ -1,7 +1,7 @@
-import { asyncPool } from "./concurrency_limiter";
+import { asyncPool } from './concurrency_limiter';
 
-describe("asyncPool", () => {
-  it("should respect the concurrency limit", async () => {
+describe('asyncPool', () => {
+  it('should respect the concurrency limit', async () => {
     let running = 0;
     let maxRunning = 0;
 
@@ -27,7 +27,7 @@ describe("asyncPool", () => {
     expect(maxRunning).toBeLessThanOrEqual(2);
   });
 
-  it("should return all results in order", async () => {
+  it('should return all results in order', async () => {
     const tasks = [
       () => new Promise<number>((r) => setTimeout(() => r(1), 50)),
       () => new Promise<number>((r) => setTimeout(() => r(2), 10)),
@@ -38,29 +38,29 @@ describe("asyncPool", () => {
     expect(results).toEqual([1, 2, 3]);
   });
 
-  it("should handle rejection", async () => {
+  it('should handle rejection', async () => {
     const tasks = [
       () => Promise.resolve(1),
-      () => Promise.reject(new Error("fail")),
+      () => Promise.reject(new Error('fail')),
       () => Promise.resolve(3),
     ];
 
-    await expect(asyncPool(2, tasks)).rejects.toThrow("fail");
+    await expect(asyncPool(2, tasks)).rejects.toThrow('fail');
   });
 
-  it("should handle empty tasks array", async () => {
+  it('should handle empty tasks array', async () => {
     const results = await asyncPool(3, []);
     expect(results).toEqual([]);
   });
 
-  it("should handle limit greater than tasks length", async () => {
+  it('should handle limit greater than tasks length', async () => {
     const tasks = [() => Promise.resolve(1), () => Promise.resolve(2)];
 
     const results = await asyncPool(10, tasks);
     expect(results).toEqual([1, 2]);
   });
 
-  it("should run sequentially with limit of 1", async () => {
+  it('should run sequentially with limit of 1', async () => {
     const order: number[] = [];
 
     const createTask = (val: number, delay: number) => () =>

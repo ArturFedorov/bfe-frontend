@@ -1,4 +1,4 @@
-import { debounce } from "./debounce";
+import { debounce } from './debounce';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -8,8 +8,8 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-describe("debounce", () => {
-  test("should delay invocation by wait ms", () => {
+describe('debounce', () => {
+  test('should delay invocation by wait ms', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 100);
 
@@ -20,7 +20,7 @@ describe("debounce", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should reset timer on subsequent calls", () => {
+  test('should reset timer on subsequent calls', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 100);
 
@@ -35,19 +35,19 @@ describe("debounce", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should pass the latest arguments", () => {
+  test('should pass the latest arguments', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 100);
 
-    debounced("a");
-    debounced("b");
-    debounced("c");
+    debounced('a');
+    debounced('b');
+    debounced('c');
 
     jest.advanceTimersByTime(100);
-    expect(fn).toHaveBeenCalledWith("c");
+    expect(fn).toHaveBeenCalledWith('c');
   });
 
-  test("should preserve this context", () => {
+  test('should preserve this context', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 100);
 
@@ -58,22 +58,22 @@ describe("debounce", () => {
     expect(fn.mock.instances[0]).toBe(obj);
   });
 
-  test("should handle multiple separate invocations", () => {
+  test('should handle multiple separate invocations', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 50);
 
-    debounced("first");
+    debounced('first');
     jest.advanceTimersByTime(50);
     expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn).toHaveBeenCalledWith("first");
+    expect(fn).toHaveBeenCalledWith('first');
 
-    debounced("second");
+    debounced('second');
     jest.advanceTimersByTime(50);
     expect(fn).toHaveBeenCalledTimes(2);
-    expect(fn).toHaveBeenLastCalledWith("second");
+    expect(fn).toHaveBeenLastCalledWith('second');
   });
 
-  test("should not invoke if called and timer not elapsed", () => {
+  test('should not invoke if called and timer not elapsed', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 200);
 
@@ -85,28 +85,28 @@ describe("debounce", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test("should handle zero wait time", () => {
+  test('should handle zero wait time', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 0);
 
-    debounced("x");
+    debounced('x');
     expect(fn).not.toHaveBeenCalled();
 
     jest.advanceTimersByTime(0);
-    expect(fn).toHaveBeenCalledWith("x");
+    expect(fn).toHaveBeenCalledWith('x');
   });
 
-  test("should pass multiple arguments", () => {
+  test('should pass multiple arguments', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 100);
 
-    debounced(1, "two", { three: 3 });
+    debounced(1, 'two', { three: 3 });
     jest.advanceTimersByTime(100);
 
-    expect(fn).toHaveBeenCalledWith(1, "two", { three: 3 });
+    expect(fn).toHaveBeenCalledWith(1, 'two', { three: 3 });
   });
 
-  test("should handle rapid successive calls", () => {
+  test('should handle rapid successive calls', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 100);
 

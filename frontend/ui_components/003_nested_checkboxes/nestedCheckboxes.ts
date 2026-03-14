@@ -6,7 +6,7 @@ export interface CheckboxNode {
 
 export function createNestedCheckboxes(
   container: HTMLElement,
-  data: CheckboxNode[]
+  data: CheckboxNode[],
 ): { getState: () => CheckboxNode[] } {
   return { getState: () => [] };
 }

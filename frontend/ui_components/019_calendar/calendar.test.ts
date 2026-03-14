@@ -1,7 +1,7 @@
-import { createCalendar, CalendarOptions } from "./calendar";
+import { createCalendar, CalendarOptions } from './calendar';
 
 function setupDOM() {
-  const container = document.createElement("div");
+  const container = document.createElement('div');
   document.body.appendChild(container);
   return container;
 }
@@ -11,22 +11,22 @@ function teardownDOM(container: HTMLElement) {
 }
 
 function getDayCells(container: HTMLElement) {
-  return Array.from(container.querySelectorAll("[data-day]"));
+  return Array.from(container.querySelectorAll('[data-day]'));
 }
 
 function getHeader(container: HTMLElement) {
-  return container.querySelector("[data-calendar-header]")?.textContent ?? "";
+  return container.querySelector('[data-calendar-header]')?.textContent ?? '';
 }
 
 function clickDay(container: HTMLElement, day: number) {
   const cells = getDayCells(container);
-  const cell = cells.find(
-    (c) => c.getAttribute("data-day") === String(day)
-  ) as HTMLElement | undefined;
+  const cell = cells.find((c) => c.getAttribute('data-day') === String(day)) as
+    | HTMLElement
+    | undefined;
   cell?.click();
 }
 
-describe("createCalendar", () => {
+describe('createCalendar', () => {
   let container: HTMLElement;
 
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe("createCalendar", () => {
     teardownDOM(container);
   });
 
-  it("should render a month grid with day cells", () => {
+  it('should render a month grid with day cells', () => {
     createCalendar({
       container,
       initialDate: new Date(2024, 0, 15),
@@ -47,18 +47,18 @@ describe("createCalendar", () => {
     expect(cells.length).toBe(31);
   });
 
-  it("should display the month and year in the header", () => {
+  it('should display the month and year in the header', () => {
     createCalendar({
       container,
       initialDate: new Date(2024, 0, 15),
     });
 
     const header = getHeader(container);
-    expect(header).toContain("January");
-    expect(header).toContain("2024");
+    expect(header).toContain('January');
+    expect(header).toContain('2024');
   });
 
-  it("should select a date on click", () => {
+  it('should select a date on click', () => {
     const cal = createCalendar({
       container,
       initialDate: new Date(2024, 0, 1),
@@ -73,7 +73,7 @@ describe("createCalendar", () => {
     expect(selected!.getFullYear()).toBe(2024);
   });
 
-  it("should call onSelect callback when a date is clicked", () => {
+  it('should call onSelect callback when a date is clicked', () => {
     const onSelect = jest.fn();
     createCalendar({
       container,
@@ -88,7 +88,7 @@ describe("createCalendar", () => {
     expect(arg.getDate()).toBe(10);
   });
 
-  it("should navigate to next month", () => {
+  it('should navigate to next month', () => {
     const cal = createCalendar({
       container,
       initialDate: new Date(2024, 0, 1),
@@ -97,11 +97,11 @@ describe("createCalendar", () => {
     cal.nextMonth();
 
     const header = getHeader(container);
-    expect(header).toContain("February");
-    expect(header).toContain("2024");
+    expect(header).toContain('February');
+    expect(header).toContain('2024');
   });
 
-  it("should navigate to previous month", () => {
+  it('should navigate to previous month', () => {
     const cal = createCalendar({
       container,
       initialDate: new Date(2024, 1, 1),
@@ -110,11 +110,11 @@ describe("createCalendar", () => {
     cal.prevMonth();
 
     const header = getHeader(container);
-    expect(header).toContain("January");
-    expect(header).toContain("2024");
+    expect(header).toContain('January');
+    expect(header).toContain('2024');
   });
 
-  it("should disable dates outside minDate/maxDate", () => {
+  it('should disable dates outside minDate/maxDate', () => {
     createCalendar({
       container,
       initialDate: new Date(2024, 0, 15),
@@ -124,21 +124,21 @@ describe("createCalendar", () => {
 
     const cells = getDayCells(container);
     const day5 = cells.find(
-      (c) => c.getAttribute("data-day") === "5"
+      (c) => c.getAttribute('data-day') === '5',
     ) as HTMLElement;
     const day15 = cells.find(
-      (c) => c.getAttribute("data-day") === "15"
+      (c) => c.getAttribute('data-day') === '15',
     ) as HTMLElement;
     const day25 = cells.find(
-      (c) => c.getAttribute("data-day") === "25"
+      (c) => c.getAttribute('data-day') === '25',
     ) as HTMLElement;
 
-    expect(day5?.classList.contains("disabled")).toBe(true);
-    expect(day15?.classList.contains("disabled")).toBe(false);
-    expect(day25?.classList.contains("disabled")).toBe(true);
+    expect(day5?.classList.contains('disabled')).toBe(true);
+    expect(day15?.classList.contains('disabled')).toBe(false);
+    expect(day25?.classList.contains('disabled')).toBe(true);
   });
 
-  it("should not select disabled dates", () => {
+  it('should not select disabled dates', () => {
     const onSelect = jest.fn();
     const cal = createCalendar({
       container,
@@ -154,13 +154,13 @@ describe("createCalendar", () => {
     expect(cal.getSelected()).toBeNull();
   });
 
-  it("should return null from getSelected() initially", () => {
+  it('should return null from getSelected() initially', () => {
     const cal = createCalendar({ container });
 
     expect(cal.getSelected()).toBeNull();
   });
 
-  it("should set date programmatically and navigate to its month", () => {
+  it('should set date programmatically and navigate to its month', () => {
     const cal = createCalendar({
       container,
       initialDate: new Date(2024, 0, 1),
@@ -169,16 +169,16 @@ describe("createCalendar", () => {
     cal.setDate(new Date(2024, 5, 20));
 
     const header = getHeader(container);
-    expect(header).toContain("June");
+    expect(header).toContain('June');
     expect(cal.getSelected()!.getDate()).toBe(20);
     expect(cal.getSelected()!.getMonth()).toBe(5);
   });
 
-  it("should clean up DOM on destroy()", () => {
+  it('should clean up DOM on destroy()', () => {
     const cal = createCalendar({ container });
 
     cal.destroy();
 
-    expect(container.innerHTML).toBe("");
+    expect(container.innerHTML).toBe('');
   });
 });

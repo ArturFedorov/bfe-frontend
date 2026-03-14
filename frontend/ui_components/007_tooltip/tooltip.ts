@@ -1,7 +1,7 @@
 export interface TooltipOptions {
   target: HTMLElement;
   content: string;
-  position?: "top" | "bottom" | "left" | "right";
+  position?: 'top' | 'bottom' | 'left' | 'right';
   delay?: number;
 }
 

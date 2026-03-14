@@ -1,7 +1,7 @@
-import { streamData } from "./async_generator";
+import { streamData } from './async_generator';
 
-describe("streamData", () => {
-  it("should yield all items from multiple batches", async () => {
+describe('streamData', () => {
+  it('should yield all items from multiple batches', async () => {
     let call = 0;
     const fetcher = async () => {
       call++;
@@ -18,7 +18,7 @@ describe("streamData", () => {
     expect(results).toEqual([1, 2, 3, 4, 5]);
   });
 
-  it("should stop when done is true", async () => {
+  it('should stop when done is true', async () => {
     const fetcher = jest
       .fn()
       .mockResolvedValueOnce({ data: [1], done: false })
@@ -33,11 +33,11 @@ describe("streamData", () => {
     expect(fetcher).toHaveBeenCalledTimes(2);
   });
 
-  it("should propagate fetcher errors", async () => {
+  it('should propagate fetcher errors', async () => {
     const fetcher = jest
       .fn()
       .mockResolvedValueOnce({ data: [1], done: false })
-      .mockRejectedValueOnce(new Error("network error"));
+      .mockRejectedValueOnce(new Error('network error'));
 
     const results: number[] = [];
 
@@ -45,12 +45,12 @@ describe("streamData", () => {
       for await (const item of streamData(fetcher)) {
         results.push(item);
       }
-    }).rejects.toThrow("network error");
+    }).rejects.toThrow('network error');
 
     expect(results).toEqual([1]);
   });
 
-  it("should handle empty first batch", async () => {
+  it('should handle empty first batch', async () => {
     const fetcher = jest
       .fn()
       .mockResolvedValueOnce({ data: [], done: false })

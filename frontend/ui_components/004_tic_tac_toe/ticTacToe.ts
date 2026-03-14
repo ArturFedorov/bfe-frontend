@@ -14,7 +14,7 @@ export function createTicTacToe(): TicTacToeGame {
       [null, null, null],
       [null, null, null],
     ],
-    getCurrentPlayer: () => "X",
+    getCurrentPlayer: () => 'X',
     makeMove: () => false,
     getWinner: () => null,
     isDraw: () => false,

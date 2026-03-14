@@ -13,5 +13,11 @@ export function createCalendar(options: CalendarOptions): {
   prevMonth: () => void;
   destroy: () => void;
 } {
-  return { getSelected: () => null, setDate() {}, nextMonth() {}, prevMonth() {}, destroy() {} };
+  return {
+    getSelected: () => null,
+    setDate() {},
+    nextMonth() {},
+    prevMonth() {},
+    destroy() {},
+  };
 }

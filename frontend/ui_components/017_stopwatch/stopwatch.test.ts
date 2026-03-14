@@ -1,6 +1,6 @@
-import { createStopwatch } from "./stopwatch";
+import { createStopwatch } from './stopwatch';
 
-describe("createStopwatch", () => {
+describe('createStopwatch', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -9,17 +9,17 @@ describe("createStopwatch", () => {
     jest.useRealTimers();
   });
 
-  it("should not be running initially", () => {
+  it('should not be running initially', () => {
     const sw = createStopwatch();
     expect(sw.isRunning()).toBe(false);
   });
 
-  it("should return 0 elapsed initially", () => {
+  it('should return 0 elapsed initially', () => {
     const sw = createStopwatch();
     expect(sw.getElapsed()).toBe(0);
   });
 
-  it("should start counting on start()", () => {
+  it('should start counting on start()', () => {
     const sw = createStopwatch();
 
     sw.start();
@@ -29,7 +29,7 @@ describe("createStopwatch", () => {
     expect(sw.getElapsed()).toBeGreaterThanOrEqual(1000);
   });
 
-  it("should pause on stop()", () => {
+  it('should pause on stop()', () => {
     const sw = createStopwatch();
 
     sw.start();
@@ -44,7 +44,7 @@ describe("createStopwatch", () => {
     expect(sw.getElapsed()).toBe(elapsed);
   });
 
-  it("should resume after stop", () => {
+  it('should resume after stop', () => {
     const sw = createStopwatch();
 
     sw.start();
@@ -59,7 +59,7 @@ describe("createStopwatch", () => {
     expect(sw.getElapsed()).toBeGreaterThanOrEqual(elapsedAfterStop + 500);
   });
 
-  it("should reset elapsed time and laps", () => {
+  it('should reset elapsed time and laps', () => {
     const sw = createStopwatch();
 
     sw.start();
@@ -73,7 +73,7 @@ describe("createStopwatch", () => {
     expect(sw.isRunning()).toBe(false);
   });
 
-  it("should record lap times", () => {
+  it('should record lap times', () => {
     const sw = createStopwatch();
 
     sw.start();
@@ -89,7 +89,7 @@ describe("createStopwatch", () => {
     expect(laps[1]).toBeGreaterThanOrEqual(1500);
   });
 
-  it("should return all laps via getLaps()", () => {
+  it('should return all laps via getLaps()', () => {
     const sw = createStopwatch();
 
     sw.start();
@@ -103,7 +103,7 @@ describe("createStopwatch", () => {
     expect(sw.getLaps().length).toBe(3);
   });
 
-  it("should return correct running state", () => {
+  it('should return correct running state', () => {
     const sw = createStopwatch();
 
     expect(sw.isRunning()).toBe(false);

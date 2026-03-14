@@ -1,6 +1,6 @@
-import { sleep } from "./sleep";
+import { sleep } from './sleep';
 
-describe("sleep", () => {
+describe('sleep', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -9,7 +9,7 @@ describe("sleep", () => {
     jest.useRealTimers();
   });
 
-  it("should resolve after the specified time", async () => {
+  it('should resolve after the specified time', async () => {
     let resolved = false;
 
     const promise = sleep(1000).then(() => {
@@ -27,7 +27,7 @@ describe("sleep", () => {
     expect(resolved).toBe(true);
   });
 
-  it("should resolve with zero ms", async () => {
+  it('should resolve with zero ms', async () => {
     let resolved = false;
 
     const promise = sleep(0).then(() => {
@@ -41,7 +41,7 @@ describe("sleep", () => {
     expect(resolved).toBe(true);
   });
 
-  it("should work with async/await", async () => {
+  it('should work with async/await', async () => {
     const order: number[] = [];
 
     const run = async () => {
