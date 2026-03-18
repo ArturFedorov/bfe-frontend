@@ -8,8 +8,8 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-describe('debounce', () => {
-  test('should delay invocation by wait ms', () => {
+describe('debounce — trailing (default)', () => {
+  test('should delay invocation by delay ms', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 100);
 
@@ -73,7 +73,7 @@ describe('debounce', () => {
     expect(fn).toHaveBeenLastCalledWith('second');
   });
 
-  test('should not invoke if called and timer not elapsed', () => {
+  test('should not invoke if timer has not elapsed', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 200);
 
@@ -85,7 +85,7 @@ describe('debounce', () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test('should handle zero wait time', () => {
+  test('should handle zero delay', () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 0);
 
@@ -117,5 +117,82 @@ describe('debounce', () => {
     jest.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).toHaveBeenCalledWith(99);
+  });
+});
+
+describe('debounce — leading: true, trailing: false', () => {
+  test('should invoke immediately on first call', () => {
+    const fn = jest.fn();
+    const debounced = debounce(fn, 100, { leading: true, trailing: false });
+
+    debounced('a');
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('a');
+  });
+
+  test('should not invoke again during the delay window', () => {
+    const fn = jest.fn();
+    const debounced = debounce(fn, 100, { leading: true, trailing: false });
+
+    debounced('a');
+    debounced('b');
+    debounced('c');
+
+    jest.advanceTimersByTime(100);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('a');
+  });
+
+  test('should invoke again after the delay window expires', () => {
+    const fn = jest.fn();
+    const debounced = debounce(fn, 100, { leading: true, trailing: false });
+
+    debounced('first');
+    jest.advanceTimersByTime(100);
+
+    debounced('second');
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).toHaveBeenLastCalledWith('second');
+  });
+});
+
+describe('debounce — leading: true, trailing: true', () => {
+  test('should invoke on leading edge and again on trailing edge', () => {
+    const fn = jest.fn();
+    const debounced = debounce(fn, 100, { leading: true, trailing: true });
+
+    debounced('a');
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('a');
+
+    debounced('b');
+    debounced('c');
+
+    jest.advanceTimersByTime(100);
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).toHaveBeenLastCalledWith('c');
+  });
+
+  test('should not invoke trailing if only one call was made', () => {
+    const fn = jest.fn();
+    const debounced = debounce(fn, 100, { leading: true, trailing: true });
+
+    debounced('only');
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(100);
+    // only one call — leading fired, no subsequent calls so trailing should not fire
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('debounce — leading: false, trailing: false', () => {
+  test('should never invoke', () => {
+    const fn = jest.fn();
+    const debounced = debounce(fn, 100, { leading: false, trailing: false });
+
+    debounced('a');
+    jest.advanceTimersByTime(100);
+    expect(fn).not.toHaveBeenCalled();
   });
 });

@@ -8,18 +8,26 @@
 
 ## Description
 
-Implement a `debounce` function that delays invoking the provided function until after `wait` milliseconds have elapsed since the last time the debounced function was invoked.
+Implement a `debounce` function that delays invoking the provided function until after `delay` milliseconds have elapsed since the last invocation, with optional `leading` and `trailing` edge control.
 
 The debounced function should:
-1. Delay the invocation of `func` by `wait` milliseconds after the last call
+1. Delay the invocation of `fn` by `delay` milliseconds after the last call (trailing, default)
 2. If called again before the delay expires, reset the timer
 3. Pass the latest arguments to the invoked function
 4. Use the correct `this` context
+5. Support `leading: true` to invoke immediately on the first call
+6. Support `trailing: false` to suppress the trailing-edge invocation
 
 ```typescript
+interface DebounceOptions {
+  leading?: boolean;  // invoke on the leading edge (default: false)
+  trailing?: boolean; // invoke on the trailing edge (default: true)
+}
+
 function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
+  fn: T,
+  delay: number,
+  options?: DebounceOptions
 ): (...args: Parameters<T>) => void
 ```
 
@@ -27,30 +35,42 @@ function debounce<T extends (...args: any[]) => any>(
 
 ## Examples
 
-### Example 1
+### Example 1 — default (trailing only)
 ```typescript
 const debounced = debounce(console.log, 100);
 debounced("a");
 debounced("b");
 debounced("c");
-// After 100ms, logs: "c"
+// After 100ms → logs: "c"
 ```
 
-### Example 2
+### Example 2 — leading only
 ```typescript
-const debounced = debounce((x: number) => x * 2, 50);
-debounced(1);
-// wait 60ms
-debounced(2);
-// After 50ms, invokes with 2
+const debounced = debounce(console.log, 100, { leading: true, trailing: false });
+debounced("a"); // logs immediately: "a"
+debounced("b"); // ignored (within delay window)
+debounced("c"); // ignored (within delay window)
+// nothing logged after 100ms
+```
+
+### Example 3 — leading + trailing
+```typescript
+const debounced = debounce(console.log, 100, { leading: true, trailing: true });
+debounced("a"); // logs immediately: "a"
+debounced("b");
+debounced("c");
+// After 100ms → logs: "c"
 ```
 
 ---
 
 ## Constraints
 
-- `wait` is a non-negative integer
-- `func` is a valid function
+- `delay` is a non-negative integer
+- `fn` is a valid function
+- `options.leading` defaults to `false`
+- `options.trailing` defaults to `true`
+- When `leading: true, trailing: true` and only one call is made, the trailing edge should **not** fire (no duplicate invocation)
 - The debounced function may be called any number of times
 
 ---
@@ -58,15 +78,19 @@ debounced(2);
 ## Approach Hints
 
 <details><summary>Hint 1</summary>
-You need to track a timer ID using `setTimeout` and `clearTimeout`.
+Track a timer ID using `setTimeout` and `clearTimeout`. Each new call clears the previous timer.
 </details>
 
 <details><summary>Hint 2</summary>
-Each new call should clear the previous timer and start a new one.
+For `leading`, invoke immediately on the first call (when no timer is active), then start the cooldown timer.
 </details>
 
 <details><summary>Hint 3</summary>
-Make sure to preserve `this` context — use `.apply()` or `.call()`.
+For `trailing`, schedule the invocation inside `setTimeout`. If `leading` is also true, only fire trailing when there were additional calls after the leading invocation (track with a flag).
+</details>
+
+<details><summary>Hint 4</summary>
+Preserve `this` context — use `.apply()` or `.call()`, or capture `this` with a non-arrow wrapper function.
 </details>
 
 ---
@@ -74,15 +98,15 @@ Make sure to preserve `this` context — use `.apply()` or `.call()`.
 ## Related Problems
 
 - Implement Throttle
-- Implement Debounce with Leading Option
 - Implement Debounce with Cancel
+- Implement Debounce with Flush
 
 ---
 
 ### What a Google Interviewer Would Ask Next
 
-1. **How would you add a `leading` option?** — Invoke on the leading edge of the timeout instead of trailing.
-2. **How would you add a `cancel` method?** — Allow the consumer to cancel pending invocations.
-3. **How would you add a `flush` method?** — Immediately invoke the pending function.
-4. **What about the return value?** — How to return a Promise for the result.
-5. **How does this differ from throttle?** — Throttle guarantees execution at most once per interval.
+1. **How would you add a `cancel` method?** — Allow the consumer to cancel pending invocations.
+2. **How would you add a `flush` method?** — Immediately invoke the pending trailing call.
+3. **What about the return value?** — How to return a Promise for the result.
+4. **How does this differ from throttle?** — Throttle guarantees execution at most once per interval; debounce delays until quiet.
+5. **What's the behaviour when `leading: true, trailing: true` and only one call fires?** — Should not invoke twice.
