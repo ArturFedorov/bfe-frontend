@@ -107,6 +107,7 @@
 | A8 | File system API with generators | Medium | High |
 | A9 | Rate limiter (token bucket in JS) | Hard | Medium |
 | A10 | Batch async requests (group N requests) | Medium | Medium |
+| A11 | Async paginated data fetcher (async generators + `take`) | Medium | High |
 
 ---
 
@@ -272,7 +273,7 @@ Based on confirmed interview frequency and round structure:
 | F2 | Prototypal Inheritance & `this` | C2, C4, P24 |
 | F3 | Promises & Async Patterns | P9–P13, C3, A4, A5 |
 | F4 | Event Loop & Microtasks | C3, C6, P14, P15, P28 |
-| F5 | Iterators, Generators & Proxy | C10, A7, A8 |
+| F5 | Iterators, Generators & Proxy | C10, A7, A8, A11 |
 | F6 | DOM Traversal & Manipulation | D1–D3, D5, D10 |
 | F7 | Event System | D4, P26 |
 | F8 | Build: Autocomplete | U1 |
