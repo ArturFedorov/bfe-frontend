@@ -23,7 +23,9 @@ describe('fetchPages', () => {
       .mockResolvedValueOnce(mockPageResponse(['e'], null));
 
     const results: string[] = [];
-    for await (const item of fetchPages<string>('https://api.example.com/data')) {
+    for await (const item of fetchPages<string>(
+      'https://api.example.com/data',
+    )) {
       results.push(item);
     }
 
@@ -37,12 +39,20 @@ describe('fetchPages', () => {
       .mockResolvedValueOnce(mockPageResponse([2], null));
 
     const results: number[] = [];
-    for await (const item of fetchPages<number>('https://api.example.com/items')) {
+    for await (const item of fetchPages<number>(
+      'https://api.example.com/items',
+    )) {
       results.push(item);
     }
 
-    expect(mockFetch).toHaveBeenNthCalledWith(1, 'https://api.example.com/items');
-    expect(mockFetch).toHaveBeenNthCalledWith(2, 'https://api.example.com/items?cursor=abc');
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      1,
+      'https://api.example.com/items',
+    );
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      2,
+      'https://api.example.com/items?cursor=abc',
+    );
     expect(results).toEqual([1, 2]);
   });
 
@@ -50,7 +60,9 @@ describe('fetchPages', () => {
     mockFetch.mockResolvedValueOnce(mockPageResponse([1, 2, 3], null));
 
     const results: number[] = [];
-    for await (const item of fetchPages<number>('https://api.example.com/data')) {
+    for await (const item of fetchPages<number>(
+      'https://api.example.com/data',
+    )) {
       results.push(item);
     }
 
@@ -64,7 +76,9 @@ describe('fetchPages', () => {
       .mockResolvedValueOnce(mockPageResponse([], 'cursor2'));
 
     const results: number[] = [];
-    for await (const item of fetchPages<number>('https://api.example.com/data')) {
+    for await (const item of fetchPages<number>(
+      'https://api.example.com/data',
+    )) {
       results.push(item);
     }
 
@@ -80,7 +94,9 @@ describe('fetchPages', () => {
     const results: number[] = [];
 
     await expect(async () => {
-      for await (const item of fetchPages<number>('https://api.example.com/data')) {
+      for await (const item of fetchPages<number>(
+        'https://api.example.com/data',
+      )) {
         results.push(item);
       }
     }).rejects.toThrow('network error');
@@ -108,7 +124,10 @@ describe('take', () => {
       .mockResolvedValueOnce(mockPageResponse([4, 5, 6], null));
 
     const results: number[] = [];
-    for await (const item of take(4, fetchPages<number>('https://api.example.com/data'))) {
+    for await (const item of take(
+      4,
+      fetchPages<number>('https://api.example.com/data'),
+    )) {
       results.push(item);
     }
 
@@ -119,7 +138,10 @@ describe('take', () => {
     mockFetch.mockResolvedValueOnce(mockPageResponse([1, 2], null));
 
     const results: number[] = [];
-    for await (const item of take(10, fetchPages<number>('https://api.example.com/data'))) {
+    for await (const item of take(
+      10,
+      fetchPages<number>('https://api.example.com/data'),
+    )) {
       results.push(item);
     }
 
