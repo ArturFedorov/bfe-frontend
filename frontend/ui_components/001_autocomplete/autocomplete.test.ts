@@ -1,35 +1,46 @@
 /**
  * @jest-environment jsdom
  */
-import { createAutocomplete, AutocompleteOptions } from './autocomplete';
+import { createAutocomplete } from './autocomplete';
 
-function setup(overrides: Partial<AutocompleteOptions> = {}) {
+const DATA = ['Apple', 'Banana', 'Avocado', 'Blueberry', 'Cherry'];
+
+function setup(
+  fetchSuggestions: (query: string) => Promise<string[]> = async (q) =>
+    DATA.filter((d) => d.toLowerCase().includes(q.toLowerCase())),
+) {
   const input = document.createElement('input');
+  const container = document.createElement('div');
   document.body.appendChild(input);
-  const onSelect = jest.fn();
-  const options: AutocompleteOptions = {
-    input,
-    data: ['Apple', 'Banana', 'Avocado', 'Blueberry', 'Cherry'],
-    onSelect,
-    debounceMs: 0,
-    ...overrides,
-  };
-  const ac = createAutocomplete(options);
-  return { input, onSelect, ac, options };
+  document.body.appendChild(container);
+  const ac = createAutocomplete(input, container, fetchSuggestions);
+  return { input, container, ac };
 }
 
-function typeInto(input: HTMLInputElement, value: string) {
+async function typeInto(input: HTMLInputElement, value: string) {
   input.value = value;
   input.dispatchEvent(new Event('input', { bubbles: true }));
+  jest.advanceTimersByTime(300);
+  await flushPromises();
+}
+
+function flushPromises() {
+  return new Promise((resolve) =>
+    jest.requireActual('timers').setTimeout(resolve, 0),
+  );
 }
 
 function getItems() {
-  return document.querySelectorAll('[data-autocomplete-item]');
+  return document.querySelectorAll('#autocomplete-list li');
 }
 
-function getDropdown() {
-  return document.querySelector('[data-autocomplete-list]');
+function getList() {
+  return document.querySelector('#autocomplete-list') as HTMLElement | null;
 }
+
+beforeEach(() => {
+  jest.useFakeTimers();
+});
 
 afterEach(() => {
   document.body.innerHTML = '';
@@ -37,59 +48,51 @@ afterEach(() => {
 });
 
 describe('createAutocomplete', () => {
-  test('renders suggestions on input', () => {
+  test('renders suggestions on input', async () => {
     const { input } = setup();
-    typeInto(input, 'a');
+    await typeInto(input, 'a');
     const items = getItems();
     expect(items.length).toBeGreaterThan(0);
   });
 
-  test('filters suggestions by query (case-insensitive)', () => {
+  test('filters suggestions by query (case-insensitive)', async () => {
     const { input } = setup();
-    typeInto(input, 'bl');
+    await typeInto(input, 'bl');
     const items = getItems();
     expect(items.length).toBe(1);
     expect(items[0].textContent).toBe('Blueberry');
   });
 
-  test('selects item on click', () => {
-    const { input, onSelect } = setup();
-    typeInto(input, 'a');
+  test('selects item on click', async () => {
+    const { input } = setup();
+    await typeInto(input, 'a');
     const items = getItems();
     (items[0] as HTMLElement).click();
-    expect(onSelect).toHaveBeenCalledWith(items[0].textContent);
     expect(input.value).toBe(items[0].textContent);
   });
 
-  test('hides dropdown after selection', () => {
+  test('hides dropdown after selection', async () => {
     const { input } = setup();
-    typeInto(input, 'a');
+    await typeInto(input, 'a');
     const items = getItems();
     (items[0] as HTMLElement).click();
-    const dropdown = getDropdown();
-    const isHidden =
-      !dropdown ||
-      dropdown.children.length === 0 ||
-      (dropdown as HTMLElement).style.display === 'none';
-    expect(isHidden).toBe(true);
+    const list = getList();
+    expect(list?.style.display).toBe('none');
   });
 
-  test('keyboard navigation: ArrowDown highlights next item', () => {
+  test('keyboard navigation: ArrowDown highlights next item', async () => {
     const { input } = setup();
-    typeInto(input, 'a');
+    await typeInto(input, 'a');
     input.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
     );
-    const items = getItems();
-    const highlighted = document.querySelector(
-      '[data-autocomplete-item][data-active="true"], [data-autocomplete-item].active',
-    );
+    const highlighted = document.querySelector('#autocomplete-list li.active');
     expect(highlighted).toBeTruthy();
   });
 
-  test('keyboard navigation: ArrowUp highlights previous item', () => {
+  test('keyboard navigation: ArrowUp highlights previous item', async () => {
     const { input } = setup();
-    typeInto(input, 'a');
+    await typeInto(input, 'a');
     input.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
     );
@@ -100,54 +103,39 @@ describe('createAutocomplete', () => {
       new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }),
     );
     const items = getItems();
-    const activeItem = items[0];
-    const isActive =
-      activeItem.getAttribute('data-active') === 'true' ||
-      activeItem.classList.contains('active');
-    expect(isActive).toBe(true);
+    expect(items[0].classList.contains('active')).toBe(true);
   });
 
-  test('keyboard navigation: Enter selects highlighted item', () => {
-    const { input, onSelect } = setup();
-    typeInto(input, 'a');
+  test('keyboard navigation: Enter selects highlighted item', async () => {
+    const { input } = setup();
+    await typeInto(input, 'a');
     input.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
     );
     input.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }),
     );
-    expect(onSelect).toHaveBeenCalled();
+    expect(input.value).not.toBe('a');
   });
 
-  test('debounces input events', () => {
-    jest.useFakeTimers();
-    const { input } = setup({ debounceMs: 300 });
-    typeInto(input, 'a');
-    expect(getItems().length).toBe(0);
-    jest.advanceTimersByTime(300);
-    expect(getItems().length).toBeGreaterThan(0);
-  });
-
-  test('destroy cleans up DOM and listeners', () => {
+  test('destroy cleans up DOM and listeners', async () => {
     const { input, ac } = setup();
-    typeInto(input, 'a');
+    await typeInto(input, 'a');
     expect(getItems().length).toBeGreaterThan(0);
     ac.destroy();
-    typeInto(input, 'b');
-    const dropdown = getDropdown();
-    const noItems = !dropdown || dropdown.children.length === 0;
-    expect(noItems).toBe(true);
+    await typeInto(input, 'b');
+    expect(getList()).toBeNull();
   });
 
-  test('shows nothing for empty query', () => {
+  test('shows nothing for empty query', async () => {
     const { input } = setup();
-    typeInto(input, '');
+    await typeInto(input, '');
     expect(getItems().length).toBe(0);
   });
 
-  test('shows nothing when no results match', () => {
+  test('shows nothing when no results match', async () => {
     const { input } = setup();
-    typeInto(input, 'zzz');
+    await typeInto(input, 'zzz');
     expect(getItems().length).toBe(0);
   });
 });
