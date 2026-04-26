@@ -71,6 +71,15 @@ _Build in HTML/CSS/JS with no frameworks — this IS the Google frontend round_
 | U18 | Form with multi-step wizard            | Medium     | Medium    |                         | ✅   |
 | U19 | Calendar date picker                   | Hard       | Medium    |                         | ✅   |
 | U20 | Spreadsheet (basic grid with formulas) | Hard       | Low       | Senior only             | ✅   |
+| U21 | Real-time message list                 | Hard       | Very High | Confirmed asked         | ✅   |
+| U22 | Toggle switch (a11y switch role)       | Easy       | High      |                         | ✅   |
+| U23 | Multi-select dropdown with search      | Hard       | High      | Combobox a11y           | ✅   |
+| U24 | File upload with preview & DnD         | Medium     | High      | FileReader async        | ✅   |
+| U25 | Form with field validation             | Medium     | High      | aria-live announcements | ✅   |
+| U26 | OTP input (auto-advance + paste)       | Medium     | High      |                         | ✅   |
+| U27 | Virtual scroll list (DOM recycling)    | Hard       | High      | Distinct from U5        | ✅   |
+| U28 | Data table with sort/filter            | Medium     | High      | Stable sort             | ✅   |
+| U29 | Kanban board (cross-column drag)       | Hard       | Medium    |                         | ✅   |
 
 ---
 
@@ -239,7 +248,7 @@ Based on confirmed interview frequency and round structure:
 
 - P7, P9, P14, P15 (Promise.all, debounce, throttle)
 - P7 bind, P26 EventEmitter
-- U1 Autocomplete, U3 Nested checkboxes, U5 Infinite scroll
+- U1 Autocomplete, U3 Nested checkboxes, U5 Infinite scroll, U21 Message list
 - C1–C6 (output questions)
 - D4 Event delegation
 
@@ -248,13 +257,14 @@ Based on confirmed interview frequency and round structure:
 - P1–P4 (Array polyfills)
 - P16–P19 (deepClone, memoize, curry)
 - U2 Color swatch, U4 Tic-Tac-Toe, U6 Carousel
+- U22 Toggle, U23 Multi-select, U26 OTP, U27 Virtual scroll, U28 Data table
 - S1 News Feed, S2 Chat App
 - W1–W3 (XSS, CSRF, CORS)
 
 ### Important (Week 5–6)
 
 - A1 Concurrency limiter, A2 Retry with backoff
-- U8 Modal, U9 Drag-and-drop, U16 File explorer
+- U8 Modal, U9 Drag-and-drop, U16 File explorer, U24 File upload, U25 Form validation, U29 Kanban
 - S3 Collaborative editor, S6 Analytics SDK
 - X1–X2 Critical rendering path, reflow/repaint
 - Z3, Z5 Focus management, keyboard nav

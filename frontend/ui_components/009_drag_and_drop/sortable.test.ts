@@ -22,39 +22,28 @@ function getItemElements(container: HTMLElement) {
 }
 
 function simulateDragDrop(source: HTMLElement, target: HTMLElement) {
+  const data: Record<string, string> = {};
   const dataTransfer = {
-    data: {} as Record<string, string>,
     setData(key: string, value: string) {
-      this.data[key] = value;
+      data[key] = value;
     },
     getData(key: string) {
-      return this.data[key] || '';
+      return data[key] || '';
     },
     effectAllowed: 'move',
     dropEffect: 'move',
   };
 
-  source.dispatchEvent(
-    new DragEvent('dragstart', {
-      bubbles: true,
-      dataTransfer: dataTransfer as any,
-    }),
-  );
-  target.dispatchEvent(
-    new DragEvent('dragover', {
-      bubbles: true,
-      dataTransfer: dataTransfer as any,
-    }),
-  );
-  target.dispatchEvent(
-    new DragEvent('drop', { bubbles: true, dataTransfer: dataTransfer as any }),
-  );
-  source.dispatchEvent(
-    new DragEvent('dragend', {
-      bubbles: true,
-      dataTransfer: dataTransfer as any,
-    }),
-  );
+  function fire(el: HTMLElement, type: string) {
+    const event = new Event(type, { bubbles: true, cancelable: true });
+    Object.defineProperty(event, 'dataTransfer', { value: dataTransfer });
+    el.dispatchEvent(event);
+  }
+
+  fire(source, 'dragstart');
+  fire(target, 'dragover');
+  fire(target, 'drop');
+  fire(source, 'dragend');
 }
 
 afterEach(() => {
