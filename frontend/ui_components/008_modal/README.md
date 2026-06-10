@@ -54,3 +54,31 @@ For focus trapping, find all focusable elements inside the modal (buttons, input
 <summary>Hint 3</summary>
 Listen for <code>keydown</code> on the document for Escape, and <code>click</code> on the overlay. Only attach these listeners when the modal is open and remove them on close.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/Modal.tsx`](./react/Modal.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Modal** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/Modal.tsx`; keep its exported props
+stable so the harness keeps working.
+

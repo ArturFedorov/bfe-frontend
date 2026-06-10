@@ -54,3 +54,31 @@ After each move, check all 8 possible winning lines (3 rows, 3 columns, 2 diagon
 <summary>Hint 3</summary>
 A draw occurs when every cell is non-null and there is no winner. Check this condition after verifying no win exists.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/TicTacToe.tsx`](./react/TicTacToe.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Tic-Tac-Toe** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/TicTacToe.tsx`; keep its exported props
+stable so the harness keeps working.
+

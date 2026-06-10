@@ -59,3 +59,31 @@ Convert column letters to indices (A=0, B=1, etc.) and parse cell references lik
 <summary>Hint 3</summary>
 To detect circular references, maintain a set of cells currently being evaluated. If you encounter a cell that's already in the set, return <code>#REF!</code> instead of recursing infinitely.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/Spreadsheet.tsx`](./react/Spreadsheet.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Spreadsheet** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/Spreadsheet.tsx`; keep its exported props
+stable so the harness keeps working.
+

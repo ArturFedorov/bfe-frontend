@@ -55,3 +55,31 @@ Listen for <code>keydown</code> events on the tab bar. On ArrowLeft, move to the
 <summary>Hint 3</summary>
 Keep a single <code>activeIndex</code> variable. When it changes, update the <code>aria-selected</code> attribute and toggle a CSS class like <code>active</code> on the buttons, and swap the displayed content.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/Tabs.tsx`](./react/Tabs.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Tabs** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/Tabs.tsx`; keep its exported props
+stable so the harness keeps working.
+

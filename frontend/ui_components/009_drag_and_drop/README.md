@@ -50,3 +50,31 @@ Use <code>dragstart</code>, <code>dragover</code>, <code>dragenter</code>, and <
 <summary>Hint 3</summary>
 On <code>drop</code>, determine the target position and rearrange the DOM nodes. Then update your internal items array and call <code>onReorder</code>.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/DragAndDrop.tsx`](./react/DragAndDrop.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Drag and Drop Sortable List** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/DragAndDrop.tsx`; keep its exported props
+stable so the harness keeps working.
+

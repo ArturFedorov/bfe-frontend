@@ -51,3 +51,31 @@ Use <code>Math.min(100, Math.max(0, value))</code> to clamp. Update the inner di
 <summary>Hint 3</summary>
 The <code>animated</code> class can be used by consumers to apply CSS transitions (e.g., <code>transition: width 0.3s ease</code>). Just toggle the class based on the option.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/ProgressBar.tsx`](./react/ProgressBar.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Progress Bar** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/ProgressBar.tsx`; keep its exported props
+stable so the harness keeps working.
+

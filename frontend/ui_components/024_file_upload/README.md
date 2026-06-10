@@ -53,3 +53,31 @@ For drag-and-drop you must call <code>event.preventDefault()</code> on both <cod
 <summary>Hint 3</summary>
 For the click-to-pick path, render a hidden <code>&lt;input type="file" multiple&gt;</code> and trigger <code>.click()</code> from the zone's click handler. Listen to its <code>change</code> event to read <code>input.files</code>.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/FileUpload.tsx`](./react/FileUpload.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **File Upload with Preview** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/FileUpload.tsx`; keep its exported props
+stable so the harness keeps working.
+
