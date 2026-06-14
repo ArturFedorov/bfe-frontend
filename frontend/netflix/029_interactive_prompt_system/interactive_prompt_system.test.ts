@@ -1,4 +1,8 @@
-import { parseConfirm, applyKey, SelectState } from './interactive_prompt_system';
+import {
+  parseConfirm,
+  applyKey,
+  SelectState,
+} from './interactive_prompt_system';
 
 describe('parseConfirm', () => {
   it('uses the default on empty input', () => {

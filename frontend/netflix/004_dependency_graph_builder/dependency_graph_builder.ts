@@ -11,6 +11,21 @@ export interface PackageManifest {
 export function buildGraph(
   manifests: PackageManifest[],
 ): Record<string, string[]> {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const result: Record<string, string[]> = {};
+  for (const { name, dependencies } of manifests) {
+    const keys = Object.keys(dependencies ?? {});
+    const deps = result[name] || [];
+
+    for (const key of keys) {
+      if (!(key in result)) {
+        result[key] = [];
+      }
+
+      deps.push(key);
+    }
+
+    result[name] = deps;
+  }
+
+  return result;
 }

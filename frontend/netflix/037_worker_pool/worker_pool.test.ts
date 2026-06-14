@@ -28,7 +28,10 @@ describe('runPool', () => {
 
   it('rejects when a job fails', async () => {
     await expect(
-      runPool(2, [() => Promise.resolve(1), () => Promise.reject(new Error('x'))]),
+      runPool(2, [
+        () => Promise.resolve(1),
+        () => Promise.reject(new Error('x')),
+      ]),
     ).rejects.toThrow('x');
   });
 });

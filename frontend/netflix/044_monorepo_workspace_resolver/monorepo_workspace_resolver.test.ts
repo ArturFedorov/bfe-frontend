@@ -1,7 +1,14 @@
-import { resolveWorkspaces, WorkspacePackage } from './monorepo_workspace_resolver';
+import {
+  resolveWorkspaces,
+  WorkspacePackage,
+} from './monorepo_workspace_resolver';
 
 const packages: WorkspacePackage[] = [
-  { name: '@app/web', version: '1.0.0', dependencies: { '@app/ui': '^1.0.0', react: '^18.0.0' } },
+  {
+    name: '@app/web',
+    version: '1.0.0',
+    dependencies: { '@app/ui': '^1.0.0', react: '^18.0.0' },
+  },
   { name: '@app/ui', version: '1.2.0' },
   { name: '@app/api', version: '1.0.0', dependencies: { '@app/ui': '^2.0.0' } },
 ];

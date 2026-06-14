@@ -1,6 +1,4 @@
-export type ExportsField =
-  | string
-  | { [key: string]: ExportsField };
+export type ExportsField = string | { [key: string]: ExportsField };
 
 /**
  * Resolve a subpath against a package.json `exports` field for a set of active

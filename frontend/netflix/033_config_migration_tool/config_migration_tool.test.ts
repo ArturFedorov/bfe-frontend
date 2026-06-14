@@ -7,10 +7,7 @@ const migrations: Migration[] = [
 
 describe('migrateConfig', () => {
   it('renames and transforms keys', () => {
-    const { config } = migrateConfig(
-      { oldName: 'x', count: 5 },
-      migrations,
-    );
+    const { config } = migrateConfig({ oldName: 'x', count: 5 }, migrations);
     expect(config).toEqual({ newName: 'x', count: 10 });
   });
 

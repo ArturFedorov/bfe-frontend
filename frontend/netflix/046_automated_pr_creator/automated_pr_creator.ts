@@ -3,7 +3,9 @@ export interface Repo {
   files: Record<string, string>; // path -> contents
 }
 
-export type Transform = (files: Record<string, string>) => Record<string, string>;
+export type Transform = (
+  files: Record<string, string>,
+) => Record<string, string>;
 
 export interface PullRequest {
   repo: string;

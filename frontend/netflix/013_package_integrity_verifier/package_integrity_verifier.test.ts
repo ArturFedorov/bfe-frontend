@@ -1,4 +1,7 @@
-import { computeIntegrity, verifyIntegrity } from './package_integrity_verifier';
+import {
+  computeIntegrity,
+  verifyIntegrity,
+} from './package_integrity_verifier';
 
 describe('verifyIntegrity', () => {
   it('accepts a matching hash', () => {

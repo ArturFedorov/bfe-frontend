@@ -12,10 +12,7 @@ export interface Manifest {
  *   - no `postinstall` script (supply-chain risk)
  *   - `taken` versions list does not already include this version
  */
-export function validatePublish(
-  manifest: Manifest,
-  taken: string[],
-): string[] {
+export function validatePublish(manifest: Manifest, taken: string[]): string[] {
   // TODO: implement
   throw new Error('Not implemented');
 }

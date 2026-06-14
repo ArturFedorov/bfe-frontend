@@ -1,8 +1,8 @@
 import { createPullRequests, Repo } from './automated_pr_creator';
 
 const repos: Repo[] = [
-  { name: 'svc-a', files: { 'index.js': "var x = 1;" } },
-  { name: 'svc-b', files: { 'index.js': "const y = 2;" } },
+  { name: 'svc-a', files: { 'index.js': 'var x = 1;' } },
+  { name: 'svc-b', files: { 'index.js': 'const y = 2;' } },
 ];
 
 const transform = (files: Record<string, string>) => {

@@ -1,4 +1,7 @@
-import { checkEngines, PackageEngines } from './node_version_compatibility_checker';
+import {
+  checkEngines,
+  PackageEngines,
+} from './node_version_compatibility_checker';
 
 const packages: PackageEngines[] = [
   { name: 'a', engines: { node: '>=18.0.0' } },
