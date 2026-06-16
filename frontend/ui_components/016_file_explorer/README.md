@@ -63,3 +63,31 @@ Track expanded state per folder using a <code>Set</code> or <code>Map</code>. On
 <summary>Hint 3</summary>
 Store a reference to the currently selected element. On selection, remove the <code>active</code> class from the previously selected element and add it to the new one.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/FileExplorer.tsx`](./react/FileExplorer.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **File Explorer** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/FileExplorer.tsx`; keep its exported props
+stable so the harness keeps working.
+

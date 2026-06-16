@@ -63,3 +63,31 @@ For validation, check each required field in the current step. If any required f
 <summary>Hint 3</summary>
 When the user is on the last step and calls <code>next()</code> with valid data, collect the current step's data then call <code>onSubmit</code> with the complete data object.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/FormWizard.tsx`](./react/FormWizard.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Form Wizard** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/FormWizard.tsx`; keep its exported props
+stable so the harness keeps working.
+

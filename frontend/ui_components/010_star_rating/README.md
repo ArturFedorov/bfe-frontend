@@ -53,3 +53,31 @@ On <code>mouseenter</code> of a star, add the <code>active</code> class to all s
 <summary>Hint 3</summary>
 In <code>readonly</code> mode, skip adding click and hover event listeners entirely, or check the flag inside the handlers and return early.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/StarRating.tsx`](./react/StarRating.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Star Rating** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/StarRating.tsx`; keep its exported props
+stable so the harness keeps working.
+

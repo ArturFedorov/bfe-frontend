@@ -54,3 +54,31 @@ When a checkbox changes, propagate downward (check/uncheck all descendants) and 
 <summary>Hint 3</summary>
 Use the <code>HTMLInputElement.indeterminate</code> property to set the visual indeterminate state. This is a DOM property, not an HTML attribute.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/NestedCheckboxes.tsx`](./react/NestedCheckboxes.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Nested Checkboxes** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/NestedCheckboxes.tsx`; keep its exported props
+stable so the harness keeps working.
+

@@ -56,3 +56,31 @@ Run validators in order and stop at the first one that returns a non-null string
 <summary>Hint 3</summary>
 Dependent fields (like confirm-password) need <em>their</em> validator re-run when the field they depend on changes. Easiest approach: on every blur, validate <em>all</em> fields, not just the one that blurred.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/FormValidation.tsx`](./react/FormValidation.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Form with Validation** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/FormValidation.tsx`; keep its exported props
+stable so the harness keeps working.
+

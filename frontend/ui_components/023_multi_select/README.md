@@ -56,3 +56,31 @@ Track <code>activeIndex</code> in the filtered list separately from the selectio
 <summary>Hint 3</summary>
 For "click outside closes", attach a <code>mousedown</code> listener on <code>document</code> when the menu opens and check <code>!container.contains(event.target)</code>. Remove it when the menu closes to avoid leaks.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/MultiSelect.tsx`](./react/MultiSelect.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Multi-Select Dropdown** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/MultiSelect.tsx`; keep its exported props
+stable so the harness keeps working.
+

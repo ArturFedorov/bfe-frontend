@@ -55,3 +55,31 @@ On <code>mousedown</code> on the thumb, attach <code>mousemove</code> and <code>
 <summary>Hint 3</summary>
 To snap to step: <code>Math.round((rawValue - min) / step) * step + min</code>. Then clamp the result between min and max.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/Slider.tsx`](./react/Slider.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Slider** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/Slider.tsx`; keep its exported props
+stable so the harness keeps working.
+

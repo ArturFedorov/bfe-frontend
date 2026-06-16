@@ -53,3 +53,31 @@ Use <code>setTimeout</code> for the delay. Store the timeout ID so you can clear
 <summary>Hint 3</summary>
 Add a data attribute or class like <code>tooltip-top</code> based on the position option. This lets CSS handle the actual positioning.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/Tooltip.tsx`](./react/Tooltip.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Tooltip** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/Tooltip.tsx`; keep its exported props
+stable so the harness keeps working.
+

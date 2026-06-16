@@ -55,3 +55,31 @@ For paste, listen to <code>paste</code> on the container, call <code>preventDefa
 <summary>Hint 3</summary>
 Backspace behavior: in a <code>keydown</code> listener, if <code>event.key === 'Backspace'</code> and the cell is empty, focus the previous cell. Otherwise let the default delete-character happen.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/OtpInput.tsx`](./react/OtpInput.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **OTP Input** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/OtpInput.tsx`; keep its exported props
+stable so the harness keeps working.
+

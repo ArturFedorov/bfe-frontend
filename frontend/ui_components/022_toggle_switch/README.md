@@ -50,3 +50,31 @@ In controlled mode, the click handler should call <code>onChange</code> with the
 <summary>Hint 3</summary>
 Reflect state with <code>aria-checked="true"</code>/<code>"false"</code> and a CSS class like <code>checked</code>. Don't rely on text labels alone — assistive tech reads the ARIA state.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/ToggleSwitch.tsx`](./react/ToggleSwitch.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Toggle Switch** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/ToggleSwitch.tsx`; keep its exported props
+stable so the harness keeps working.
+

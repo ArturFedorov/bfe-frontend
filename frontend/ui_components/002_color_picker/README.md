@@ -51,3 +51,31 @@ Track the selected color in a variable. When a swatch is clicked or <code>setCol
 <summary>Hint 3</summary>
 In <code>destroy()</code>, remove the entire rendered element tree from the container and remove any event listeners you attached.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/ColorPicker.tsx`](./react/ColorPicker.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Color Picker** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/ColorPicker.tsx`; keep its exported props
+stable so the harness keeps working.
+

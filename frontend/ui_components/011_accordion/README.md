@@ -54,3 +54,31 @@ Maintain an array or set of open indices. In single mode, clear the set before a
 <summary>Hint 3</summary>
 Store references to all click handlers so you can remove them in <code>destroy()</code>. Also clear the container's innerHTML on destroy.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/Accordion.tsx`](./react/Accordion.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Accordion** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/Accordion.tsx`; keep its exported props
+stable so the harness keeps working.
+

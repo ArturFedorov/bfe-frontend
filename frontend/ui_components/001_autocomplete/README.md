@@ -51,3 +51,31 @@ Maintain an <code>activeIndex</code> to track which suggestion is highlighted. U
 <summary>Hint 3</summary>
 Implement debounce by storing a <code>setTimeout</code> ID and clearing it on each new input event before setting a new timeout.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/Autocomplete.tsx`](./react/Autocomplete.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Autocomplete** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/Autocomplete.tsx`; keep its exported props
+stable so the harness keeps working.
+

@@ -55,3 +55,31 @@ Render a 7-column grid (Sun–Sat). Fill the first row with empty cells for days
 <summary>Hint 3</summary>
 Store <code>viewYear</code> and <code>viewMonth</code> separately from the selected date. Navigation updates the view, while selection updates the selected date.
 </details>
+
+---
+
+## React Implementation Task
+
+A runnable React playground is wired up for this component. Implement it
+alongside the vanilla version above.
+
+- **Component to implement:** [`react/Calendar.tsx`](./react/Calendar.tsx) — currently a placeholder.
+- **Demo harness:** [`react/App.tsx`](./react/App.tsx) — renders the component; adjust the sample props as you go.
+
+### Run it
+
+From `frontend/ui_components/`:
+
+```bash
+npm install   # first time only
+npm run dev
+```
+
+Then open the dev server and pick **Calendar** from the sidebar.
+
+### Goal
+
+Re-implement the component in **idiomatic React** so it meets the same
+requirements described above. Edit `react/Calendar.tsx`; keep its exported props
+stable so the harness keeps working.
+
