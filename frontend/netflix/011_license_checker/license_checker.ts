@@ -3,6 +3,10 @@ export interface PackageInfo {
   license: string;
 }
 
+function isCopyLeft(license: string): boolean {
+  return license.toUpperCase().includes('GPL');
+}
+
 /**
  * Given the project's own license and its dependencies, return the names of
  * dependencies whose license is incompatible. For this exercise: a permissive
@@ -12,6 +16,11 @@ export function checkLicenses(
   projectLicense: string,
   deps: PackageInfo[],
 ): string[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  // GPL projects can use anything
+  if (isCopyLeft(projectLicense)) return [];
+
+  // Permissive projects can't include GPL dependencies
+  return deps
+    .filter((dep) => isCopyLeft(dep.license))
+    .map((dep) => dep.name);
 }
