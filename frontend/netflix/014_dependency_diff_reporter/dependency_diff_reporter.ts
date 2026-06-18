@@ -1,3 +1,5 @@
+import { satisfies } from '../003_semver_range_matcher/semver_range_matcher';
+
 export interface RiskAssessment {
   name: string;
   version: string;
@@ -14,6 +16,18 @@ export function reportNewPackages(
   after: Record<string, string>,
   knownRisky: string[],
 ): RiskAssessment[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const riskySet = new Set(knownRisky);
+  const result: RiskAssessment[] = [];
+
+  for (const [name, version] of Object.entries(after)) {
+    if (name in before) continue;
+
+    result.push({
+      name,
+      version,
+      risk: riskySet.has(name) ? 'high' : 'low',
+    });
+  }
+
+  return result;
 }

@@ -7,8 +7,11 @@ import { createHash } from 'crypto';
  *
  * The helper `computeIntegrity` is provided to encourage reuse.
  */
-export function computeIntegrity(contents: string | Buffer): string {
-  const hash = createHash('sha512').update(contents).digest('base64');
+export function computeIntegrity(
+  contents: string | Buffer,
+  algorithm: string = 'sha512',
+): string {
+  const hash = createHash(algorithm).update(contents).digest('base64');
   return `sha512-${hash}`;
 }
 
@@ -16,6 +19,12 @@ export function verifyIntegrity(
   contents: string | Buffer,
   integrity: string,
 ): boolean {
-  // TODO: implement (compare computeIntegrity(contents) against integrity)
-  throw new Error('Not implemented');
+  const dashIndex = integrity.indexOf('-');
+  if (dashIndex === -1) return false;
+
+  const algorithm = integrity.slice(0, dashIndex);
+
+  const actual = computeIntegrity(contents, algorithm);
+
+  return actual === integrity;
 }

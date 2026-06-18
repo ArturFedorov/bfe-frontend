@@ -20,7 +20,5 @@ export function checkLicenses(
   if (isCopyLeft(projectLicense)) return [];
 
   // Permissive projects can't include GPL dependencies
-  return deps
-    .filter((dep) => isCopyLeft(dep.license))
-    .map((dep) => dep.name);
+  return deps.filter((dep) => isCopyLeft(dep.license)).map((dep) => dep.name);
 }
