@@ -14,6 +14,32 @@ export function bundleOrder(
   modules: Record<string, Module>,
   entry: string,
 ): string[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const result: string[] = [];
+  const visited = new Set<string>();
+  const inStack = new Set<string>();
+
+  function dfs(id: string) {
+    if(inStack.has(id)) {
+      throw new Error(`Cycle detected: ${id}`);
+    }
+
+    if(visited.has(id)) return;
+
+    inStack.add(id);
+
+    const mod = modules[id];
+
+    if(!mod) throw new Error(`Module ${id} not found`);
+
+    for(const dep of mod.deps) {
+      dfs(dep);
+    }
+
+    inStack.delete(id);
+    visited.add(id);
+    result.push(id);
+  }
+
+  dfs(entry);
+  return result;
 }
