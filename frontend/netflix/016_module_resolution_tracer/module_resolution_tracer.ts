@@ -11,6 +11,38 @@ export function traceResolution(
   fromDir: string,
   specifier: string,
 ): string[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const result: string[] = [];
+
+  const base = resolvePath(fromDir, specifier);
+
+
+  const candidates = [
+    base,
+    base + '.js',
+    base + '.json',
+    base + '/index.js',
+  ]
+
+  for (const candidate of candidates) {
+    result.push(candidate);
+
+    if(files.has(candidate)) {
+      return result;
+    }
+  }
+
+  return result;
+}
+
+function resolvePath(fromDir: string, specifier: string) {
+  if(!specifier.startsWith('.')) return specifier;
+
+  const parts = fromDir.split('/');
+
+  for(const segment of specifier.split('/')) {
+    if (segment === '..') parts.pop();
+    else if(segment !== '.') parts.push(segment);
+  }
+
+  return parts.join('/');
 }
