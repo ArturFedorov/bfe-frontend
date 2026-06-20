@@ -44,7 +44,9 @@ describe('resolveExports — string shorthand', () => {
 
   it('ignores conditions for a string shorthand', () => {
     expect(resolveExports('./index.js', '.', [])).toBe('./index.js');
-    expect(resolveExports('./index.js', '.', ['require', 'node'])).toBe('./index.js');
+    expect(resolveExports('./index.js', '.', ['require', 'node'])).toBe(
+      './index.js',
+    );
   });
 });
 
@@ -121,12 +123,16 @@ describe('resolveExports — no match', () => {
   });
 
   it('returns null for empty conditions when there is no default', () => {
-    const field: ExportsField = { '.': { import: './i.mjs', require: './r.cjs' } };
+    const field: ExportsField = {
+      '.': { import: './i.mjs', require: './r.cjs' },
+    };
     expect(resolveExports(field, '.', [])).toBeNull();
   });
 
   it('matches default with empty conditions when a default exists', () => {
-    const field: ExportsField = { '.': { import: './i.mjs', default: './d.js' } };
+    const field: ExportsField = {
+      '.': { import: './i.mjs', default: './d.js' },
+    };
     expect(resolveExports(field, '.', [])).toBe('./d.js');
   });
 });
@@ -149,15 +155,21 @@ describe('resolveExports — multiple subpaths and conditions', () => {
   });
 
   it('falls to a sibling condition when the nested one does not apply', () => {
-    expect(resolveExports(field, './feature', ['import'])).toBe('./feature.mjs');
+    expect(resolveExports(field, './feature', ['import'])).toBe(
+      './feature.mjs',
+    );
   });
 
   it('falls to default for an unmatched subpath condition', () => {
-    expect(resolveExports(field, './feature', ['browser'])).toBe('./feature.js');
+    expect(resolveExports(field, './feature', ['browser'])).toBe(
+      './feature.js',
+    );
   });
 
   it('resolves a subpath that maps directly to a string', () => {
-    expect(resolveExports(field, './styles.css', ['import'])).toBe('./styles.css');
+    expect(resolveExports(field, './styles.css', ['import'])).toBe(
+      './styles.css',
+    );
   });
 
   it('still resolves the main entry alongside subpaths', () => {

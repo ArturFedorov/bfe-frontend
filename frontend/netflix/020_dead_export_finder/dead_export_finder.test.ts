@@ -22,7 +22,10 @@ describe('findDeadExports', () => {
 describe('findDeadExports — export forms', () => {
   it('detects dead `export function` declarations', () => {
     const src: SourceFile[] = [
-      { path: 'a.ts', code: 'export function used() {}\nexport function dead() {}' },
+      {
+        path: 'a.ts',
+        code: 'export function used() {}\nexport function dead() {}',
+      },
       { path: 'b.ts', code: "import { used } from './a';" },
     ];
     expect(findDeadExports(src)).toEqual([{ file: 'a.ts', name: 'dead' }]);
@@ -67,7 +70,10 @@ describe('findDeadExports — import forms', () => {
 
   it('handles multiple named imports in one statement', () => {
     const src: SourceFile[] = [
-      { path: 'a.ts', code: 'export const a = 1;\nexport const b = 2;\nexport const c = 3;' },
+      {
+        path: 'a.ts',
+        code: 'export const a = 1;\nexport const b = 2;\nexport const c = 3;',
+      },
       { path: 'b.ts', code: "import { a, c } from './a';" },
     ];
     expect(findDeadExports(src)).toEqual([{ file: 'a.ts', name: 'b' }]);

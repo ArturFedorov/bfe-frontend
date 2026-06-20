@@ -15,18 +15,12 @@ export function traceResolution(
 
   const base = resolvePath(fromDir, specifier);
 
-
-  const candidates = [
-    base,
-    base + '.js',
-    base + '.json',
-    base + '/index.js',
-  ]
+  const candidates = [base, base + '.js', base + '.json', base + '/index.js'];
 
   for (const candidate of candidates) {
     result.push(candidate);
 
-    if(files.has(candidate)) {
+    if (files.has(candidate)) {
       return result;
     }
   }
@@ -35,13 +29,13 @@ export function traceResolution(
 }
 
 function resolvePath(fromDir: string, specifier: string) {
-  if(!specifier.startsWith('.')) return specifier;
+  if (!specifier.startsWith('.')) return specifier;
 
   const parts = fromDir.split('/');
 
-  for(const segment of specifier.split('/')) {
+  for (const segment of specifier.split('/')) {
     if (segment === '..') parts.pop();
-    else if(segment !== '.') parts.push(segment);
+    else if (segment !== '.') parts.push(segment);
   }
 
   return parts.join('/');

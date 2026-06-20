@@ -9,7 +9,10 @@ const modules: Record<string, Module> = {
 
 // Assert the result is a valid topological order: every dependency that is
 // itself present in the output appears before the module that imports it.
-function assertTopological(order: string[], graph: Record<string, Module>): void {
+function assertTopological(
+  order: string[],
+  graph: Record<string, Module>,
+): void {
   const position = new Map(order.map((id, i) => [id, i]));
   for (const id of order) {
     for (const dep of graph[id].deps) {

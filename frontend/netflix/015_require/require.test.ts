@@ -63,7 +63,8 @@ describe('createRequire — caching semantics', () => {
 
   it('executes each module body only once', () => {
     const counterFs: FileSystem = {
-      '/counter.js': 'module.exports = (globalThis.__c = (globalThis.__c || 0) + 1);',
+      '/counter.js':
+        'module.exports = (globalThis.__c = (globalThis.__c || 0) + 1);',
     };
     const req = createRequire(counterFs);
     const a = req('/counter.js');

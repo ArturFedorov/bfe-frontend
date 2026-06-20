@@ -59,14 +59,18 @@ describe('buildDual — named const exports', () => {
   });
 
   it('exposes a const holding an object literal', () => {
-    expect(runCjs(buildDual('export const cfg = { a: 1, b: 2 };').cjs).cfg).toEqual({
+    expect(
+      runCjs(buildDual('export const cfg = { a: 1, b: 2 };').cjs).cfg,
+    ).toEqual({
       a: 1,
       b: 2,
     });
   });
 
   it('exposes a const holding an array literal', () => {
-    expect(runCjs(buildDual('export const xs = [1, 2, 3];').cjs).xs).toEqual([1, 2, 3]);
+    expect(runCjs(buildDual('export const xs = [1, 2, 3];').cjs).xs).toEqual([
+      1, 2, 3,
+    ]);
   });
 
   it('exposes multiple named consts at once', () => {
@@ -88,7 +92,9 @@ describe('buildDual — named function exports', () => {
   });
 
   it('exposes both a function and a const together', () => {
-    const { cjs } = buildDual('export const base = 10;\nexport function over(n) { return n; }');
+    const { cjs } = buildDual(
+      'export const base = 10;\nexport function over(n) { return n; }',
+    );
     const exp = runCjs(cjs);
     expect(exp.base).toBe(10);
     expect(exp.over(3)).toBe(3);
@@ -101,7 +107,9 @@ describe('buildDual — default exports', () => {
   });
 
   it('maps an object default to module.exports', () => {
-    expect(runCjs(buildDual('export default { ok: true };').cjs)).toEqual({ ok: true });
+    expect(runCjs(buildDual('export default { ok: true };').cjs)).toEqual({
+      ok: true,
+    });
   });
 
   it('maps an array default to module.exports', () => {
@@ -111,7 +119,9 @@ describe('buildDual — default exports', () => {
 
 describe('buildDual — non-exported statements', () => {
   it('keeps local declarations available without exporting them', () => {
-    const { cjs } = buildDual('const secret = 41;\nexport const answer = secret + 1;');
+    const { cjs } = buildDual(
+      'const secret = 41;\nexport const answer = secret + 1;',
+    );
     const exp = runCjs(cjs);
     expect(exp.answer).toBe(42);
     expect(exp.secret).toBeUndefined();

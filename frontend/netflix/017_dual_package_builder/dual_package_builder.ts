@@ -14,7 +14,7 @@ export interface DualOutput {
 export function buildDual(esmSource: string): { cjs: string; esm: string } {
   const cjs = esmSource
     .split('\n')
-    .map(line => {
+    .map((line) => {
       const trimmed = line.trim();
 
       // import x from 'pkg'
@@ -37,7 +37,7 @@ export function buildDual(esmSource: string): { cjs: string; esm: string } {
         if (match) {
           return trimmed.replace(
             /^export function\s+/,
-            `exports.${match[1]} = function `
+            `exports.${match[1]} = function `,
           );
         }
       }
@@ -55,8 +55,8 @@ export function buildDual(esmSource: string): { cjs: string; esm: string } {
       // export { a, b }
       const namedExport = trimmed.match(/^export\s*\{([^}]+)\}\s*;?\s*$/);
       if (namedExport) {
-        const names = namedExport[1].split(',').map(s => s.trim());
-        return names.map(n => `exports.${n} = ${n};`).join(' ');
+        const names = namedExport[1].split(',').map((s) => s.trim());
+        return names.map((n) => `exports.${n} = ${n};`).join(' ');
       }
 
       // export class Name { ... }
@@ -65,7 +65,7 @@ export function buildDual(esmSource: string): { cjs: string; esm: string } {
         if (match) {
           return trimmed.replace(
             /^export class\s+/,
-            `exports.${match[1]} = class `
+            `exports.${match[1]} = class `,
           );
         }
       }

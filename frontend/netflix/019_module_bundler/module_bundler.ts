@@ -19,19 +19,19 @@ export function bundleOrder(
   const inStack = new Set<string>();
 
   function dfs(id: string) {
-    if(inStack.has(id)) {
+    if (inStack.has(id)) {
       throw new Error(`Cycle detected: ${id}`);
     }
 
-    if(visited.has(id)) return;
+    if (visited.has(id)) return;
 
     inStack.add(id);
 
     const mod = modules[id];
 
-    if(!mod) throw new Error(`Module ${id} not found`);
+    if (!mod) throw new Error(`Module ${id} not found`);
 
-    for(const dep of mod.deps) {
+    for (const dep of mod.deps) {
       dfs(dep);
     }
 

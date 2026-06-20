@@ -28,7 +28,11 @@ describe('traceResolution — candidate ordering', () => {
   });
 
   it('always begins with the extensionless exact path', () => {
-    const trace = traceResolution(new Set(['/app/util/index.js']), '/app', './util');
+    const trace = traceResolution(
+      new Set(['/app/util/index.js']),
+      '/app',
+      './util',
+    );
     expect(trace[0]).toBe('/app/util');
   });
 
