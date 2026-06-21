@@ -74,21 +74,18 @@ function tokenize(code: string): Token[] {
       const quote = code[i];
       let str = quote;
       i++;
+
       while (i < code.length) {
         if (code[i] === '\\') {
           str += code[i++];
-          if (i < code.length) {
-            str += code[i++];
-            continue;
-          }
-
-          if (code[i] === quote) {
-            str += code[i++];
-            break;
-          }
-
-          str += code[i++];
+          if (i < code.length) str += code[i++];
+          continue;
         }
+        if (code[i] === quote) {
+          str += code[i++];
+          break;
+        }
+        str += code[i++];
       }
 
       tokens.push({ type: 'string', value: str });
