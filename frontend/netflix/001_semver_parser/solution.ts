@@ -1,9 +1,4 @@
-export interface ParsedVersion {
-  major: number;
-  minor: number;
-  patch: number;
-  prerelease: string | null;
-}
+import { ParsedVersion } from './semver_parser';
 
 /**
  * Parse a semver string such as `1.2.3` or `1.2.3-beta.1` into its parts.
@@ -12,15 +7,14 @@ export interface ParsedVersion {
  */
 export function parseVersion(input: string): ParsedVersion {
   const [withoutBuild] = input.split('+');
-  const hyphenIndex = withoutBuild.indexOf('-');
 
+  const hyphenIndex = withoutBuild.indexOf('-');
   let core;
   let prerelease: string | null = null;
 
   if (hyphenIndex !== -1) {
     core = withoutBuild.slice(0, hyphenIndex);
     prerelease = withoutBuild.slice(hyphenIndex + 1);
-
     if (prerelease.length === 0) {
       throw new Error('Empty prerelease');
     }
