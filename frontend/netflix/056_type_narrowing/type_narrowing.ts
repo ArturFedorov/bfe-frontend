@@ -9,14 +9,22 @@ export type Shape =
  * without handling it becomes a compile error.
  */
 export function area(shape: Shape): number {
-  // TODO: implement with an exhaustive switch on `shape.kind`
-  throw new Error('Not implemented');
+  switch (shape.kind) {
+    case 'circle':
+      return Math.PI * shape.radius ** 2;
+    case 'square':
+      return shape.side ** 2;
+    case 'rect':
+      return shape.width * shape.height;
+    default:
+      const _exhaustive: never = shape;
+      throw new Error(`Unknown shape`);
+  }
 }
 
 /** A user-defined type guard narrowing `Shape` to the circle variant. */
 export function isCircle(
   shape: Shape,
 ): shape is Extract<Shape, { kind: 'circle' }> {
-  // TODO: implement
-  throw new Error('Not implemented');
+  return shape.kind === 'circle';
 }

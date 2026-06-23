@@ -5,24 +5,39 @@
  * Example: new TypedEmitter<{ click: { x: number } }>()
  */
 export class TypedEmitter<Events extends Record<string, unknown>> {
+  private listeners = new Map<keyof Events, Set<Function>>();
+
   on<K extends keyof Events>(
     event: K,
     listener: (payload: Events[K]) => void,
   ): this {
-    // TODO: implement
-    throw new Error('Not implemented');
+    const items = this.listeners.get(event) || new Set<typeof listener>();
+    items.add(listener);
+    this.listeners.set(event, items);
+    return this;
   }
 
   off<K extends keyof Events>(
     event: K,
     listener: (payload: Events[K]) => void,
   ): this {
-    // TODO: implement
-    throw new Error('Not implemented');
+    const items = this.listeners.get(event);
+    if(!items) return this;
+
+    items.delete(listener);
+    this.listeners.set(event, items);
+    return this;
   }
 
   emit<K extends keyof Events>(event: K, payload: Events[K]): boolean {
-    // TODO: implement (return true if any listener fired)
-    throw new Error('Not implemented');
+    const items = this.listeners.get(event);
+
+    if(!items || items.size === 0) return false;
+
+    for(const item of [...items]) {
+      item(payload);
+    }
+
+    return true;
   }
 }
