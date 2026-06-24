@@ -19,12 +19,30 @@ export type Rule = (
 
 /** Walk the AST depth-first, running `rule` on every node. */
 export function lint(ast: AstNode, ruleId: string, rule: Rule): LintMessage[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const messages: LintMessage[] = [];
+
+  const report = (message: string, node: AstNode) => {
+    messages.push({ ruleId, message, line: node.loc?.line ?? 0 });
+  }
+
+  function dfs(node: AstNode) {
+    if (!node) return;
+
+    const { children = [] } = node;
+    rule(node, report);
+    for(const child of children) {
+      dfs(child);
+    }
+  }
+
+  dfs(ast)
+
+  return messages;
 }
 
 /** A rule that flags `console.log` call expressions. */
 export const noConsoleLog: Rule = (node, report) => {
-  // TODO: implement
-  throw new Error('Not implemented');
+  if(node.type === 'CallExpression' && node.callee === 'console.log') {
+    report('Unexpected console.log', node);
+  }
 };

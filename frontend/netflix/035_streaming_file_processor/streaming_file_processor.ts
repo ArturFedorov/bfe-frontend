@@ -8,6 +8,14 @@ export function processInChunks(
   chunkSize: number,
   transform: (chunk: string) => string,
 ): string {
-  // TODO: implement
-  throw new Error('Not implemented');
+  let result = '';
+
+  if(input.length === 0) return result;
+
+  for(let i = 0; i < input.length; i += chunkSize) {
+    const chunk = input.slice(i, i + chunkSize);
+    result += transform(chunk);
+  }
+
+  return result;
 }
