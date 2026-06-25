@@ -5,5 +5,5 @@
  */
 // TODO: replace `never` with a real mapped-type implementation.
 export type MyPick<T, P extends keyof T> = {
-  [K in P]: T[K]
+  [K in P]: T[K];
 };

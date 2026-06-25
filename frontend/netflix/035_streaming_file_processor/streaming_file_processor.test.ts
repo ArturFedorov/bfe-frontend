@@ -63,7 +63,9 @@ describe('processInChunks', () => {
   });
 
   it('supports transforms that drop content', () => {
-    expect(processInChunks('a1b2c3', 2, (c) => c.replace(/\d/g, ''))).toBe('abc');
+    expect(processInChunks('a1b2c3', 2, (c) => c.replace(/\d/g, ''))).toBe(
+      'abc',
+    );
   });
 
   it('passes each chunk to transform exactly once', () => {

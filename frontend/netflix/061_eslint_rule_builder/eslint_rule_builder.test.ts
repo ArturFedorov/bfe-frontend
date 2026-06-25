@@ -23,9 +23,21 @@ describe('noConsoleLog rule', () => {
     const multi: AstNode = {
       type: 'Program',
       children: [
-        { type: 'CallExpression', callee: 'console.log', loc: { line: 1, column: 0 } },
-        { type: 'CallExpression', callee: 'doThing', loc: { line: 2, column: 0 } },
-        { type: 'CallExpression', callee: 'console.log', loc: { line: 5, column: 4 } },
+        {
+          type: 'CallExpression',
+          callee: 'console.log',
+          loc: { line: 1, column: 0 },
+        },
+        {
+          type: 'CallExpression',
+          callee: 'doThing',
+          loc: { line: 2, column: 0 },
+        },
+        {
+          type: 'CallExpression',
+          callee: 'console.log',
+          loc: { line: 5, column: 4 },
+        },
       ],
     };
     const messages = lint(multi, 'no-console-log', noConsoleLog);
@@ -43,7 +55,11 @@ describe('noConsoleLog rule', () => {
             {
               type: 'BlockStatement',
               children: [
-                { type: 'CallExpression', callee: 'console.log', loc: { line: 7, column: 2 } },
+                {
+                  type: 'CallExpression',
+                  callee: 'console.log',
+                  loc: { line: 7, column: 2 },
+                },
               ],
             },
           ],
@@ -59,8 +75,16 @@ describe('noConsoleLog rule', () => {
     const clean: AstNode = {
       type: 'Program',
       children: [
-        { type: 'CallExpression', callee: 'doThing', loc: { line: 1, column: 0 } },
-        { type: 'CallExpression', callee: 'console.error', loc: { line: 2, column: 0 } },
+        {
+          type: 'CallExpression',
+          callee: 'doThing',
+          loc: { line: 1, column: 0 },
+        },
+        {
+          type: 'CallExpression',
+          callee: 'console.error',
+          loc: { line: 2, column: 0 },
+        },
       ],
     };
     expect(lint(clean, 'no-console-log', noConsoleLog)).toEqual([]);
@@ -70,8 +94,16 @@ describe('noConsoleLog rule', () => {
     const other: AstNode = {
       type: 'Program',
       children: [
-        { type: 'CallExpression', callee: 'console.warn', loc: { line: 1, column: 0 } },
-        { type: 'CallExpression', callee: 'console.info', loc: { line: 2, column: 0 } },
+        {
+          type: 'CallExpression',
+          callee: 'console.warn',
+          loc: { line: 1, column: 0 },
+        },
+        {
+          type: 'CallExpression',
+          callee: 'console.info',
+          loc: { line: 2, column: 0 },
+        },
       ],
     };
     expect(lint(other, 'no-console-log', noConsoleLog)).toEqual([]);
@@ -81,8 +113,16 @@ describe('noConsoleLog rule', () => {
     const tricky: AstNode = {
       type: 'Program',
       children: [
-        { type: 'MemberExpression', callee: 'console.log', loc: { line: 1, column: 0 } },
-        { type: 'Identifier', callee: 'console.log', loc: { line: 2, column: 0 } },
+        {
+          type: 'MemberExpression',
+          callee: 'console.log',
+          loc: { line: 1, column: 0 },
+        },
+        {
+          type: 'Identifier',
+          callee: 'console.log',
+          loc: { line: 2, column: 0 },
+        },
       ],
     };
     expect(lint(tricky, 'no-console-log', noConsoleLog)).toEqual([]);
@@ -111,12 +151,7 @@ describe('lint engine', () => {
     };
     const visitAll: Rule = (node, report) => report(node.type, node);
     const messages = lint(tree, 'visit', visitAll);
-    expect(messages.map((m) => m.message)).toEqual([
-      'Program',
-      'A',
-      'A1',
-      'B',
-    ]);
+    expect(messages.map((m) => m.message)).toEqual(['Program', 'A', 'A1', 'B']);
   });
 
   it('runs the rule on the root node', () => {

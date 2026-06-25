@@ -10,9 +10,9 @@ export function processInChunks(
 ): string {
   let result = '';
 
-  if(input.length === 0) return result;
+  if (input.length === 0) return result;
 
-  for(let i = 0; i < input.length; i += chunkSize) {
+  for (let i = 0; i < input.length; i += chunkSize) {
     const chunk = input.slice(i, i + chunkSize);
     result += transform(chunk);
   }

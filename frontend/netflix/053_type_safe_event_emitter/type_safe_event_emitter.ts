@@ -22,7 +22,7 @@ export class TypedEmitter<Events extends Record<string, unknown>> {
     listener: (payload: Events[K]) => void,
   ): this {
     const items = this.listeners.get(event);
-    if(!items) return this;
+    if (!items) return this;
 
     items.delete(listener);
     this.listeners.set(event, items);
@@ -32,9 +32,9 @@ export class TypedEmitter<Events extends Record<string, unknown>> {
   emit<K extends keyof Events>(event: K, payload: Events[K]): boolean {
     const items = this.listeners.get(event);
 
-    if(!items || items.size === 0) return false;
+    if (!items || items.size === 0) return false;
 
-    for(const item of [...items]) {
+    for (const item of [...items]) {
       item(payload);
     }
 
