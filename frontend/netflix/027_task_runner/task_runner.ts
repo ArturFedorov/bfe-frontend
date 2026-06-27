@@ -11,7 +11,7 @@ export interface TaskDef {
 export function resolveOrder(tasks: TaskDef[]): string[] {
   const graph = new Map<string, string[]>();
 
-  for(const task of tasks) {
+  for (const task of tasks) {
     graph.set(task.name, task.deps);
   }
 
@@ -20,24 +20,24 @@ export function resolveOrder(tasks: TaskDef[]): string[] {
   const inStack = new Set<string>();
 
   function dfs(name: string) {
-    if(inStack.has(name)) {
+    if (inStack.has(name)) {
       throw new Error('Cycle detected');
     }
 
-    if(visited.has(name)) return;
+    if (visited.has(name)) return;
 
     inStack.add(name);
     visited.add(name);
 
-    for(const dep of graph.get(name) || []) {
-      dfs(dep)
+    for (const dep of graph.get(name) || []) {
+      dfs(dep);
     }
 
     inStack.delete(name);
     result.push(name);
   }
 
-  for(const task of tasks) {
+  for (const task of tasks) {
     dfs(task.name);
   }
 
