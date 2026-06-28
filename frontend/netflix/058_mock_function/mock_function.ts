@@ -13,6 +13,29 @@ export interface MockFn<Args extends unknown[] = unknown[], Return = unknown> {
 export function fn<Args extends unknown[] = unknown[], Return = unknown>(
   impl?: (...args: Args) => Return,
 ): MockFn<Args, Return> {
-  // TODO: implement
-  throw new Error('Not implemented');
+  let implementation = impl || ((() => undefined) as (...args: Args) => Return);
+
+  const mock = function (...args: Args): Return {
+    mock.calls.push(args);
+    const result = implementation(...args);
+    mock.results.push(result);
+    return result;
+  } as MockFn<Args, Return>;
+
+  mock.calls = [];
+  mock.results = [];
+
+  mock.mockReturnValue = function (value: Return): MockFn<Args, Return> {
+    implementation = () => value;
+    return mock;
+  };
+
+  mock.mockImplementation = function (
+    fn: (...args: Args) => Return,
+  ): MockFn<Args, Return> {
+    implementation = fn;
+    return mock;
+  };
+
+  return mock;
 }

@@ -3,28 +3,50 @@
  * `build()` assembles a SQL-ish string.
  */
 export class QueryBuilder {
+  private selectPart: string = '';
+  private fromPart = '';
+  private wherePart = '';
+  private orderByPart = '';
+
   select(...columns: string[]): this {
-    // TODO: implement
-    throw new Error('Not implemented');
+    const selectors = columns.join(', ');
+
+    this.selectPart = `SELECT ${selectors.trim()}`;
+    return this;
   }
 
   from(table: string): this {
-    // TODO: implement
-    throw new Error('Not implemented');
+    this.fromPart = `FROM ${table}`.trim();
+    return this;
   }
 
   where(condition: string): this {
-    // TODO: implement
-    throw new Error('Not implemented');
+    const predicate = this.wherePart.includes('WHERE') ? 'AND' : 'WHERE';
+    this.wherePart = `${this.wherePart} ${predicate} ${condition}`.trim();
+    return this;
   }
 
   orderBy(column: string, direction: 'ASC' | 'DESC' = 'ASC'): this {
-    // TODO: implement
-    throw new Error('Not implemented');
+    this.orderByPart = `ORDER BY ${column} ${direction}`.trim();
+    return this;
   }
 
   build(): string {
-    // TODO: implement
-    throw new Error('Not implemented');
+    const parts = [
+      this.selectPart,
+      this.fromPart,
+      this.wherePart,
+      this.orderByPart,
+    ].filter(Boolean);
+    this.resetData();
+
+    return parts.join(' ');
+  }
+
+  private resetData() {
+    this.selectPart = '';
+    this.orderByPart = '';
+    this.fromPart = '';
+    this.wherePart = '';
   }
 }
