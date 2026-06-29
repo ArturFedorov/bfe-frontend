@@ -20,13 +20,19 @@ export class AppError extends Error {
     context?: Record<string, unknown>,
   ) {
     super(message);
-    // TODO: set name/code/context and fix the prototype chain
-    throw new Error('Not implemented');
+    Object.setPrototypeOf(this, new.target.prototype);
+    this.name = new.target.name;
+    this.code = code;
+    this.context = context;
   }
 
   toJSON(): SerializedError {
-    // TODO: implement
-    throw new Error('Not implemented');
+    return {
+      name: this.name,
+      code: this.code,
+      message: this.message,
+      context: this.context,
+    };
   }
 }
 

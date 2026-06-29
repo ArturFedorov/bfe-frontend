@@ -12,23 +12,36 @@ export interface Plugin {
  *   - runCleanup(): call cleanup() in REVERSE registration order
  */
 export class PluginHost {
+  private plugins: Plugin[] = [];
+
   register(plugin: Plugin): this {
-    // TODO: implement
-    throw new Error('Not implemented');
+    if (!plugin) return this;
+
+    this.plugins.push(plugin);
+
+    return this;
   }
 
   runInit(): void {
-    // TODO: implement
-    throw new Error('Not implemented');
+    this.plugins.forEach(({ init }) => {
+      init?.();
+    });
   }
 
   runTransform(input: string): string {
-    // TODO: implement
-    throw new Error('Not implemented');
+    return this.plugins.reduce((acc, plugin) => {
+      if (plugin && plugin.transform) {
+        acc = plugin.transform(acc);
+        return acc;
+      }
+
+      return acc;
+    }, input || '');
   }
 
   runCleanup(): void {
-    // TODO: implement
-    throw new Error('Not implemented');
+    for (let i = this.plugins.length - 1; i >= 0; i--) {
+      this.plugins[i]?.cleanup?.();
+    }
   }
 }
