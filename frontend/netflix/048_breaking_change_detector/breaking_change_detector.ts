@@ -17,6 +17,35 @@ export function detectBreakingChanges(
   before: ApiSurface,
   after: ApiSurface,
 ): ApiDiff {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const beforeKeys = Object.keys(before);
+  const afterKeys = Object.keys(after);
+
+  const results: ApiDiff = {
+    removed: [],
+    changed: [],
+    added: [],
+  };
+
+  const keys = new Set([...beforeKeys, ...afterKeys]);
+
+  for (const key of keys) {
+    const isAdded = !(key in before) && key in after;
+    const isRemoved = key in before && !(key in after);
+    const hasBoth = key in before && key in after;
+    const hasChanged = hasBoth && before[key] !== after[key];
+
+    if (isAdded) {
+      results.added.push(key);
+    }
+
+    if (isRemoved) {
+      results.removed.push(key);
+    }
+
+    if (hasChanged) {
+      results.changed.push(key);
+    }
+  }
+
+  return results;
 }

@@ -13,6 +13,23 @@ export interface Manifest {
  *   - `taken` versions list does not already include this version
  */
 export function validatePublish(manifest: Manifest, taken: string[]): string[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const errors: string[] = [];
+
+  const REQUIRED_FIELDS = ['name', 'version', 'license'];
+
+  REQUIRED_FIELDS.forEach((field) => {
+    if (!(field in manifest)) {
+      errors.push(`missing required field: ${field}`);
+    }
+  });
+
+  if (manifest?.scripts?.postinstall) {
+    errors.push('postinstall script is not allowed (supply-chain risk');
+  }
+
+  if (manifest.version && taken.includes(manifest.version)) {
+    errors.push(`version ${manifest.version} is already published`);
+  }
+
+  return errors;
 }
