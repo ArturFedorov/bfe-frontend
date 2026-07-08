@@ -1,3 +1,5 @@
+import { satisfies } from '../003_semver_range_matcher/semver_range_matcher';
+
 export interface WorkspacePackage {
   name: string;
   version: string;
@@ -20,6 +22,36 @@ export interface WorkspaceReport {
 export function resolveWorkspaces(
   packages: WorkspacePackage[],
 ): WorkspaceReport {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const versionMap = new Map<string, string>();
+  for (const pkg of packages) {
+    versionMap.set(pkg.name, pkg.version);
+  }
+
+  const internalGraph: Record<string, string[]> = {};
+  const mismatches: WorkspaceReport['mismatches'] = [];
+
+  for (const pkg of packages) {
+    const internalDeps: string[] = [];
+
+    for (const [depName, range] of Object.entries(pkg.dependencies || {})) {
+      if (!versionMap.has(depName)) continue;
+
+      internalDeps.push(depName);
+
+      const actualVersion = versionMap.get(depName)!;
+
+      if (!satisfies(actualVersion, range)) {
+        mismatches.push({
+          from: pkg.name,
+          to: depName,
+          required: range,
+          actual: actualVersion,
+        });
+      }
+    }
+
+    internalGraph[pkg.name] = internalDeps;
+  }
+
+  return { internalGraph, mismatches };
 }
