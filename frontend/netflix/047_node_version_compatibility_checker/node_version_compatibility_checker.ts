@@ -1,3 +1,5 @@
+import { satisfies } from '../003_semver_range_matcher/semver_range_matcher';
+
 export interface PackageEngines {
   name: string;
   engines?: { node?: string };
@@ -13,6 +15,16 @@ export function checkEngines(
   packages: PackageEngines[],
   targetNode: string,
 ): string[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const incompatible: string[] = [];
+
+  for (const pkg of packages) {
+    const range = pkg?.engines?.node;
+    if (!range) continue; // no constraint → OK
+
+    if (!satisfies(targetNode, range)) {
+      incompatible.push(pkg.name);
+    }
+  }
+
+  return incompatible;
 }

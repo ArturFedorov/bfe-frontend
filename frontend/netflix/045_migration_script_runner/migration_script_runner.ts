@@ -17,6 +17,22 @@ export function runMigrations(
   migrations: Migration[],
   alreadyRun: string[],
 ): MigrationRunResult {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const sortedMigrations = [...migrations].sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+
+  const result: MigrationRunResult = { applied: [], skipped: [] };
+  const alreadyRunSet = new Set(alreadyRun);
+
+  for (const migration of sortedMigrations) {
+    if (alreadyRunSet.has(migration.id)) {
+      result.skipped.push(migration.id);
+      continue;
+    }
+
+    migration.up();
+    result.applied.push(migration.id);
+  }
+
+  return result;
 }
