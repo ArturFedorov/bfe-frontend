@@ -3,13 +3,14 @@
  * accumulated keys, so `build()` returns a precisely typed object.
  */
 export class Builder<T extends object = {}> {
+  private data: Record<string, unknown> = {};
+
   set<K extends string, V>(key: K, value: V): Builder<T & Record<K, V>> {
-    // TODO: implement
-    throw new Error('Not implemented');
+    this.data[key] = value;
+    return this as unknown as Builder<T & Record<K, V>>;
   }
 
   build(): T {
-    // TODO: implement
-    throw new Error('Not implemented');
+    return {...this.data} as T;
   }
 }

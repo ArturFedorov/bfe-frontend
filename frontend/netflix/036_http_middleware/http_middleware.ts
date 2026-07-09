@@ -15,13 +15,26 @@ export type Middleware = (req: Req, res: Res, next: Next) => void;
  * does not call `next()` halts the chain.
  */
 export class App {
+  private readonly middlewares: Middleware[];
+
+  constructor() {
+    this.middlewares = [];
+  }
+
   use(mw: Middleware): this {
-    // TODO: implement
-    throw new Error('Not implemented');
+    this.middlewares.push(mw);
+    return this;
   }
 
   handle(req: Req, res: Res): void {
-    // TODO: implement
-    throw new Error('Not implemented');
+    let index = 0;
+
+    const next = () => {
+      if(index >= this.middlewares.length) return;
+      const mw = this.middlewares[index++];
+      mw(req, res, next);
+    };
+
+    next();
   }
 }
