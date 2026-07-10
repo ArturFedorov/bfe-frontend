@@ -3,5 +3,5 @@
  */
 // TODO: replace the identity with a recursive mapped type.
 export type DeepReadonly<T> = {
-  readonly [K in keyof T]: DeepReadonly<T[K]>
+  readonly [K in keyof T]: DeepReadonly<T[K]>;
 };

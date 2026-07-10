@@ -30,7 +30,7 @@ export class App {
     let index = 0;
 
     const next = () => {
-      if(index >= this.middlewares.length) return;
+      if (index >= this.middlewares.length) return;
       const mw = this.middlewares[index++];
       mw(req, res, next);
     };

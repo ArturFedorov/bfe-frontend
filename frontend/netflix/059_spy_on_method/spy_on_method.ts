@@ -11,6 +11,18 @@ export function spyOn<T extends object, K extends keyof T>(
   obj: T,
   method: K,
 ): Spy {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const originalMethod = obj[method] as unknown as Function;
+  const calls: unknown[][] = [];
+
+  (obj as any)[method] = function (this: any, ...args: unknown[]) {
+    calls.push(args);
+    return originalMethod.apply(this, args);
+  };
+
+  return {
+    calls,
+    restore: () => {
+      (obj as any)[method] = originalMethod;
+    },
+  };
 }

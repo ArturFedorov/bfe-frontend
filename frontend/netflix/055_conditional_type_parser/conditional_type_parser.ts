@@ -4,4 +4,13 @@
  * A segment beginning with ':' is a param; others are ignored.
  */
 // TODO: replace `{}` with a recursive template-literal + `infer` implementation.
-export type ParseRoute<S extends string> = {};
+type Prettify<T> = { [K in keyof T]: T[K] } & {};
+
+type ParseRouteRaw<S extends string> =
+  S extends `${infer _Start}:${infer Param}/${infer Rest}`
+    ? { [K in Param]: string } & ParseRouteRaw<`/${Rest}`>
+    : S extends `${infer _Start}:${infer Param}`
+      ? { [K in Param]: string }
+      : {};
+
+export type ParseRoute<S extends string> = Prettify<ParseRouteRaw<S>>;

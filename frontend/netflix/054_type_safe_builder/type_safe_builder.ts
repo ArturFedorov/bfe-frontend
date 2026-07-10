@@ -11,6 +11,6 @@ export class Builder<T extends object = {}> {
   }
 
   build(): T {
-    return {...this.data} as T;
+    return { ...this.data } as T;
   }
 }
