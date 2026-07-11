@@ -16,6 +16,22 @@ export interface HookReport {
  * false if any hook returns false.
  */
 export function runHooks(stagedFiles: string[], hooks: Hook[]): HookReport {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const ran: string[] = [];
+  const failed: string[] = [];
+
+  for (const hook of hooks) {
+    const matching = stagedFiles.filter((file) => hook.pattern.test(file));
+    if (matching.length === 0) continue;
+
+    ran.push(hook.name);
+    if (!hook.run(matching)) {
+      failed.push(hook.name);
+    }
+  }
+
+  return {
+    ran,
+    failed,
+    ok: failed.length === 0,
+  };
 }
