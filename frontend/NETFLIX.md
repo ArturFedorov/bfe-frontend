@@ -178,43 +178,43 @@ Netflix doesn't ask abstract LeetCode. They ask you to build things related to w
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N1 | Semver parser | Parse version strings (`1.2.3`, `1.2.3-beta.1`) into `{major, minor, patch, prerelease}` | Easy | ⬜ |
-| N2 | Semver comparator | Implement `compare(a, b)` → `-1 / 0 / 1` and `gt()`, `lt()`, `eq()` | Easy | ⬜ |
-| N3 | Semver range matcher | Implement `satisfies(version, range)` for `^`, `~`, `>=`, `<`, `||` | Medium | ⬜ |
-| N4 | Dependency graph builder | Given a set of `package.json` objects, build a directed graph of all dependencies | Medium | ⬜ |
-| N5 | Circular dependency detector | Traverse a dependency graph, detect and report all cycles | Medium | ⬜ |
-| N6 | Transitive dependency finder | Given package A, find ALL packages it depends on (direct + transitive) | Medium | ⬜ |
-| N7 | Dependency version resolver | Given a dependency tree with semver ranges, resolve to concrete versions (simplified npm install) | Hard | ⬜ |
-| N8 | Lockfile differ | Compare two `package-lock.json` files, output added/removed/changed packages with version diffs | Medium | ⬜ |
-| N9 | Phantom dependency detector | Scan code for `require()`/`import` calls, compare against `package.json` — flag packages used but not declared | Medium | ⬜ |
+| N1 | Semver parser | Parse version strings (`1.2.3`, `1.2.3-beta.1`) into `{major, minor, patch, prerelease}` | Easy | ✅ |
+| N2 | Semver comparator | Implement `compare(a, b)` → `-1 / 0 / 1` and `gt()`, `lt()`, `eq()` | Easy | ✅ |
+| N3 | Semver range matcher | Implement `satisfies(version, range)` for `^`, `~`, `>=`, `<`, `||` | Medium | ✅ |
+| N4 | Dependency graph builder | Given a set of `package.json` objects, build a directed graph of all dependencies | Medium | ✅ |
+| N5 | Circular dependency detector | Traverse a dependency graph, detect and report all cycles | Medium | ✅ |
+| N6 | Transitive dependency finder | Given package A, find ALL packages it depends on (direct + transitive) | Medium | ✅ |
+| N7 | Dependency version resolver | Given a dependency tree with semver ranges, resolve to concrete versions (simplified npm install) | Hard | ✅ |
+| N8 | Lockfile differ | Compare two `package-lock.json` files, output added/removed/changed packages with version diffs | Medium | ✅ |
+| N9 | Phantom dependency detector | Scan code for `require()`/`import` calls, compare against `package.json` — flag packages used but not declared | Medium | ✅ |
 
 ### 1B — Supply Chain Security
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N10 | Vulnerability scanner | Given a dependency tree + CVE database (JSON), flag all affected packages with severity | Medium | ⬜ |
-| N11 | License checker | Traverse all dependencies, extract license fields, flag incompatible licenses (e.g. GPL in MIT project) | Medium | ⬜ |
-| N12 | Typosquatting detector | Given a package name, generate likely typosquat variants (swaps, missing chars, doubled chars) | Easy | ⬜ |
-| N13 | Package integrity verifier | Compute SHA-512 hash of a tarball, compare against registry-reported integrity hash | Easy | ⬜ |
-| N14 | Dependency diff reporter | Compare `node_modules` before/after an install, report new packages added with risk assessment | Medium | ⬜ |
+| N10 | Vulnerability scanner | Given a dependency tree + CVE database (JSON), flag all affected packages with severity | Medium | ✅ |
+| N11 | License checker | Traverse all dependencies, extract license fields, flag incompatible licenses (e.g. GPL in MIT project) | Medium | ✅ |
+| N12 | Typosquatting detector | Given a package name, generate likely typosquat variants (swaps, missing chars, doubled chars) | Easy | ✅ |
+| N13 | Package integrity verifier | Compute SHA-512 hash of a tarball, compare against registry-reported integrity hash | Easy | ✅ |
+| N14 | Dependency diff reporter | Compare `node_modules` before/after an install, report new packages added with risk assessment | Medium | ✅ |
 
 ### 1C — Module Systems & Resolution
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N15 | Implement `require()` | Module resolution algorithm — `node_modules` lookup, caching, JSON loading, index.js fallback | Hard | ⬜ |
-| N16 | Module resolution tracer | Given an import statement + filesystem, trace the full resolution path and explain each step | Medium | ⬜ |
-| N17 | Dual package builder | Given a source file, output both CJS (`module.exports`) and ESM (`export`) versions | Medium | ⬜ |
-| N18 | `package.json` exports resolver | Implement conditional exports resolution — match `"."`, `"./sub"`, conditions (`import`/`require`/`node`/`browser`) | Hard | ⬜ |
-| N19 | Simplified module bundler | Resolve imports from entry point, build dependency graph, concatenate into single output file | Hard | ⬜ |
+| N15 | Implement `require()` | Module resolution algorithm — `node_modules` lookup, caching, JSON loading, index.js fallback | Hard | ✅ |
+| N16 | Module resolution tracer | Given an import statement + filesystem, trace the full resolution path and explain each step | Medium | ✅ |
+| N17 | Dual package builder | Given a source file, output both CJS (`module.exports`) and ESM (`export`) versions | Medium | ✅ |
+| N18 | `package.json` exports resolver | Implement conditional exports resolution — match `"."`, `"./sub"`, conditions (`import`/`require`/`node`/`browser`) | Hard | ✅ |
+| N19 | Simplified module bundler | Resolve imports from entry point, build dependency graph, concatenate into single output file | Hard | ✅ |
 
 ### 1D — Codemods & AST
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N20 | Dead export finder | Parse files for `export` declarations, scan all files for matching `import` statements, report unused exports | Medium | ⬜ |
-| N21 | Import sorter | Parse imports, group by type (node builtins → external → internal), sort alphabetically within groups | Medium | ⬜ |
-| N22 | Find-and-replace codemod | Build with regex first, then rebuild with AST parser — compare approaches, discuss trade-offs | Medium | ⬜ |
+| N20 | Dead export finder | Parse files for `export` declarations, scan all files for matching `import` statements, report unused exports | Medium | ✅ |
+| N21 | Import sorter | Parse imports, group by type (node builtins → external → internal), sort alphabetically within groups | Medium | ✅ |
+| N22 | Find-and-replace codemod | Build with regex first, then rebuild with AST parser — compare approaches, discuss trade-offs | Medium | ✅ |
 | N23 | Codemod engine | Given an AST transform function, apply it across a directory of files, handle errors, report results | Hard | ⬜ |
 | N24 | API deprecation migrator | Find all calls to `oldApi()`, rewrite to `newApi()` with argument transformation | Medium | ⬜ |
 
@@ -222,9 +222,9 @@ Netflix doesn't ask abstract LeetCode. They ask you to build things related to w
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N25 | CLI argument parser | Support flags (`--verbose`), named args (`--output=dist`), positional args, `--help` generation | Medium | ⬜ |
+| N25 | CLI argument parser | Support flags (`--verbose`), named args (`--output=dist`), positional args, `--help` generation | Medium | ✅ |
 | N26 | File watcher with debounced rebuild | `fs.watch` on a directory, debounce changes, run a build command, report results | Medium | ⬜ |
-| N27 | Task runner | Read tasks from a config, resolve task dependencies (topological sort), execute in parallel where possible | Hard | ⬜ |
+| N27 | Task runner | Read tasks from a config, resolve task dependencies (topological sort), execute in parallel where possible | Hard | ✅ |
 | N28 | Progress reporter | Build a CLI progress bar + spinner for long-running operations with ETA calculation | Easy | ⬜ |
 | N29 | Interactive prompt system | Build `confirm()`, `select()`, `multiSelect()` prompts for terminal using raw stdin | Medium | ⬜ |
 
@@ -232,7 +232,7 @@ Netflix doesn't ask abstract LeetCode. They ask you to build things related to w
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N30 | Config extends resolver | Implement `tsconfig.json`-style `extends` — deep merge with override rules, resolve relative paths | Medium | ⬜ |
+| N30 | Config extends resolver | Implement `tsconfig.json`-style `extends` — deep merge with override rules, resolve relative paths | Medium | ✅ |
 | N31 | ESLint config merger | Follow `extends` chains, merge rules with correct priority (last wins, per-rule overrides) | Medium | ⬜ |
 | N32 | Schema validator | Given a JSON schema + config object, validate and return typed errors with paths | Medium | ⬜ |
 | N33 | Config migration tool | Given old config format and new format spec, auto-migrate config files with dry-run mode | Medium | ⬜ |
@@ -241,70 +241,70 @@ Netflix doesn't ask abstract LeetCode. They ask you to build things related to w
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N34 | EventEmitter | Implement `.on()`, `.off()`, `.once()`, `.emit()` — handle `.off()` during `.emit()` edge case | Medium | ⬜ |
-| N35 | Streaming file processor | Read large files in chunks using Node.js streams, transform each chunk, pipe to output | Medium | ⬜ |
-| N36 | HTTP server with middleware | Implement `use()`, `listen()`, request/response pipeline — Express-style middleware chaining | Medium | ⬜ |
-| N37 | Worker pool | Distribute CPU-intensive tasks across `worker_threads`, collect results, handle failures, limit concurrency | Hard | ⬜ |
-| N38 | Plugin system | Define plugin interface with lifecycle hooks (`init`, `transform`, `cleanup`), load dynamically, manage execution order | Medium | ⬜ |
-| N39 | Async task queue with concurrency | Process tasks with configurable concurrency limit, retry on failure, report progress | Medium | ⬜ |
+| N34 | EventEmitter | Implement `.on()`, `.off()`, `.once()`, `.emit()` — handle `.off()` during `.emit()` edge case | Medium | ✅ |
+| N35 | Streaming file processor | Read large files in chunks using Node.js streams, transform each chunk, pipe to output | Medium | ✅ |
+| N36 | HTTP server with middleware | Implement `use()`, `listen()`, request/response pipeline — Express-style middleware chaining | Medium | ✅ |
+| N37 | Worker pool | Distribute CPU-intensive tasks across `worker_threads`, collect results, handle failures, limit concurrency | Hard | ✅ |
+| N38 | Plugin system | Define plugin interface with lifecycle hooks (`init`, `transform`, `cleanup`), load dynamically, manage execution order | Medium | ✅ |
+| N39 | Async task queue with concurrency | Process tasks with configurable concurrency limit, retry on failure, report progress | Medium | ✅ |
 
 ### 1H — Package Publishing & Registry
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N40 | Package publish validator | Check: valid `package.json`, required fields present, no `postinstall` scripts, license OK, version not taken | Medium | ⬜ |
+| N40 | Package publish validator | Check: valid `package.json`, required fields present, no `postinstall` scripts, license OK, version not taken | Medium | ✅ |
 | N41 | Changelog generator | Parse git commits (conventional commits format), group by type, generate markdown changelog | Medium | ⬜ |
-| N42 | Version bump calculator | Given current version + commit history, determine next version (major/minor/patch) per conventional commits | Medium | ⬜ |
+| N42 | Version bump calculator | Given current version + commit history, determine next version (major/minor/patch) per conventional commits | Medium | ✅ |
 | N43 | Package health scorer | Given package metadata (last publish date, open issues, download count, vulnerability count), compute health score | Easy | ⬜ |
-| N44 | Monorepo workspace resolver | Discover packages from `workspaces` field, resolve inter-workspace dependencies, detect version mismatches | Medium | ⬜ |
+| N44 | Monorepo workspace resolver | Discover packages from `workspaces` field, resolve inter-workspace dependencies, detect version mismatches | Medium | ✅ |
 
 ### 1I — Migration & Automation
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N45 | Migration script runner | Ordered execution, idempotency (track which migrations have run), rollback support, progress tracking | Medium | ⬜ |
+| N45 | Migration script runner | Ordered execution, idempotency (track which migrations have run), rollback support, progress tracking | Medium | ✅ |
 | N46 | Automated PR creator | Given a list of repos + a transform function, apply changes, create branch, generate PR description | Medium | ⬜ |
-| N47 | Node.js version compatibility checker | Parse `engines` field from `package.json`, check against target Node.js version, report incompatibilities | Easy | ⬜ |
-| N48 | Breaking change detector | Compare two versions of a package's public API (exports), report removed/changed exports | Hard | ⬜ |
+| N47 | Node.js version compatibility checker | Parse `engines` field from `package.json`, check against target Node.js version, report incompatibilities | Easy | ✅ |
+| N48 | Breaking change detector | Compare two versions of a package's public API (exports), report removed/changed exports | Hard | ✅ |
 
 ### 1J — TypeScript (NEW — from prep guide: "Move beyond basic interfaces")
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N49 | Implement `Pick<T, K>` | Build the utility type from scratch using mapped types | Easy | ⬜ |
-| N50 | Implement `Omit<T, K>` | Build using `Pick` + `Exclude` | Easy | ⬜ |
-| N51 | Implement `DeepPartial<T>` | Recursively make all properties optional | Medium | ⬜ |
-| N52 | Implement `DeepReadonly<T>` | Recursively make all properties readonly | Medium | ⬜ |
-| N53 | Type-safe EventEmitter | Emit/on with event map generics — `emitter.on<'click'>((e: ClickEvent) => {})` | Medium | ⬜ |
-| N54 | Type-safe builder pattern | Fluent API where methods chain and return narrowed types | Medium | ⬜ |
-| N55 | Conditional type parser | Implement `ParseRoute<'/users/:id/posts/:postId'>` → `{id: string, postId: string}` | Hard | ⬜ |
-| N56 | Type narrowing exercises | Discriminated unions, `in` operator, custom type guards, exhaustive switch | Medium | ⬜ |
+| N49 | Implement `Pick<T, K>` | Build the utility type from scratch using mapped types | Easy | ✅ |
+| N50 | Implement `Omit<T, K>` | Build using `Pick` + `Exclude` | Easy | ✅ |
+| N51 | Implement `DeepPartial<T>` | Recursively make all properties optional | Medium | ✅ |
+| N52 | Implement `DeepReadonly<T>` | Recursively make all properties readonly | Medium | ✅ |
+| N53 | Type-safe EventEmitter | Emit/on with event map generics — `emitter.on<'click'>((e: ClickEvent) => {})` | Medium | ✅ |
+| N54 | Type-safe builder pattern | Fluent API where methods chain and return narrowed types | Medium | ✅ |
+| N55 | Conditional type parser | Implement `ParseRoute<'/users/:id/posts/:postId'>` → `{id: string, postId: string}` | Hard | ✅ |
+| N56 | Type narrowing exercises | Discriminated unions, `in` operator, custom type guards, exhaustive switch | Medium | ✅ |
 
 ### 1K — Testing (NEW — from prep guide: "Testing pyramid vs trophy")
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N57 | Test harness | Implement minimal `describe()`, `it()`, `expect()` with matchers from scratch | Medium | ⬜ |
-| N58 | Mock function | Implement `jest.fn()` — track calls, arguments, return values, mock implementations | Medium | ⬜ |
-| N59 | Spy on object method | Implement `jest.spyOn()` — wrap a method, track calls, restore original | Medium | ⬜ |
-| N60 | Snapshot testing | Implement `toMatchSnapshot()` — serialize, store, compare, update on flag | Medium | ⬜ |
+| N57 | Test harness | Implement minimal `describe()`, `it()`, `expect()` with matchers from scratch | Medium | ✅ |
+| N58 | Mock function | Implement `jest.fn()` — track calls, arguments, return values, mock implementations | Medium | ✅ |
+| N59 | Spy on object method | Implement `jest.spyOn()` — wrap a method, track calls, restore original | Medium | ✅ |
+| N60 | Snapshot testing | Implement `toMatchSnapshot()` — serialize, store, compare, update on flag | Medium | ✅ |
 
 ### 1L — SDLC & CI/CD (NEW — from prep guide: "CI/CD pipelines for JavaScript")
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N61 | ESLint rule builder | Write a custom ESLint rule that detects a specific pattern (e.g. no `console.log` in production code) | Medium | ⬜ |
-| N62 | Source map parser | Parse a basic source map JSON, map a compiled position back to original source position | Medium | ⬜ |
-| N63 | CI pipeline config generator | Given a monorepo structure, generate a CI config that only runs tests for affected packages | Medium | ⬜ |
-| N64 | Git hook runner | Implement a pre-commit hook system — run linters/formatters on staged files only | Medium | ⬜ |
+| N61 | ESLint rule builder | Write a custom ESLint rule that detects a specific pattern (e.g. no `console.log` in production code) | Medium | ✅ |
+| N62 | Source map parser | Parse a basic source map JSON, map a compiled position back to original source position | Medium | ✅ |
+| N63 | CI pipeline config generator | Given a monorepo structure, generate a CI config that only runs tests for affected packages | Medium | ✅ |
+| N64 | Git hook runner | Implement a pre-commit hook system — run linters/formatters on staged files only | Medium | ✅ |
 
 ### 1M — DX & API Design (NEW — from prep guide: "How other engineers interface with your tools")
 
 | # | Task | Description | Difficulty | Status |
 |---|------|------------|-----------|--------|
-| N65 | Fluent API builder | Design and implement a chainable API for a query builder or config builder | Medium | ⬜ |
-| N66 | Error boundary with context | Build an error class hierarchy with codes, context, and serialization for CLI tools | Medium | ⬜ |
-| N67 | Deprecation warning system | Implement `@deprecated` decorator / wrapper that logs warnings with migration path | Easy | ⬜ |
+| N65 | Fluent API builder | Design and implement a chainable API for a query builder or config builder | Medium | ✅ |
+| N66 | Error boundary with context | Build an error class hierarchy with codes, context, and serialization for CLI tools | Medium | ✅ |
+| N67 | Deprecation warning system | Implement `@deprecated` decorator / wrapper that logs warnings with migration path | Easy | ✅ |
 
 ---
 

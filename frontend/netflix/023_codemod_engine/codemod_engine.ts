@@ -20,6 +20,26 @@ export function runCodemod(
   files: SourceFile[],
   transform: Transform,
 ): CodemodResult {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const results: CodemodResult = {
+    changed: [],
+    unchanged: [],
+    errors: [],
+  };
+
+  for (const { path, code } of files) {
+    try {
+      const transformed = transform(code, path);
+
+      if (code === transformed) {
+        results.unchanged.push(path);
+        continue;
+      }
+
+      results.changed.push(path);
+    } catch (e: any) {
+      results.errors.push({ path, message: e.message });
+    }
+  }
+
+  return results;
 }
