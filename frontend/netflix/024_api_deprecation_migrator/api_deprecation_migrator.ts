@@ -7,6 +7,9 @@
  * no nested parentheses.
  */
 export function migrateApi(code: string): string {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const regex = /oldApi\(([^,]+),\s*([^)]+)\)/g;
+
+  return code.replace(regex, (_, arg1: string, arg2: string) => {
+    return `newApi(${arg2.trim()}, ${arg1.trim()})`;
+  });
 }
