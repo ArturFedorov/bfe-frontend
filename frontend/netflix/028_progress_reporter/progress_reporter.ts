@@ -10,6 +10,10 @@ export function renderBar(
   total: number,
   width: number,
 ): string {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const clamped = Math.max(0, Math.min(current, total));
+  const ratio = total === 0 ? 0 : clamped / total;
+  const percentage = Math.round(ratio * 100);
+  const filled = Math.round(ratio * width);
+
+  return `[${'#'.repeat(filled)}${'-'.repeat(width - filled)}] ${percentage}%`;
 }

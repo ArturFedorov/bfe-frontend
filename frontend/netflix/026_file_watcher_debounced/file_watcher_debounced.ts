@@ -7,6 +7,11 @@ export function debounce<A extends unknown[]>(
   fn: (...args: A) => void,
   wait: number,
 ): (...args: A) => void {
-  // TODO: implement
-  throw new Error('Not implemented');
+  let timer: NodeJS.Timeout | null = null;
+  return function (this: any, ...args: any) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.call(this, ...args);
+    }, wait);
+  };
 }
