@@ -1,21 +1,18 @@
-import {
-  CircuitBreaker,
-  CircuitOpenError,
-} from './circuit_breaker';
+import { CircuitBreaker, CircuitOpenError } from './circuit_breaker';
 
-const failWith =
-  (message: string) => (): Promise<never> =>
-    Promise.reject(new Error(message));
+const failWith = (message: string) => (): Promise<never> =>
+  Promise.reject(new Error(message));
 
 const succeedWith =
-  <T>(value: T) => (): Promise<T> =>
+  <T>(value: T) =>
+  (): Promise<T> =>
     Promise.resolve(value);
 
 /** Drives the breaker to the open state with n consecutive failures. */
 async function trip(breaker: CircuitBreaker, n: number): Promise<void> {
   for (let i = 0; i < n; i++) {
     await expect(breaker.exec(failWith('service down'))).rejects.toThrow(
-      'service down'
+      'service down',
     );
   }
 }
@@ -45,9 +42,7 @@ describe('CircuitBreaker', () => {
         cooldownMs: 1000,
       });
       const boom = new Error('boom');
-      await expect(breaker.exec(() => Promise.reject(boom))).rejects.toBe(
-        boom
-      );
+      await expect(breaker.exec(() => Promise.reject(boom))).rejects.toBe(boom);
       // still closed: the next call reaches the service
       const fn = jest.fn(succeedWith('still closed'));
       await expect(breaker.exec(fn)).resolves.toBe('still closed');
@@ -77,7 +72,7 @@ describe('CircuitBreaker', () => {
       });
       await trip(breaker, 3);
       await expect(breaker.exec(succeedWith('nope'))).rejects.toBeInstanceOf(
-        CircuitOpenError
+        CircuitOpenError,
       );
     });
 
@@ -133,12 +128,12 @@ describe('CircuitBreaker', () => {
       await trip(breaker, 2);
       await jest.advanceTimersByTimeAsync(1000);
       await expect(breaker.exec(succeedWith('probe ok'))).resolves.toBe(
-        'probe ok'
+        'probe ok',
       );
 
       // one more failure must NOT open the circuit (threshold is 2)
       await expect(breaker.exec(failWith('single failure'))).rejects.toThrow(
-        'single failure'
+        'single failure',
       );
       const fn = jest.fn(succeedWith('still closed'));
       await expect(breaker.exec(fn)).resolves.toBe('still closed');
@@ -155,7 +150,7 @@ describe('CircuitBreaker', () => {
 
       // probe fails → re-open
       await expect(breaker.exec(failWith('still down'))).rejects.toThrow(
-        'still down'
+        'still down',
       );
 
       const fn = jest.fn(succeedWith('blocked'));
@@ -181,9 +176,9 @@ describe('CircuitBreaker', () => {
       await trip(breaker, 1);
       await jest.advanceTimersByTimeAsync(500);
       const probeError = new Error('probe exploded');
-      await expect(
-        breaker.exec(() => Promise.reject(probeError))
-      ).rejects.toBe(probeError);
+      await expect(breaker.exec(() => Promise.reject(probeError))).rejects.toBe(
+        probeError,
+      );
     });
   });
 

@@ -4,7 +4,8 @@ const n = (
   id: string,
   children: LayoutNode[] = [],
   text?: string,
-): LayoutNode => (text === undefined ? { id, children } : { id, text, children });
+): LayoutNode =>
+  text === undefined ? { id, children } : { id, text, children };
 
 const roundTrip = (tree: LayoutNode | null): LayoutNode | null =>
   deserialize(serialize(tree));

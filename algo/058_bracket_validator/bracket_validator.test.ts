@@ -19,7 +19,9 @@ describe('validateBrackets', () => {
     });
 
     it('accepts a realistic config snippet', () => {
-      expect(validateBrackets('routes = [{ path: "/a", tags: ["x", "y"] }]')).toBe(true);
+      expect(
+        validateBrackets('routes = [{ path: "/a", tags: ["x", "y"] }]'),
+      ).toBe(true);
     });
   });
 

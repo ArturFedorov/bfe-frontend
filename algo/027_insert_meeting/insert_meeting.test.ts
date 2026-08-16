@@ -14,8 +14,8 @@ describe('insertMeeting', () => {
           { start: 30, end: 40 },
           { start: 50, end: 60 },
         ],
-        { start: 0, end: 10 }
-      )
+        { start: 0, end: 10 },
+      ),
     ).toEqual([
       { start: 0, end: 10 },
       { start: 30, end: 40 },
@@ -30,8 +30,8 @@ describe('insertMeeting', () => {
           { start: 0, end: 10 },
           { start: 20, end: 30 },
         ],
-        { start: 50, end: 60 }
-      )
+        { start: 50, end: 60 },
+      ),
     ).toEqual([
       { start: 0, end: 10 },
       { start: 20, end: 30 },
@@ -46,8 +46,8 @@ describe('insertMeeting', () => {
           { start: 0, end: 10 },
           { start: 30, end: 40 },
         ],
-        { start: 15, end: 20 }
-      )
+        { start: 15, end: 20 },
+      ),
     ).toEqual([
       { start: 0, end: 10 },
       { start: 15, end: 20 },
@@ -63,8 +63,8 @@ describe('insertMeeting', () => {
             { start: 0, end: 10 },
             { start: 30, end: 40 },
           ],
-          { start: 5, end: 15 }
-        )
+          { start: 5, end: 15 },
+        ),
       ).toEqual([
         { start: 0, end: 15 },
         { start: 30, end: 40 },
@@ -80,8 +80,8 @@ describe('insertMeeting', () => {
             { start: 40, end: 50 },
             { start: 70, end: 80 },
           ],
-          { start: 5, end: 45 }
-        )
+          { start: 5, end: 45 },
+        ),
       ).toEqual([
         { start: 0, end: 50 },
         { start: 70, end: 80 },
@@ -95,14 +95,14 @@ describe('insertMeeting', () => {
             { start: 10, end: 20 },
             { start: 30, end: 40 },
           ],
-          { start: 0, end: 100 }
-        )
+          { start: 0, end: 100 },
+        ),
       ).toEqual([{ start: 0, end: 100 }]);
     });
 
     it('disappears into an existing block when fully nested', () => {
       expect(
-        insertMeeting([{ start: 0, end: 100 }], { start: 40, end: 50 })
+        insertMeeting([{ start: 0, end: 100 }], { start: 40, end: 50 }),
       ).toEqual([{ start: 0, end: 100 }]);
     });
 
@@ -113,8 +113,8 @@ describe('insertMeeting', () => {
             { start: 0, end: 10 },
             { start: 20, end: 30 },
           ],
-          { start: 20, end: 30 }
-        )
+          { start: 20, end: 30 },
+        ),
       ).toEqual([
         { start: 0, end: 10 },
         { start: 20, end: 30 },
@@ -125,13 +125,13 @@ describe('insertMeeting', () => {
   describe('touching boundaries', () => {
     it('merges when the meeting touches a block on its left', () => {
       expect(
-        insertMeeting([{ start: 0, end: 10 }], { start: 10, end: 20 })
+        insertMeeting([{ start: 0, end: 10 }], { start: 10, end: 20 }),
       ).toEqual([{ start: 0, end: 20 }]);
     });
 
     it('merges when the meeting touches a block on its right', () => {
       expect(
-        insertMeeting([{ start: 20, end: 30 }], { start: 10, end: 20 })
+        insertMeeting([{ start: 20, end: 30 }], { start: 10, end: 20 }),
       ).toEqual([{ start: 10, end: 30 }]);
     });
 
@@ -142,14 +142,14 @@ describe('insertMeeting', () => {
             { start: 0, end: 10 },
             { start: 20, end: 30 },
           ],
-          { start: 10, end: 20 }
-        )
+          { start: 10, end: 20 },
+        ),
       ).toEqual([{ start: 0, end: 30 }]);
     });
 
     it('does not merge across a one-minute gap', () => {
       expect(
-        insertMeeting([{ start: 0, end: 10 }], { start: 11, end: 20 })
+        insertMeeting([{ start: 0, end: 10 }], { start: 11, end: 20 }),
       ).toEqual([
         { start: 0, end: 10 },
         { start: 11, end: 20 },

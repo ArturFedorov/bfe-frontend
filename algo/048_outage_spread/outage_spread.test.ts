@@ -65,11 +65,12 @@ describe('outageSpread', () => {
 
   it('handles a single-server grid', () => {
     expect(
-      outageSpread({ grid: [['only']], initialFailures: ['only'] })
+      outageSpread({ grid: [['only']], initialFailures: ['only'] }),
     ).toEqual({ minutes: 0, unaffected: [] });
-    expect(
-      outageSpread({ grid: [['only']], initialFailures: [] })
-    ).toEqual({ minutes: 0, unaffected: ['only'] });
+    expect(outageSpread({ grid: [['only']], initialFailures: [] })).toEqual({
+      minutes: 0,
+      unaffected: ['only'],
+    });
   });
 
   it('does not spread diagonally', () => {

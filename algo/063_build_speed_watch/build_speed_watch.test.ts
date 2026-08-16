@@ -3,7 +3,9 @@ import { daysUntilFasterBuild } from './build_speed_watch';
 describe('daysUntilFasterBuild', () => {
   describe('happy path', () => {
     it('handles the mixed example', () => {
-      expect(daysUntilFasterBuild([12, 15, 10, 10, 8])).toEqual([2, 1, 2, 1, 0]);
+      expect(daysUntilFasterBuild([12, 15, 10, 10, 8])).toEqual([
+        2, 1, 2, 1, 0,
+      ]);
     });
 
     it('resolves each day immediately on a strictly decreasing series', () => {
@@ -15,7 +17,9 @@ describe('daysUntilFasterBuild', () => {
     });
 
     it('handles a valley shape where early days wait for the drop', () => {
-      expect(daysUntilFasterBuild([30, 40, 50, 10, 20])).toEqual([3, 2, 1, 0, 0]);
+      expect(daysUntilFasterBuild([30, 40, 50, 10, 20])).toEqual([
+        3, 2, 1, 0, 0,
+      ]);
     });
   });
 
@@ -60,7 +64,9 @@ describe('daysUntilFasterBuild', () => {
 
       // Strictly decreasing: every day resolves the next day.
       const decreasing = Array.from({ length: n }, (_, i) => n - i);
-      const decExpected = Array.from({ length: n }, (_, i) => (i === n - 1 ? 0 : 1));
+      const decExpected = Array.from({ length: n }, (_, i) =>
+        i === n - 1 ? 0 : 1,
+      );
       expect(daysUntilFasterBuild(decreasing)).toEqual(decExpected);
 
       // Strictly increasing: worst case for the stack — nothing ever resolves.

@@ -117,7 +117,15 @@ describe('iterative traversals', () => {
         n('g', null, n('i', n('h'))),
       );
       expect(postOrderIterative(tree)).toEqual([
-        'a', 'c', 'e', 'd', 'b', 'h', 'i', 'g', 'f',
+        'a',
+        'c',
+        'e',
+        'd',
+        'b',
+        'h',
+        'i',
+        'g',
+        'f',
       ]);
     });
 

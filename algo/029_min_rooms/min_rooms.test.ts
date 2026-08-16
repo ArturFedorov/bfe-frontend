@@ -15,7 +15,7 @@ describe('minRooms', () => {
         { start: 0, end: 10 },
         { start: 20, end: 30 },
         { start: 40, end: 50 },
-      ])
+      ]),
     ).toBe(1);
   });
 
@@ -24,7 +24,7 @@ describe('minRooms', () => {
       minRooms([
         { start: 0, end: 30 },
         { start: 15, end: 45 },
-      ])
+      ]),
     ).toBe(2);
   });
 
@@ -34,7 +34,7 @@ describe('minRooms', () => {
         minRooms([
           { start: 0, end: 30 },
           { start: 30, end: 60 },
-        ])
+        ]),
       ).toBe(1);
     });
 
@@ -45,7 +45,7 @@ describe('minRooms', () => {
           { start: 0, end: 10 },
           { start: 10, end: 20 },
           { start: 20, end: 30 },
-        ])
+        ]),
       ).toBe(1);
     });
 
@@ -56,7 +56,7 @@ describe('minRooms', () => {
           { start: 0, end: 30 },
           { start: 15, end: 45 },
           { start: 30, end: 60 },
-        ])
+        ]),
       ).toBe(2);
     });
 
@@ -65,7 +65,7 @@ describe('minRooms', () => {
         minRooms([
           { start: 0, end: 31 },
           { start: 30, end: 60 },
-        ])
+        ]),
       ).toBe(2);
     });
   });
@@ -73,7 +73,9 @@ describe('minRooms', () => {
   describe('edge shapes', () => {
     it('needs k rooms for k identical meetings', () => {
       const meeting: Interval = { start: 5, end: 15 };
-      expect(minRooms([{ ...meeting }, { ...meeting }, { ...meeting }])).toBe(3);
+      expect(minRooms([{ ...meeting }, { ...meeting }, { ...meeting }])).toBe(
+        3,
+      );
     });
 
     it('needs 2 rooms for a fully nested meeting', () => {
@@ -81,7 +83,7 @@ describe('minRooms', () => {
         minRooms([
           { start: 0, end: 100 },
           { start: 40, end: 50 },
-        ])
+        ]),
       ).toBe(2);
     });
 
@@ -91,7 +93,7 @@ describe('minRooms', () => {
           { start: 0, end: 30 },
           { start: 5, end: 10 },
           { start: 15, end: 20 },
-        ])
+        ]),
       ).toBe(2);
     });
 
@@ -103,7 +105,7 @@ describe('minRooms', () => {
           { start: 45, end: 50 }, // peak of 3 at 45–49
           { start: 42, end: 55 },
           { start: 5, end: 8 },
-        ])
+        ]),
       ).toBe(3);
     });
   });

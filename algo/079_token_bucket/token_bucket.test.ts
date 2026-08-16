@@ -14,7 +14,11 @@ describe('TokenBucket', () => {
   describe('tryAcquire with a manual clock', () => {
     it('starts full and drains to empty', () => {
       const clock = manualClock();
-      const bucket = new TokenBucket({ capacity: 3, refillPerSecond: 1, clock });
+      const bucket = new TokenBucket({
+        capacity: 3,
+        refillPerSecond: 1,
+        clock,
+      });
 
       expect(bucket.available()).toBe(3);
       expect(bucket.tryAcquire()).toBe(true);
@@ -26,7 +30,11 @@ describe('TokenBucket', () => {
 
     it('supports multi-token all-or-nothing acquisition', () => {
       const clock = manualClock();
-      const bucket = new TokenBucket({ capacity: 5, refillPerSecond: 1, clock });
+      const bucket = new TokenBucket({
+        capacity: 5,
+        refillPerSecond: 1,
+        clock,
+      });
 
       expect(bucket.tryAcquire(3)).toBe(true);
       expect(bucket.tryAcquire(3)).toBe(false); // only 2 left — no partial take
@@ -36,7 +44,11 @@ describe('TokenBucket', () => {
 
     it('refills over elapsed time', () => {
       const clock = manualClock();
-      const bucket = new TokenBucket({ capacity: 2, refillPerSecond: 1, clock });
+      const bucket = new TokenBucket({
+        capacity: 2,
+        refillPerSecond: 1,
+        clock,
+      });
 
       expect(bucket.tryAcquire(2)).toBe(true);
       expect(bucket.tryAcquire()).toBe(false);
@@ -48,7 +60,11 @@ describe('TokenBucket', () => {
 
     it('accumulates fractional refill', () => {
       const clock = manualClock();
-      const bucket = new TokenBucket({ capacity: 2, refillPerSecond: 2, clock });
+      const bucket = new TokenBucket({
+        capacity: 2,
+        refillPerSecond: 2,
+        clock,
+      });
 
       expect(bucket.tryAcquire(2)).toBe(true);
 
@@ -61,7 +77,11 @@ describe('TokenBucket', () => {
 
     it('caps refill at capacity after long idle periods', () => {
       const clock = manualClock();
-      const bucket = new TokenBucket({ capacity: 2, refillPerSecond: 10, clock });
+      const bucket = new TokenBucket({
+        capacity: 2,
+        refillPerSecond: 10,
+        clock,
+      });
 
       expect(bucket.tryAcquire(2)).toBe(true);
       clock.advance(60_000);
@@ -73,7 +93,11 @@ describe('TokenBucket', () => {
 
     it('throws a RangeError when n exceeds capacity', () => {
       const clock = manualClock();
-      const bucket = new TokenBucket({ capacity: 2, refillPerSecond: 1, clock });
+      const bucket = new TokenBucket({
+        capacity: 2,
+        refillPerSecond: 1,
+        clock,
+      });
 
       expect(() => bucket.tryAcquire(3)).toThrow(RangeError);
     });

@@ -16,7 +16,7 @@ export type TaskStatus = 'fulfilled' | 'rejected' | 'skipped';
  */
 export function runTaskGraph(
   tasks: TaskDef[],
-  concurrency: number
+  concurrency: number,
 ): Promise<Record<string, TaskStatus>> {
   // TODO: implement
   throw new Error('Not implemented');

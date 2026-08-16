@@ -3,33 +3,23 @@ import { countOutageClusters, MachineStatus } from './rack_outage_clusters';
 function fromStrings(rows: string[]): MachineStatus[][] {
   // 'F' = failed, '.' = ok
   return rows.map((row) =>
-    row.split('').map((ch): MachineStatus => (ch === 'F' ? 'failed' : 'ok'))
+    row.split('').map((ch): MachineStatus => (ch === 'F' ? 'failed' : 'ok')),
   );
 }
 
 describe('countOutageClusters', () => {
   it('counts separate clusters in a small grid', () => {
-    const grid = fromStrings([
-      'F.F',
-      'F..',
-      '..F',
-    ]);
+    const grid = fromStrings(['F.F', 'F..', '..F']);
     expect(countOutageClusters(grid)).toBe(3);
   });
 
   it('counts one cluster when all machines failed', () => {
-    const grid = fromStrings([
-      'FF',
-      'FF',
-    ]);
+    const grid = fromStrings(['FF', 'FF']);
     expect(countOutageClusters(grid)).toBe(1);
   });
 
   it('returns 0 for an all-ok grid', () => {
-    const grid = fromStrings([
-      '...',
-      '...',
-    ]);
+    const grid = fromStrings(['...', '...']);
     expect(countOutageClusters(grid)).toBe(0);
   });
 
@@ -44,30 +34,17 @@ describe('countOutageClusters', () => {
   });
 
   it('does not connect diagonal neighbors', () => {
-    const grid = fromStrings([
-      'F.',
-      '.F',
-    ]);
+    const grid = fromStrings(['F.', '.F']);
     expect(countOutageClusters(grid)).toBe(2);
   });
 
   it('follows snake-shaped clusters through corners', () => {
-    const grid = fromStrings([
-      'FFFFF',
-      '....F',
-      'FFFFF',
-      'F....',
-      'FFFFF',
-    ]);
+    const grid = fromStrings(['FFFFF', '....F', 'FFFFF', 'F....', 'FFFFF']);
     expect(countOutageClusters(grid)).toBe(1);
   });
 
   it('handles a ring cluster with an ok hole (cycle in the implicit graph)', () => {
-    const grid = fromStrings([
-      'FFF',
-      'F.F',
-      'FFF',
-    ]);
+    const grid = fromStrings(['FFF', 'F.F', 'FFF']);
     expect(countOutageClusters(grid)).toBe(1);
   });
 
@@ -93,7 +70,7 @@ describe('countOutageClusters', () => {
   it('handles a 200x200 fully failed grid without stack overflow', () => {
     const size = 200;
     const grid: MachineStatus[][] = Array.from({ length: size }, () =>
-      Array.from({ length: size }, (): MachineStatus => 'failed')
+      Array.from({ length: size }, (): MachineStatus => 'failed'),
     );
     expect(countOutageClusters(grid)).toBe(1);
   });

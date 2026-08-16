@@ -2,7 +2,14 @@ import { dedupeSubscribers } from './dedupe_subscribers';
 
 describe('dedupeSubscribers', () => {
   it('collapses consecutive duplicates and returns the unique count', () => {
-    const emails = ['a@x.com', 'a@x.com', 'b@x.com', 'c@x.com', 'c@x.com', 'c@x.com'];
+    const emails = [
+      'a@x.com',
+      'a@x.com',
+      'b@x.com',
+      'c@x.com',
+      'c@x.com',
+      'c@x.com',
+    ];
     const k = dedupeSubscribers(emails);
     expect(k).toBe(3);
     expect(emails.slice(0, k)).toEqual(['a@x.com', 'b@x.com', 'c@x.com']);
@@ -32,11 +39,22 @@ describe('dedupeSubscribers', () => {
     const emails = ['a@x.com', 'b@x.com', 'c@x.com', 'd@x.com'];
     const k = dedupeSubscribers(emails);
     expect(k).toBe(4);
-    expect(emails.slice(0, k)).toEqual(['a@x.com', 'b@x.com', 'c@x.com', 'd@x.com']);
+    expect(emails.slice(0, k)).toEqual([
+      'a@x.com',
+      'b@x.com',
+      'c@x.com',
+      'd@x.com',
+    ]);
   });
 
   it('collapses a list where every entry is the same email', () => {
-    const emails = ['dup@x.com', 'dup@x.com', 'dup@x.com', 'dup@x.com', 'dup@x.com'];
+    const emails = [
+      'dup@x.com',
+      'dup@x.com',
+      'dup@x.com',
+      'dup@x.com',
+      'dup@x.com',
+    ];
     const k = dedupeSubscribers(emails);
     expect(k).toBe(1);
     expect(emails.slice(0, k)).toEqual(['dup@x.com']);

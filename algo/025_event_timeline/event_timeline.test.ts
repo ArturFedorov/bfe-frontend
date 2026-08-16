@@ -6,8 +6,12 @@ describe('sortTimeline', () => {
   });
 
   it('returns a single event unchanged', () => {
-    const events: TimelineEvent[] = [{ name: 'deploy', date: 100, priority: 2 }];
-    expect(sortTimeline(events)).toEqual([{ name: 'deploy', date: 100, priority: 2 }]);
+    const events: TimelineEvent[] = [
+      { name: 'deploy', date: 100, priority: 2 },
+    ];
+    expect(sortTimeline(events)).toEqual([
+      { name: 'deploy', date: 100, priority: 2 },
+    ]);
   });
 
   it('sorts by date ascending', () => {
@@ -126,7 +130,7 @@ describe('sortTimeline', () => {
             prev.name <= curr.name);
         if (!ordered) {
           throw new Error(
-            `Order violated at index ${i}: ${JSON.stringify(prev)} before ${JSON.stringify(curr)}`
+            `Order violated at index ${i}: ${JSON.stringify(prev)} before ${JSON.stringify(curr)}`,
           );
         }
       }

@@ -83,11 +83,19 @@ describe('migrationOrder', () => {
     });
 
     it('throws on a longer cycle', () => {
-      expect(() => migrationOrder({ a: ['b'], b: ['c'], c: ['d'], d: ['a'] })).toThrow();
+      expect(() =>
+        migrationOrder({ a: ['b'], b: ['c'], c: ['d'], d: ['a'] }),
+      ).toThrow();
     });
 
     it('throws when the cycle sits next to an acyclic component', () => {
-      const graph: DependencyGraph = { ok1: [], ok2: ['ok1'], a: ['b'], b: ['c'], c: ['a'] };
+      const graph: DependencyGraph = {
+        ok1: [],
+        ok2: ['ok1'],
+        a: ['b'],
+        b: ['c'],
+        c: ['a'],
+      };
       expect(() => migrationOrder(graph)).toThrow();
     });
   });

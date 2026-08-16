@@ -39,7 +39,11 @@ describe('folderSizes', () => {
   });
 
   it('does not include file paths as keys', () => {
-    const tree = folder('root', file('a.txt', 1), folder('sub', file('b.txt', 2)));
+    const tree = folder(
+      'root',
+      file('a.txt', 1),
+      folder('sub', file('b.txt', 2)),
+    );
     const sizes = folderSizes(tree);
     expect(sizes.has('root/a.txt')).toBe(false);
     expect(sizes.has('root/sub/b.txt')).toBe(false);

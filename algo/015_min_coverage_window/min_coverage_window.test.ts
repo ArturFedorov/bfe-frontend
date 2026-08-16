@@ -3,12 +3,17 @@ import { minCoverageWindow } from './min_coverage_window';
 describe('minCoverageWindow', () => {
   it('finds the shortest window covering all required types', () => {
     expect(
-      minCoverageWindow(['a', 'b', 'x', 'a', 'c', 'b', 'c', 'a'], ['a', 'b', 'c']),
+      minCoverageWindow(
+        ['a', 'b', 'x', 'a', 'c', 'b', 'c', 'a'],
+        ['a', 'b', 'c'],
+      ),
     ).toEqual([3, 5]);
   });
 
   it('honors multiplicity when required lists a type twice', () => {
-    expect(minCoverageWindow(['a', 'a', 'b', 'a'], ['a', 'a', 'b'])).toEqual([0, 2]);
+    expect(minCoverageWindow(['a', 'a', 'b', 'a'], ['a', 'a', 'b'])).toEqual([
+      0, 2,
+    ]);
     expect(minCoverageWindow(['a', 'b', 'a', 'a'], ['a', 'a'])).toEqual([2, 3]);
   });
 
@@ -56,6 +61,8 @@ describe('minCoverageWindow', () => {
     for (let i = 0; i < n; i++) {
       events[i] = `e${i % 20}`;
     }
-    expect(minCoverageWindow(events, ['e0', 'e1', 'e2', 'e3', 'e4'])).toEqual([0, 4]);
+    expect(minCoverageWindow(events, ['e0', 'e1', 'e2', 'e3', 'e4'])).toEqual([
+      0, 4,
+    ]);
   });
 });

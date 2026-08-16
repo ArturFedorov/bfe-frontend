@@ -27,9 +27,13 @@ describe('cancelable', () => {
       const d = deferred<string>();
       let cleanups = 0;
 
-      const result = cancelable(() => d.promise, controller.signal, () => {
-        cleanups += 1;
-      });
+      const result = cancelable(
+        () => d.promise,
+        controller.signal,
+        () => {
+          cleanups += 1;
+        },
+      );
 
       d.resolve('data');
       await expect(result).resolves.toBe('data');
@@ -43,9 +47,13 @@ describe('cancelable', () => {
       const error = new Error('network down');
       let cleanups = 0;
 
-      const result = cancelable(() => d.promise, controller.signal, () => {
-        cleanups += 1;
-      });
+      const result = cancelable(
+        () => d.promise,
+        controller.signal,
+        () => {
+          cleanups += 1;
+        },
+      );
 
       d.reject(error);
       await expect(result).rejects.toBe(error);
@@ -68,7 +76,9 @@ describe('cancelable', () => {
 
     it('works without a cleanup callback', async () => {
       const controller = new AbortController();
-      await expect(cancelable(() => Promise.resolve('ok'), controller.signal)).resolves.toBe('ok');
+      await expect(
+        cancelable(() => Promise.resolve('ok'), controller.signal),
+      ).resolves.toBe('ok');
     });
   });
 
@@ -98,9 +108,13 @@ describe('cancelable', () => {
       const d = deferred<string>();
       let cleanups = 0;
 
-      const result = cancelable(() => d.promise, controller.signal, () => {
-        cleanups += 1;
-      });
+      const result = cancelable(
+        () => d.promise,
+        controller.signal,
+        () => {
+          cleanups += 1;
+        },
+      );
       controller.abort();
 
       await expect(result).rejects.toBeInstanceOf(AbortError);
@@ -113,9 +127,13 @@ describe('cancelable', () => {
       const d = deferred<string>();
       let cleanups = 0;
 
-      const result = cancelable(() => d.promise, controller.signal, () => {
-        cleanups += 1;
-      });
+      const result = cancelable(
+        () => d.promise,
+        controller.signal,
+        () => {
+          cleanups += 1;
+        },
+      );
       controller.abort();
       await expect(result).rejects.toBeInstanceOf(AbortError);
 
@@ -152,7 +170,7 @@ describe('cancelable', () => {
         controller.signal,
         () => {
           cleanups += 1;
-        }
+        },
       );
 
       await expect(result).rejects.toBeInstanceOf(AbortError);
@@ -167,9 +185,13 @@ describe('cancelable', () => {
       const d = deferred<string>();
       let cleanups = 0;
 
-      const result = cancelable(() => d.promise, controller.signal, () => {
-        cleanups += 1;
-      });
+      const result = cancelable(
+        () => d.promise,
+        controller.signal,
+        () => {
+          cleanups += 1;
+        },
+      );
 
       d.resolve('done');
       await expect(result).resolves.toBe('done');

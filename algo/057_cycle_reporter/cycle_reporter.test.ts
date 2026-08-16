@@ -51,12 +51,19 @@ describe('findCycle', () => {
     });
 
     it('returns null for a diamond (shared dependency is not a cycle)', () => {
-      const graph: DependencyGraph = { d: ['b', 'c'], b: ['a'], c: ['a'], a: [] };
+      const graph: DependencyGraph = {
+        d: ['b', 'c'],
+        b: ['a'],
+        c: ['a'],
+        a: [],
+      };
       expect(findCycle(graph)).toBeNull();
     });
 
     it('returns null for disconnected acyclic components', () => {
-      expect(findCycle({ a: ['b'], b: [], x: ['y'], y: [], lone: [] })).toBeNull();
+      expect(
+        findCycle({ a: ['b'], b: [], x: ['y'], y: [], lone: [] }),
+      ).toBeNull();
     });
 
     it('returns null for an empty graph', () => {
@@ -100,7 +107,13 @@ describe('findCycle', () => {
     });
 
     it('finds a cycle hidden in a disconnected component', () => {
-      const graph: DependencyGraph = { ok1: [], ok2: ['ok1'], x: ['y'], y: ['z'], z: ['x'] };
+      const graph: DependencyGraph = {
+        ok1: [],
+        ok2: ['ok1'],
+        x: ['y'],
+        y: ['z'],
+        z: ['x'],
+      };
       expectRealCycle(findCycle(graph), graph);
     });
 

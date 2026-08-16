@@ -21,7 +21,7 @@ describe('teamFreeTime', () => {
           { start: 20, end: 30 },
           { start: 50, end: 60 },
         ],
-      ])
+      ]),
     ).toEqual([
       { start: 10, end: 20 },
       { start: 30, end: 50 },
@@ -37,7 +37,7 @@ describe('teamFreeTime', () => {
         ],
         [{ start: 2, end: 4 }],
         [{ start: 9, end: 12 }],
-      ])
+      ]),
     ).toEqual([
       { start: 4, end: 6 },
       { start: 7, end: 9 },
@@ -47,19 +47,19 @@ describe('teamFreeTime', () => {
   describe('boundary semantics', () => {
     it('reports no gap when blocks touch across members', () => {
       expect(
-        teamFreeTime([[{ start: 1, end: 3 }], [{ start: 3, end: 5 }]])
+        teamFreeTime([[{ start: 1, end: 3 }], [{ start: 3, end: 5 }]]),
       ).toEqual([]);
     });
 
     it('does not report the unbounded time before the first or after the last block', () => {
       expect(
-        teamFreeTime([[{ start: 100, end: 200 }], [{ start: 300, end: 400 }]])
+        teamFreeTime([[{ start: 100, end: 200 }], [{ start: 300, end: 400 }]]),
       ).toEqual([{ start: 200, end: 300 }]);
     });
 
     it('reports a one-minute gap', () => {
       expect(
-        teamFreeTime([[{ start: 0, end: 10 }], [{ start: 11, end: 20 }]])
+        teamFreeTime([[{ start: 0, end: 10 }], [{ start: 11, end: 20 }]]),
       ).toEqual([{ start: 10, end: 11 }]);
     });
   });
@@ -76,7 +76,7 @@ describe('teamFreeTime', () => {
             { start: 0, end: 10 },
             { start: 20, end: 30 },
           ],
-        ])
+        ]),
       ).toEqual([{ start: 10, end: 20 }]);
     });
 
@@ -88,11 +88,11 @@ describe('teamFreeTime', () => {
             { start: 40, end: 50 },
             { start: 150, end: 160 },
           ],
-        ])
+        ]),
       ).toEqual([{ start: 100, end: 150 }]);
     });
 
-    it('lets one member\'s meeting fill another member\'s gap', () => {
+    it("lets one member's meeting fill another member's gap", () => {
       expect(
         teamFreeTime([
           [
@@ -101,7 +101,7 @@ describe('teamFreeTime', () => {
           ],
           [{ start: 10, end: 20 }],
           [{ start: 40, end: 50 }],
-        ])
+        ]),
       ).toEqual([{ start: 30, end: 40 }]);
     });
 
@@ -114,7 +114,7 @@ describe('teamFreeTime', () => {
             { start: 30, end: 40 },
           ],
           [],
-        ])
+        ]),
       ).toEqual([{ start: 10, end: 30 }]);
     });
   });

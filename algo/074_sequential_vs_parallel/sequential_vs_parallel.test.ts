@@ -1,4 +1,9 @@
-import { runSequential, runParallel, runChunked, Task } from './sequential_vs_parallel';
+import {
+  runSequential,
+  runParallel,
+  runChunked,
+  Task,
+} from './sequential_vs_parallel';
 
 interface Deferred<T> {
   promise: Promise<T>;
@@ -132,7 +137,9 @@ describe('runChunked', () => {
 
   it('throws a RangeError synchronously when k < 1', () => {
     expect(() => runChunked([() => Promise.resolve(1)], 0)).toThrow(RangeError);
-    expect(() => runChunked([() => Promise.resolve(1)], -1)).toThrow(RangeError);
+    expect(() => runChunked([() => Promise.resolve(1)], -1)).toThrow(
+      RangeError,
+    );
   });
 
   it('runs a chunk in parallel and waits for the whole chunk before the next one', async () => {

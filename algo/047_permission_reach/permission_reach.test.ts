@@ -48,7 +48,7 @@ describe('reachableResources', () => {
 
   it('handles the empty input', () => {
     expect(
-      reachableResources({ memberships: {}, grants: {} }, 'anyone')
+      reachableResources({ memberships: {}, grants: {} }, 'anyone'),
     ).toEqual([]);
   });
 

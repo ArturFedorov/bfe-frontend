@@ -32,7 +32,9 @@ describe('errorVarietyWindow', () => {
 
   it('shrinks the window from the left when variety exceeds k', () => {
     // Best is 'b','c','c','c','c' (5); the a-run cannot join without a third code.
-    expect(errorVarietyWindow(['a', 'a', 'a', 'b', 'c', 'c', 'c', 'c'], 2)).toBe(5);
+    expect(
+      errorVarietyWindow(['a', 'a', 'a', 'b', 'c', 'c', 'c', 'c'], 2),
+    ).toBe(5);
   });
 
   it('is case-sensitive on codes', () => {

@@ -15,11 +15,7 @@ const buildChain = (length: number): ComponentNode => {
 
 describe('componentDepth', () => {
   it('computes depth of a small mixed tree', () => {
-    const tree = n(
-      'app',
-      n('header'),
-      n('main', n('article', n('p1'))),
-    );
+    const tree = n('app', n('header'), n('main', n('article', n('p1'))));
     expect(componentDepth(tree)).toBe(4);
   });
 

@@ -30,7 +30,7 @@ describe('hasDoubleBooking', () => {
         { start: 0, end: 30 },
         { start: 45, end: 60 },
         { start: 90, end: 120 },
-      ])
+      ]),
     ).toBe(false);
   });
 
@@ -39,7 +39,7 @@ describe('hasDoubleBooking', () => {
       hasDoubleBooking([
         { start: 0, end: 30 },
         { start: 15, end: 45 },
-      ])
+      ]),
     ).toBe(true);
   });
 
@@ -49,7 +49,7 @@ describe('hasDoubleBooking', () => {
         hasDoubleBooking([
           { start: 0, end: 30 },
           { start: 30, end: 60 },
-        ])
+        ]),
       ).toBe(false);
     });
 
@@ -60,7 +60,7 @@ describe('hasDoubleBooking', () => {
           { start: 10, end: 20 },
           { start: 20, end: 30 },
           { start: 30, end: 40 },
-        ])
+        ]),
       ).toBe(false);
     });
 
@@ -69,7 +69,7 @@ describe('hasDoubleBooking', () => {
         hasDoubleBooking([
           { start: 0, end: 31 },
           { start: 30, end: 60 },
-        ])
+        ]),
       ).toBe(true);
     });
   });
@@ -80,7 +80,7 @@ describe('hasDoubleBooking', () => {
         hasDoubleBooking([
           { start: 5, end: 15 },
           { start: 5, end: 15 },
-        ])
+        ]),
       ).toBe(true);
     });
 
@@ -89,7 +89,7 @@ describe('hasDoubleBooking', () => {
         hasDoubleBooking([
           { start: 0, end: 100 },
           { start: 40, end: 50 },
-        ])
+        ]),
       ).toBe(true);
     });
 
@@ -98,7 +98,7 @@ describe('hasDoubleBooking', () => {
         hasDoubleBooking([
           { start: 10, end: 20 },
           { start: 10, end: 30 },
-        ])
+        ]),
       ).toBe(true);
     });
   });
@@ -110,7 +110,7 @@ describe('hasDoubleBooking', () => {
           { start: 90, end: 120 },
           { start: 0, end: 30 },
           { start: 45, end: 60 },
-        ])
+        ]),
       ).toBe(false);
     });
 
@@ -120,7 +120,7 @@ describe('hasDoubleBooking', () => {
           { start: 90, end: 120 },
           { start: 0, end: 50 },
           { start: 45, end: 60 },
-        ])
+        ]),
       ).toBe(true);
     });
 

@@ -16,7 +16,7 @@ export class AbortError extends Error {
 export function cancelable<T>(
   promiseFactory: () => Promise<T>,
   signal: AbortSignal,
-  cleanup?: () => void
+  cleanup?: () => void,
 ): Promise<T> {
   // TODO: implement
   throw new Error('Not implemented');

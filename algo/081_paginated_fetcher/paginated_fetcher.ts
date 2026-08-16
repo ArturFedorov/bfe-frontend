@@ -12,7 +12,9 @@ export type FetchPage<T> = (cursor: string | null) => Promise<Page<T>>;
  * next page as soon as the current one arrives; stops fetching once the
  * consumer stops iterating.
  */
-export function paginate<T>(fetchPage: FetchPage<T>): AsyncGenerator<T, void, undefined> {
+export function paginate<T>(
+  fetchPage: FetchPage<T>,
+): AsyncGenerator<T, void, undefined> {
   // TODO: implement
   throw new Error('Not implemented');
 }

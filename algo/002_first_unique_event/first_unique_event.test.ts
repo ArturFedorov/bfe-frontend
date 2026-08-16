@@ -2,7 +2,9 @@ import { firstUniqueEvent } from './first_unique_event';
 
 describe('firstUniqueEvent', () => {
   it('returns the first id that occurs exactly once', () => {
-    expect(firstUniqueEvent(['login', 'click', 'login', 'scroll'])).toBe('click');
+    expect(firstUniqueEvent(['login', 'click', 'login', 'scroll'])).toBe(
+      'click',
+    );
   });
 
   it('returns the id when it is the first element', () => {
@@ -39,7 +41,9 @@ describe('firstUniqueEvent', () => {
   });
 
   it('handles ids that collide with object prototype keys', () => {
-    expect(firstUniqueEvent(['constructor', 'toString', 'constructor'])).toBe('toString');
+    expect(firstUniqueEvent(['constructor', 'toString', 'constructor'])).toBe(
+      'toString',
+    );
   });
 
   describe('large input', () => {

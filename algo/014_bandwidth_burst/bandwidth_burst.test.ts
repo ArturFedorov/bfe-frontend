@@ -3,7 +3,7 @@ import { bandwidthBurst } from './bandwidth_burst';
 describe('bandwidthBurst', () => {
   it('finds the shortest run reaching the cap', () => {
     expect(bandwidthBurst([2, 3, 1, 2, 4, 3], 7)).toBe(2); // [4, 3]
-    expect(bandwidthBurst([1, 2, 3, 4, 5], 11)).toBe(3);   // [3, 4, 5]
+    expect(bandwidthBurst([1, 2, 3, 4, 5], 11)).toBe(3); // [3, 4, 5]
   });
 
   it('returns 1 when a single transfer meets the cap', () => {

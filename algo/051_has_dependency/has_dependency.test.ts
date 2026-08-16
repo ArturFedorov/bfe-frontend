@@ -76,7 +76,13 @@ describe('hasDependency', () => {
     });
 
     it('terminates on a longer cycle and answers correctly', () => {
-      const graph: DependencyGraph = { a: ['b'], b: ['c'], c: ['a'], d: ['a'], e: [] };
+      const graph: DependencyGraph = {
+        a: ['b'],
+        b: ['c'],
+        c: ['a'],
+        d: ['a'],
+        e: [],
+      };
       expect(hasDependency(graph, 'a', 'c')).toBe(true);
       expect(hasDependency(graph, 'c', 'b')).toBe(true);
       expect(hasDependency(graph, 'd', 'c')).toBe(true);

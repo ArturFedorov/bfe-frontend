@@ -122,9 +122,14 @@ describe('LazyPromise', () => {
 
   describe('resolution and rejection plumbing', () => {
     it('delivers the same value to every consumer', async () => {
-      const lazy = new LazyPromise<{ id: number }>((resolve) => resolve({ id: 1 }));
+      const lazy = new LazyPromise<{ id: number }>((resolve) =>
+        resolve({ id: 1 }),
+      );
 
-      const [a, b] = await Promise.all([lazy.then((v) => v), lazy.then((v) => v)]);
+      const [a, b] = await Promise.all([
+        lazy.then((v) => v),
+        lazy.then((v) => v),
+      ]);
       expect(a).toEqual({ id: 1 });
       expect(a).toBe(b);
     });
@@ -157,7 +162,9 @@ describe('LazyPromise', () => {
     });
 
     it('catch recovers and yields a fallback value', async () => {
-      const lazy = new LazyPromise<number>((_, reject) => reject(new Error('x')));
+      const lazy = new LazyPromise<number>((_, reject) =>
+        reject(new Error('x')),
+      );
 
       await expect(lazy.catch(() => -1)).resolves.toBe(-1);
     });

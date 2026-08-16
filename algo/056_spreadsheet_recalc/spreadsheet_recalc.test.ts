@@ -25,7 +25,11 @@ function affectedSet(sheet: DependencyGraph, changed: string): Set<string> {
   return seen;
 }
 
-function expectValidRecalc(result: string[], sheet: DependencyGraph, changed: string): void {
+function expectValidRecalc(
+  result: string[],
+  sheet: DependencyGraph,
+  changed: string,
+): void {
   const expected = affectedSet(sheet, changed);
   expect(new Set(result)).toEqual(expected);
   expect(result).toHaveLength(expected.size);
@@ -129,7 +133,12 @@ describe('recalcOrder', () => {
     });
 
     it('throws on a longer cycle downstream of the edit', () => {
-      const sheet: DependencyGraph = { edit: [], p: ['edit', 'r'], q: ['p'], r: ['q'] };
+      const sheet: DependencyGraph = {
+        edit: [],
+        p: ['edit', 'r'],
+        q: ['p'],
+        r: ['q'],
+      };
       expect(() => recalcOrder(sheet, 'edit')).toThrow();
     });
 

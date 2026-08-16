@@ -122,7 +122,12 @@ describe('duplicateSubtrees', () => {
       }
       return node;
     };
-    const tree = n('root', 'page', buildChain(2000, 'p'), buildChain(2000, 'q'));
+    const tree = n(
+      'root',
+      'page',
+      buildChain(2000, 'p'),
+      buildChain(2000, 'q'),
+    );
     const groups = duplicateSubtrees(tree);
     expect(groups).toHaveLength(2000);
     expect(groups[0]).toEqual(['p0', 'q0']);
@@ -132,7 +137,12 @@ describe('duplicateSubtrees', () => {
 
   it('reports a group only once even with three copies', () => {
     const copy = (suffix: string): ComponentNode =>
-      n(`hero${suffix}`, 'hero', n(`img${suffix}`, 'img'), n(`cta${suffix}`, 'button'));
+      n(
+        `hero${suffix}`,
+        'hero',
+        n(`img${suffix}`, 'img'),
+        n(`cta${suffix}`, 'button'),
+      );
     const tree = n('root', 'page', copy('A'), copy('B'), copy('C'));
     expect(duplicateSubtrees(tree)).toEqual([
       ['heroA', 'heroB', 'heroC'],

@@ -16,7 +16,7 @@ export interface PipelineStep<I = any, O = any> {
 export function runPipeline<TResult = unknown>(
   steps: ReadonlyArray<PipelineStep>,
   input: unknown,
-  signal: AbortSignal
+  signal: AbortSignal,
 ): Promise<TResult> {
   // TODO: implement
   throw new Error('Not implemented');

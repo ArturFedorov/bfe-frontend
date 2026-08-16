@@ -1,7 +1,10 @@
 import { retry } from './retry_backoff';
 
 /** Sleep stub that records requested delays and resolves on a microtask. */
-function recordingSleep(): { sleep: (ms: number) => Promise<void>; delays: number[] } {
+function recordingSleep(): {
+  sleep: (ms: number) => Promise<void>;
+  delays: number[];
+} {
   const delays: number[] = [];
   return {
     delays,
@@ -16,7 +19,7 @@ function recordingSleep(): { sleep: (ms: number) => Promise<void>; delays: numbe
 function flaky<T>(
   failures: number,
   value: T,
-  makeError: (i: number) => unknown = (i) => new Error(`fail ${i}`)
+  makeError: (i: number) => unknown = (i) => new Error(`fail ${i}`),
 ): { fn: (attempt: number) => Promise<T>; attempts: number[] } {
   const attempts: number[] = [];
   return {
@@ -37,7 +40,9 @@ describe('retry', () => {
       const { sleep, delays } = recordingSleep();
       const { fn, attempts } = flaky(0, 'ok');
 
-      await expect(retry(fn, { retries: 3, baseMs: 100, sleep })).resolves.toBe('ok');
+      await expect(retry(fn, { retries: 3, baseMs: 100, sleep })).resolves.toBe(
+        'ok',
+      );
       expect(attempts).toEqual([0]);
       expect(delays).toEqual([]);
     });
@@ -46,7 +51,9 @@ describe('retry', () => {
       const { sleep } = recordingSleep();
       const { fn, attempts } = flaky(2, 'recovered');
 
-      await expect(retry(fn, { retries: 3, baseMs: 100, sleep })).resolves.toBe('recovered');
+      await expect(retry(fn, { retries: 3, baseMs: 100, sleep })).resolves.toBe(
+        'recovered',
+      );
       expect(attempts).toEqual([0, 1, 2]);
     });
   });
@@ -72,7 +79,13 @@ describe('retry', () => {
       const { sleep, delays } = recordingSleep();
       const { fn } = flaky(2, 'ok');
 
-      await retry(fn, { retries: 2, baseMs: 100, jitter: true, random: () => 0.5, sleep });
+      await retry(fn, {
+        retries: 2,
+        baseMs: 100,
+        jitter: true,
+        random: () => 0.5,
+        sleep,
+      });
       expect(delays).toEqual([50, 100]);
     });
 
@@ -96,7 +109,9 @@ describe('retry', () => {
       const { sleep, delays } = recordingSleep();
       const { fn } = flaky(10, 'never');
 
-      await expect(retry(fn, { retries: 2, baseMs: 100, sleep })).rejects.toThrow('fail 2');
+      await expect(
+        retry(fn, { retries: 2, baseMs: 100, sleep }),
+      ).rejects.toThrow('fail 2');
       expect(delays).toEqual([100, 200]);
     });
   });
@@ -107,7 +122,9 @@ describe('retry', () => {
       const errors = [new Error('e0'), new Error('e1'), new Error('e2')];
       const { fn, attempts } = flaky(3, 'never', (i) => errors[i]);
 
-      await expect(retry(fn, { retries: 2, baseMs: 10, sleep })).rejects.toBe(errors[2]);
+      await expect(retry(fn, { retries: 2, baseMs: 10, sleep })).rejects.toBe(
+        errors[2],
+      );
       expect(attempts).toEqual([0, 1, 2]);
     });
 
@@ -115,7 +132,9 @@ describe('retry', () => {
       const { sleep, delays } = recordingSleep();
       const { fn, attempts } = flaky(1, 'never');
 
-      await expect(retry(fn, { retries: 0, baseMs: 100, sleep })).rejects.toThrow('fail 0');
+      await expect(
+        retry(fn, { retries: 0, baseMs: 100, sleep }),
+      ).rejects.toThrow('fail 0');
       expect(attempts).toEqual([0]);
       expect(delays).toEqual([]);
     });
@@ -134,8 +153,9 @@ describe('retry', () => {
           retries: 5,
           baseMs: 100,
           sleep,
-          isRetryable: (e) => (e as { retryable?: boolean }).retryable !== false,
-        })
+          isRetryable: (e) =>
+            (e as { retryable?: boolean }).retryable !== false,
+        }),
       ).rejects.toBe(fatal);
       expect(attempts).toEqual([0]);
       expect(delays).toEqual([]);
@@ -158,7 +178,7 @@ describe('retry', () => {
           baseMs: 100,
           sleep,
           isRetryable: (e) => (e as { retryable: boolean }).retryable,
-        })
+        }),
       ).rejects.toBe(hard);
       expect(attempts).toEqual([0, 1]);
       expect(delays).toEqual([100]);

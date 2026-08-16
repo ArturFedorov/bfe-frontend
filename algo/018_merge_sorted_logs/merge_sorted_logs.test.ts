@@ -1,6 +1,9 @@
 import { mergeSortedLogs, LogEntry } from './merge_sorted_logs';
 
-const entry = (timestamp: number, message: string): LogEntry => ({ timestamp, message });
+const entry = (timestamp: number, message: string): LogEntry => ({
+  timestamp,
+  message,
+});
 
 describe('mergeSortedLogs', () => {
   it('interleaves two sorted files by timestamp', () => {
@@ -86,7 +89,9 @@ describe('mergeSortedLogs', () => {
     expect(merged[0]).toEqual(entry(0, 'a0'));
     expect(merged[2 * n - 1]).toEqual(entry(2 * n - 1, `b${n - 1}`));
     for (let i = 1; i < merged.length; i++) {
-      expect(merged[i].timestamp).toBeGreaterThanOrEqual(merged[i - 1].timestamp);
+      expect(merged[i].timestamp).toBeGreaterThanOrEqual(
+        merged[i - 1].timestamp,
+      );
     }
   });
 });

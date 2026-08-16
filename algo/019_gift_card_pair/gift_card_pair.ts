@@ -9,7 +9,10 @@
  * @returns indices `[i, j]` with `i < j` and `prices[i] + prices[j] === balance`,
  *          or `null` when no such pair exists
  */
-export function giftCardPair(prices: number[], balance: number): [number, number] | null {
+export function giftCardPair(
+  prices: number[],
+  balance: number,
+): [number, number] | null {
   // TODO: implement
   throw new Error('Not implemented');
 }

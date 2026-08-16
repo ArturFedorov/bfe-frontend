@@ -6,7 +6,7 @@ export interface Interval {
 export function freeGaps(
   booked: Interval[],
   hours: Interval,
-  minMinutes: number
+  minMinutes: number,
 ): Interval[] {
   // TODO: implement
   throw new Error('Not implemented');

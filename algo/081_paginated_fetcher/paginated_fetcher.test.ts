@@ -157,7 +157,11 @@ describe('paginate', () => {
     });
 
     it('breaking out of for-await stops all further fetching', async () => {
-      const f = autoFetcher([[1, 2], [3, 4], [5, 6]]);
+      const f = autoFetcher([
+        [1, 2],
+        [3, 4],
+        [5, 6],
+      ]);
 
       for await (const item of paginate(f.fetchPage)) {
         if (item === 1) break;
@@ -199,12 +203,19 @@ describe('paginate', () => {
 
 describe('take', () => {
   it('collects the first n items', async () => {
-    const f = autoFetcher([[1, 2], [3, 4]]);
+    const f = autoFetcher([
+      [1, 2],
+      [3, 4],
+    ]);
     await expect(take(paginate(f.fetchPage), 3)).resolves.toEqual([1, 2, 3]);
   });
 
   it('stops mid-page and closes the iterator — no fetch past the prefetch', async () => {
-    const f = autoFetcher([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+    const f = autoFetcher([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
 
     await expect(take(paginate(f.fetchPage), 2)).resolves.toEqual([1, 2]);
     await tick();

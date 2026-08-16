@@ -10,12 +10,18 @@ describe('calendarIntersection', () => {
   });
 
   it('finds a simple partial overlap', () => {
-    expect(calendarIntersection([iv(10, 20)], [iv(15, 25)])).toEqual([iv(15, 20)]);
+    expect(calendarIntersection([iv(10, 20)], [iv(15, 25)])).toEqual([
+      iv(15, 20),
+    ]);
   });
 
   it('handles full containment', () => {
-    expect(calendarIntersection([iv(0, 100)], [iv(20, 30)])).toEqual([iv(20, 30)]);
-    expect(calendarIntersection([iv(20, 30)], [iv(0, 100)])).toEqual([iv(20, 30)]);
+    expect(calendarIntersection([iv(0, 100)], [iv(20, 30)])).toEqual([
+      iv(20, 30),
+    ]);
+    expect(calendarIntersection([iv(20, 30)], [iv(0, 100)])).toEqual([
+      iv(20, 30),
+    ]);
   });
 
   it('returns identical calendars unchanged', () => {
@@ -48,7 +54,11 @@ describe('calendarIntersection', () => {
   it('handles many small intervals against one long one', () => {
     const a = [iv(0, 100)];
     const b = [iv(5, 10), iv(20, 25), iv(95, 120)];
-    expect(calendarIntersection(a, b)).toEqual([iv(5, 10), iv(20, 25), iv(95, 100)]);
+    expect(calendarIntersection(a, b)).toEqual([
+      iv(5, 10),
+      iv(20, 25),
+      iv(95, 100),
+    ]);
   });
 
   it('does not mutate the input calendars', () => {

@@ -22,7 +22,7 @@ export interface RetryOptions {
  */
 export function retry<T>(
   fn: (attempt: number) => Promise<T>,
-  options: RetryOptions
+  options: RetryOptions,
 ): Promise<T> {
   // TODO: implement
   throw new Error('Not implemented');

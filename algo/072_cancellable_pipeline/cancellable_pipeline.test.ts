@@ -1,8 +1,4 @@
-import {
-  runPipeline,
-  AbortError,
-  PipelineStep,
-} from './cancellable_pipeline';
+import { runPipeline, AbortError, PipelineStep } from './cancellable_pipeline';
 
 interface Deferred<T> {
   promise: Promise<T>;
@@ -51,7 +47,7 @@ describe('runPipeline', () => {
         { run: async (n: number) => `result:${n}` },
       ];
       await expect(runPipeline<string>(steps, 4, signal)).resolves.toBe(
-        'result:50'
+        'result:50',
       );
     });
 
@@ -110,7 +106,7 @@ describe('runPipeline', () => {
     it('resolves with the input when steps is empty', async () => {
       const signal = new AbortController().signal;
       await expect(runPipeline([], 'unchanged', signal)).resolves.toBe(
-        'unchanged'
+        'unchanged',
       );
     });
   });
@@ -123,11 +119,7 @@ describe('runPipeline', () => {
       const s2 = makeStep('two', log);
       const s3 = makeStep('three', log);
 
-      const p = runPipeline(
-        [s1.step, s2.step, s3.step],
-        0,
-        controller.signal
-      );
+      const p = runPipeline([s1.step, s2.step, s3.step], 0, controller.signal);
       await flush();
       s1.d.resolve(1);
       await flush();
@@ -157,7 +149,7 @@ describe('runPipeline', () => {
       const s1 = makeStep('one', log);
 
       await expect(
-        runPipeline([s1.step], 0, controller.signal)
+        runPipeline([s1.step], 0, controller.signal),
       ).rejects.toBeInstanceOf(AbortError);
       expect(s1.step.run).not.toHaveBeenCalled();
       expect(s1.step.cleanup).not.toHaveBeenCalled();
@@ -172,11 +164,7 @@ describe('runPipeline', () => {
       const s2 = makeStep('two', log);
       const s3 = makeStep('three', log);
 
-      const p = runPipeline(
-        [s1.step, s2.step, s3.step],
-        0,
-        controller.signal
-      );
+      const p = runPipeline([s1.step, s2.step, s3.step], 0, controller.signal);
       await flush();
       s1.d.resolve(1);
       await flush();
@@ -216,11 +204,7 @@ describe('runPipeline', () => {
       const s2 = makeStep('two', log);
       const s3 = makeStep('three', log);
 
-      const p = runPipeline(
-        [s1.step, s2.step, s3.step],
-        0,
-        signal
-      );
+      const p = runPipeline([s1.step, s2.step, s3.step], 0, signal);
       await flush();
       s1.d.resolve(1);
       await flush();

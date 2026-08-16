@@ -18,7 +18,7 @@ export type Loader<K, V> = (key: K) => Promise<V>;
  */
 export function createBatcher<K, V>(
   batchFn: BatchFn<K, V>,
-  options: BatcherOptions
+  options: BatcherOptions,
 ): Loader<K, V> {
   // TODO: implement
   throw new Error('Not implemented');

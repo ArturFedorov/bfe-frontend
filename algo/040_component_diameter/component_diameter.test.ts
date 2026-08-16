@@ -15,11 +15,7 @@ const buildChain = (length: number, prefix = 'c'): ComponentNode => {
 
 describe('componentDiameter', () => {
   it('measures a path through an internal node', () => {
-    const tree = n(
-      'app',
-      n('a', n('a1', n('a2')), n('b1', n('b2'))),
-      n('c'),
-    );
+    const tree = n('app', n('a', n('a1', n('a2')), n('b1', n('b2'))), n('c'));
     expect(componentDiameter(tree)).toBe(4);
   });
 

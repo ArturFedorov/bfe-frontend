@@ -18,7 +18,8 @@ function expectValidStages(stages: string[][], graph: DependencyGraph): void {
       expect(stageOf.get(dep)!).toBeLessThan(stageOf.get(node)!);
     }
     // stage must be exactly 1 + max dependency stage (earliest possible)
-    const expected = deps.length === 0 ? 0 : 1 + Math.max(...deps.map((d) => stageOf.get(d)!));
+    const expected =
+      deps.length === 0 ? 0 : 1 + Math.max(...deps.map((d) => stageOf.get(d)!));
     expect(stageOf.get(node)).toBe(expected);
   }
   for (const stage of stages) {
@@ -55,16 +56,30 @@ describe('parallelStages', () => {
       assets: ['utils'],
       utils: [],
     };
-    expect(parallelStages(graph)).toEqual([['utils'], ['assets', 'lib'], ['app']]);
+    expect(parallelStages(graph)).toEqual([
+      ['utils'],
+      ['assets', 'lib'],
+      ['app'],
+    ]);
   });
 
   it('sorts each stage alphabetically', () => {
-    const graph: DependencyGraph = { zeta: [], alpha: [], mid: ['zeta', 'alpha'] };
+    const graph: DependencyGraph = {
+      zeta: [],
+      alpha: [],
+      mid: ['zeta', 'alpha'],
+    };
     expect(parallelStages(graph)).toEqual([['alpha', 'zeta'], ['mid']]);
   });
 
   it('merges disconnected components into shared stages', () => {
-    const graph: DependencyGraph = { a: ['b'], b: [], x: ['y'], y: [], lone: [] };
+    const graph: DependencyGraph = {
+      a: ['b'],
+      b: [],
+      x: ['y'],
+      y: [],
+      lone: [],
+    };
     expect(parallelStages(graph)).toEqual([
       ['b', 'lone', 'y'],
       ['a', 'x'],
@@ -79,7 +94,12 @@ describe('parallelStages', () => {
       top: ['mid'],
       late: ['base', 'top'],
     };
-    expect(parallelStages(graph)).toEqual([['base'], ['mid'], ['top'], ['late']]);
+    expect(parallelStages(graph)).toEqual([
+      ['base'],
+      ['mid'],
+      ['top'],
+      ['late'],
+    ]);
   });
 
   it('handles a single node with no dependencies', () => {
@@ -107,11 +127,19 @@ describe('parallelStages', () => {
     });
 
     it('throws on a longer cycle', () => {
-      expect(() => parallelStages({ a: ['b'], b: ['c'], c: ['d'], d: ['a'] })).toThrow();
+      expect(() =>
+        parallelStages({ a: ['b'], b: ['c'], c: ['d'], d: ['a'] }),
+      ).toThrow();
     });
 
     it('throws when the cycle sits next to an acyclic component', () => {
-      const graph: DependencyGraph = { ok1: [], ok2: ['ok1'], a: ['b'], b: ['c'], c: ['a'] };
+      const graph: DependencyGraph = {
+        ok1: [],
+        ok2: ['ok1'],
+        a: ['b'],
+        b: ['c'],
+        c: ['a'],
+      };
       expect(() => parallelStages(graph)).toThrow();
     });
   });

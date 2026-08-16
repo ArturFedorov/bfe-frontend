@@ -6,7 +6,7 @@ function expectValidChain(
   connections: Connection[],
   from: string,
   to: string,
-  expectedLength: number
+  expectedLength: number,
 ): void {
   expect(path).toHaveLength(expectedLength);
   expect(path[0]).toBe(from);

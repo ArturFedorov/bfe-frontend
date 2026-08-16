@@ -17,7 +17,11 @@ describe('searchHighlight', () => {
 
   it('finds a match spanning two sibling nodes', () => {
     expect(searchHighlight(page, 'fox jumps')).toEqual(['p1', 'p2']);
-    expect(searchHighlight(page, 'brown fox jumps over the')).toEqual(['p1', 'p2', 'p3']);
+    expect(searchHighlight(page, 'brown fox jumps over the')).toEqual([
+      'p1',
+      'p2',
+      'p3',
+    ]);
   });
 
   it('finds a match spanning a parent/child boundary', () => {
@@ -88,7 +92,10 @@ describe('searchHighlight', () => {
         { id: 'tail', text: 'a haystack' },
       ],
     };
-    expect(searchHighlight(doc, 'needle in a haystack')).toEqual(['inner', 'tail']);
+    expect(searchHighlight(doc, 'needle in a haystack')).toEqual([
+      'inner',
+      'tail',
+    ]);
   });
 
   it('normalizes runs of whitespace within a node', () => {
@@ -114,6 +121,10 @@ describe('searchHighlight', () => {
     children.push({ id: 'n2', text: 'beta' });
     children.push({ id: 'n3', text: 'gamma' });
     const doc: PageNode = { id: 'root', children };
-    expect(searchHighlight(doc, 'alpha beta gamma')).toEqual(['n1', 'n2', 'n3']);
+    expect(searchHighlight(doc, 'alpha beta gamma')).toEqual([
+      'n1',
+      'n2',
+      'n3',
+    ]);
   });
 });

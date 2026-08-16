@@ -2,14 +2,18 @@ import { groupFilenames } from './filename_grouper';
 
 describe('groupFilenames', () => {
   it('groups names equal up to case and separators', () => {
-    expect(groupFilenames(['myFile-v2', 'report', 'my_file_v2', 'Report'])).toEqual([
+    expect(
+      groupFilenames(['myFile-v2', 'report', 'my_file_v2', 'Report']),
+    ).toEqual([
       ['myFile-v2', 'my_file_v2'],
       ['report', 'Report'],
     ]);
   });
 
   it('treats dash, underscore, and space as the same (ignored) separator', () => {
-    expect(groupFilenames(['a-b', 'ab', 'a b', 'a_b'])).toEqual([['a-b', 'ab', 'a b', 'a_b']]);
+    expect(groupFilenames(['a-b', 'ab', 'a b', 'a_b'])).toEqual([
+      ['a-b', 'ab', 'a b', 'a_b'],
+    ]);
   });
 
   it('keeps singleton groups', () => {
@@ -56,14 +60,16 @@ describe('groupFilenames', () => {
   });
 
   it('groups empty and separator-only names together', () => {
-    expect(groupFilenames(['', '-', '_ _', 'a'])).toEqual([['', '-', '_ _'], ['a']]);
+    expect(groupFilenames(['', '-', '_ _', 'a'])).toEqual([
+      ['', '-', '_ _'],
+      ['a'],
+    ]);
   });
 
   it('handles names that collide with object prototype keys', () => {
-    expect(groupFilenames(['constructor', '__proto__', 'Constructor'])).toEqual([
-      ['constructor', 'Constructor'],
-      ['__proto__'],
-    ]);
+    expect(groupFilenames(['constructor', '__proto__', 'Constructor'])).toEqual(
+      [['constructor', 'Constructor'], ['__proto__']],
+    );
   });
 
   it('groups 100k names in linear time', () => {

@@ -51,7 +51,7 @@ describe('withTimeout', () => {
         },
         () => {
           settled = true;
-        }
+        },
       );
       await jest.advanceTimersByTimeAsync(99);
       expect(settled).toBe(false);
@@ -87,7 +87,7 @@ describe('withTimeout', () => {
         },
         () => {
           settled = true;
-        }
+        },
       );
       await jest.advanceTimersByTimeAsync(199);
       expect(settled).toBe(false);

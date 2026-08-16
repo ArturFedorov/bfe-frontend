@@ -7,7 +7,7 @@ export interface PermissionInput {
 
 export function reachableResources(
   input: PermissionInput,
-  userId: string
+  userId: string,
 ): string[] {
   // TODO: implement
   throw new Error('Not implemented');

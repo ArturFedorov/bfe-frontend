@@ -33,7 +33,7 @@ describe('PriorityJobRunner', () => {
     it('runs a job and resolves with its value', async () => {
       const runner = new PriorityJobRunner(2);
       await expect(runner.run(() => Promise.resolve('done'), 1)).resolves.toBe(
-        'done'
+        'done',
       );
     });
 
@@ -67,7 +67,7 @@ describe('PriorityJobRunner', () => {
           await flush();
           active--;
           return i;
-        }, 1)
+        }, 1),
       );
       await Promise.all(jobs);
       expect(maxActive).toBe(2);
@@ -121,9 +121,12 @@ describe('PriorityJobRunner', () => {
       expect(startLog).toEqual(['filler', 'high', 'mid', 'low']);
 
       low.d.resolve('l');
-      await expect(Promise.all([pFiller, pLow, pHigh, pMid])).resolves.toEqual(
-        ['f', 'l', 'h', 'm']
-      );
+      await expect(Promise.all([pFiller, pLow, pHigh, pMid])).resolves.toEqual([
+        'f',
+        'l',
+        'h',
+        'm',
+      ]);
     });
 
     it('a high-priority job submitted later overtakes waiting low-priority jobs', async () => {
@@ -190,7 +193,7 @@ describe('PriorityJobRunner', () => {
       const runner = new PriorityJobRunner(2);
       const boom = new Error('transcode failed');
       await expect(runner.run(() => Promise.reject(boom), 1)).rejects.toBe(
-        boom
+        boom,
       );
     });
 

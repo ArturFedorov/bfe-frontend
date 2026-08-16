@@ -80,7 +80,7 @@ describe('AsyncQueue', () => {
             await flush();
             active--;
             return i;
-          })
+          }),
         );
       }
       await expect(Promise.all(promises)).resolves.toEqual([0, 1, 2, 3, 4]);
@@ -93,7 +93,7 @@ describe('AsyncQueue', () => {
       const queue = new AsyncQueue();
       const startLog: string[] = [];
       const tasks = ['a', 'b', 'c', 'd'].map((name) =>
-        makeTask<string>(name, startLog)
+        makeTask<string>(name, startLog),
       );
       const promises = tasks.map((t) => queue.enqueue(t.fn));
 
@@ -130,7 +130,7 @@ describe('AsyncQueue', () => {
       await queue.enqueue(() => Promise.resolve('first batch'));
       await flush();
       await expect(
-        queue.enqueue(() => Promise.resolve('second batch'))
+        queue.enqueue(() => Promise.resolve('second batch')),
       ).resolves.toBe('second batch');
     });
   });
@@ -140,7 +140,7 @@ describe('AsyncQueue', () => {
       const queue = new AsyncQueue();
       const boom = new Error('disk full');
       await expect(queue.enqueue(() => Promise.reject(boom))).rejects.toBe(
-        boom
+        boom,
       );
     });
 

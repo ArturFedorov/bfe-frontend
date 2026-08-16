@@ -148,7 +148,7 @@ describe('SparseGrid', () => {
     const n = 100_000;
     for (let i = 0; i < n; i++) {
       // Deterministic scatter across a 10^9 coordinate space.
-      const row = (i * 9_973) % 1_000_000_007 % 10 ** 9;
+      const row = ((i * 9_973) % 1_000_000_007) % 10 ** 9;
       const col = (i * 6_151 + 17) % 10 ** 9;
       grid.set(row, col, i);
     }
@@ -162,7 +162,8 @@ describe('SparseGrid', () => {
     for (let i = 1; i < cells.length; i++) {
       const prev = cells[i - 1];
       const curr = cells[i];
-      const rowMajor = prev.row < curr.row || (prev.row === curr.row && prev.col < curr.col);
+      const rowMajor =
+        prev.row < curr.row || (prev.row === curr.row && prev.col < curr.col);
       expect(rowMajor).toBe(true);
     }
   });

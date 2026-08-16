@@ -24,45 +24,29 @@ describe('badgeAccessPath', () => {
   });
 
   it('uses the bypass when the door shortcut is shorter', () => {
-    const grid = g([
-      '.D.',
-      '...',
-    ]);
+    const grid = g(['.D.', '...']);
     expect(badgeAccessPath(grid, [0, 0], [0, 2])).toBe(2);
   });
 
   it('finds the route when it is only possible via the bypass', () => {
-    const grid = g([
-      '.D.',
-      '#D#',
-    ]);
+    const grid = g(['.D.', '#D#']);
     expect(badgeAccessPath(grid, [0, 0], [0, 2])).toBe(2);
   });
 
   it('returns -1 when every route needs two doors', () => {
     expect(badgeAccessPath(g(['.DD.']), [0, 0], [0, 3])).toBe(-1);
-    const grid = g([
-      '.D.',
-      '#D#',
-      '.D.',
-    ]);
+    const grid = g(['.D.', '#D#', '.D.']);
     expect(badgeAccessPath(grid, [0, 0], [2, 2])).toBe(-1);
   });
 
   it('does not spend the bypass when a clean route is as short', () => {
-    const grid = g([
-      '.D.',
-      '...',
-    ]);
+    const grid = g(['.D.', '...']);
     // both the door route and the detour exist; answer is the minimum
     expect(badgeAccessPath(grid, [0, 0], [1, 2])).toBe(3);
   });
 
   it('prefers a longer clean route over an impossible double-door shortcut', () => {
-    const grid = g([
-      '.DD.',
-      '....',
-    ]);
+    const grid = g(['.DD.', '....']);
     // straight through needs two doors; go around: down, right x3, up = 5
     expect(badgeAccessPath(grid, [0, 0], [0, 3])).toBe(5);
   });
@@ -71,29 +55,17 @@ describe('badgeAccessPath', () => {
     // Reaching the end requires the door at [2][2]. The tempting early door
     // at [1][0] wastes the bypass in a pocket. A visited-set keyed on
     // position alone (ignoring the bypass flag) fails this grid.
-    const grid = g([
-      '..#.',
-      'D.#.',
-      '..D.',
-    ]);
+    const grid = g(['..#.', 'D.#.', '..D.']);
     expect(badgeAccessPath(grid, [0, 0], [0, 3])).toBe(7);
   });
 
   it('handles cycles in open areas without revisiting states', () => {
-    const grid = g([
-      '...',
-      '.#.',
-      '...',
-    ]);
+    const grid = g(['...', '.#.', '...']);
     expect(badgeAccessPath(grid, [0, 0], [2, 2])).toBe(4);
   });
 
   it('treats an unused door elsewhere as irrelevant', () => {
-    const grid = g([
-      '...',
-      'D#.',
-      '...',
-    ]);
+    const grid = g(['...', 'D#.', '...']);
     expect(badgeAccessPath(grid, [0, 0], [2, 2])).toBe(4);
   });
 

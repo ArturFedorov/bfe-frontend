@@ -1,19 +1,33 @@
 import { archiveCompleted, Task } from './archive_completed';
 
-const task = (id: number, completed: boolean): Task => ({ id, title: `task-${id}`, completed });
+const task = (id: number, completed: boolean): Task => ({
+  id,
+  title: `task-${id}`,
+  completed,
+});
 
 const activeIds = (tasks: Task[]): number[] =>
   tasks.filter((t) => !t.completed).map((t) => t.id);
 
 describe('archiveCompleted', () => {
   it('moves completed tasks to the end and keeps active order', () => {
-    const tasks = [task(1, true), task(2, false), task(3, true), task(4, false)];
+    const tasks = [
+      task(1, true),
+      task(2, false),
+      task(3, true),
+      task(4, false),
+    ];
     archiveCompleted(tasks);
     expect(tasks).toHaveLength(4);
     expect(tasks[0].id).toBe(2);
     expect(tasks[1].id).toBe(4);
     expect(tasks.slice(2).map((t) => t.completed)).toEqual([true, true]);
-    expect(tasks.slice(2).map((t) => t.id).sort((a, b) => a - b)).toEqual([1, 3]);
+    expect(
+      tasks
+        .slice(2)
+        .map((t) => t.id)
+        .sort((a, b) => a - b),
+    ).toEqual([1, 3]);
   });
 
   it('mutates the same array reference in place', () => {
@@ -57,14 +71,26 @@ describe('archiveCompleted', () => {
   });
 
   it('preserves active order when completed tasks lead the list', () => {
-    const tasks = [task(9, true), task(8, true), task(5, false), task(7, false), task(6, false)];
+    const tasks = [
+      task(9, true),
+      task(8, true),
+      task(5, false),
+      task(7, false),
+      task(6, false),
+    ];
     archiveCompleted(tasks);
     expect(activeIds(tasks.slice(0, 3))).toEqual([5, 7, 6]);
     expect(tasks.slice(3).every((t) => t.completed)).toBe(true);
   });
 
   it('does not lose or duplicate any task objects', () => {
-    const tasks = [task(1, true), task(2, false), task(3, true), task(4, false), task(5, true)];
+    const tasks = [
+      task(1, true),
+      task(2, false),
+      task(3, true),
+      task(4, false),
+      task(5, true),
+    ];
     const before = new Set(tasks);
     archiveCompleted(tasks);
     expect(tasks).toHaveLength(5);

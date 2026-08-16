@@ -8,7 +8,7 @@ export interface Router {
 export function canReach(
   routers: Router[],
   sourceId: string,
-  targetId: string
+  targetId: string,
 ): boolean {
   // TODO: implement
   throw new Error('Not implemented');

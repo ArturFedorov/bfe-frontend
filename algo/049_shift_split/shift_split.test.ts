@@ -90,7 +90,7 @@ describe('canSplitShifts', () => {
       ['s', 'p'],
     ];
     expect(
-      canSplitShifts(['a', 'b', 'c', 'd', 'p', 'q', 'r', 's'], conflicts)
+      canSplitShifts(['a', 'b', 'c', 'd', 'p', 'q', 'r', 's'], conflicts),
     ).toBe(true);
   });
 

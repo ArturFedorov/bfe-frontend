@@ -7,12 +7,7 @@ const n = (type: string, ...children: LayoutNode[]): LayoutNode => ({
 
 describe('isSymmetricLayout', () => {
   it('accepts a symmetric layout with a middle element', () => {
-    const tree = n(
-      'row',
-      n('card', n('img')),
-      n('hero'),
-      n('card', n('img')),
-    );
+    const tree = n('row', n('card', n('img')), n('hero'), n('card', n('img')));
     expect(isSymmetricLayout(tree)).toBe(true);
   });
 
@@ -114,7 +109,11 @@ describe('isSymmetricLayout', () => {
       }
       return node;
     };
-    const good = n('root', buildBranch(2000, 'leaf'), buildBranch(2000, 'leaf'));
+    const good = n(
+      'root',
+      buildBranch(2000, 'leaf'),
+      buildBranch(2000, 'leaf'),
+    );
     expect(isSymmetricLayout(good)).toBe(true);
 
     const bad = n('root', buildBranch(2000, 'leaf'), buildBranch(2000, 'feal'));

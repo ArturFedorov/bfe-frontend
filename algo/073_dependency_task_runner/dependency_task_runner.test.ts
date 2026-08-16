@@ -47,9 +47,9 @@ function autoTask(id: string, deps: string[], startLog?: string[]): TaskDef {
 describe('runTaskGraph', () => {
   describe('happy path', () => {
     it('runs a single task and reports it fulfilled', async () => {
-      await expect(
-        runTaskGraph([autoTask('a', [])], 1)
-      ).resolves.toEqual({ a: 'fulfilled' });
+      await expect(runTaskGraph([autoTask('a', [])], 1)).resolves.toEqual({
+        a: 'fulfilled',
+      });
     });
 
     it('runs a linear chain in dependency order', async () => {
@@ -60,7 +60,7 @@ describe('runTaskGraph', () => {
           autoTask('a', [], startLog),
           autoTask('b', ['a'], startLog),
         ],
-        2
+        2,
       );
       expect(startLog).toEqual(['a', 'b', 'c']);
       expect(statuses).toEqual({
@@ -109,9 +109,7 @@ describe('runTaskGraph', () => {
 
       const statuses = await runTaskGraph(tasks, 2);
       expect(maxActive).toBe(2);
-      expect(Object.values(statuses)).toEqual(
-        new Array(6).fill('fulfilled')
-      );
+      expect(Object.values(statuses)).toEqual(new Array(6).fill('fulfilled'));
     });
 
     it('holds ready tasks until a slot frees', async () => {
@@ -209,7 +207,7 @@ describe('runTaskGraph', () => {
             run: () => Promise.reject(new Error('boom')),
           },
         ],
-        1
+        1,
       );
       expect(statuses).toEqual({ bad: 'rejected' });
     });
@@ -228,7 +226,7 @@ describe('runTaskGraph', () => {
           { id: 'c', deps: ['b'], run: skippedRun },
           autoTask('other', [], startLog),
         ],
-        2
+        2,
       );
       expect(statuses).toEqual({
         a: 'rejected',
@@ -248,7 +246,7 @@ describe('runTaskGraph', () => {
 
       const result = runTaskGraph(
         [bad.task, goodRoot.task, goodChild.task, doomed.task],
-        3
+        3,
       );
       await flush();
       bad.d.reject(new Error('bad failed'));
@@ -281,7 +279,7 @@ describe('runTaskGraph', () => {
           autoTask('c', ['a']),
           { id: 'd', deps: ['b', 'c'], run: joinRun },
         ],
-        4
+        4,
       );
       expect(statuses).toEqual({
         a: 'fulfilled',
@@ -296,9 +294,7 @@ describe('runTaskGraph', () => {
   describe('graph validation', () => {
     it('throws synchronously on a self-cycle without running anything', () => {
       const run = jest.fn(() => Promise.resolve());
-      expect(() =>
-        runTaskGraph([{ id: 'a', deps: ['a'], run }], 1)
-      ).toThrow();
+      expect(() => runTaskGraph([{ id: 'a', deps: ['a'], run }], 1)).toThrow();
       expect(run).not.toHaveBeenCalled();
     });
 
@@ -311,8 +307,8 @@ describe('runTaskGraph', () => {
             { id: 'b', deps: ['a'], run },
             { id: 'c', deps: ['b'], run },
           ],
-          2
-        )
+          2,
+        ),
       ).toThrow();
       expect(run).not.toHaveBeenCalled();
     });
@@ -325,7 +321,7 @@ describe('runTaskGraph', () => {
           autoTask('c', ['a']),
           autoTask('d', ['b', 'c']),
         ],
-        2
+        2,
       );
       expect(Object.values(statuses)).toEqual([
         'fulfilled',
@@ -338,7 +334,7 @@ describe('runTaskGraph', () => {
     it('throws synchronously on an unknown dependency id', () => {
       const run = jest.fn(() => Promise.resolve());
       expect(() =>
-        runTaskGraph([{ id: 'a', deps: ['ghost'], run }], 1)
+        runTaskGraph([{ id: 'a', deps: ['ghost'], run }], 1),
       ).toThrow();
       expect(run).not.toHaveBeenCalled();
     });
@@ -356,7 +352,7 @@ describe('runTaskGraph', () => {
           },
           { id: 'c', deps: ['b'], run: () => Promise.resolve() },
         ],
-        2
+        2,
       );
       expect(Object.keys(statuses).sort()).toEqual(['a', 'b', 'c']);
       expect(statuses.a).toBe('fulfilled');

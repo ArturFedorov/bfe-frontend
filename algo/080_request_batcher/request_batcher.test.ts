@@ -181,7 +181,11 @@ describe('createBatcher', () => {
 
     it('rejects only the caller whose key is missing from the result map', async () => {
       const batchFn: BatchFn<string, string> = (keys) =>
-        Promise.resolve(new Map(keys.filter((k) => k !== 'ghost').map((k) => [k, k.toUpperCase()])));
+        Promise.resolve(
+          new Map(
+            keys.filter((k) => k !== 'ghost').map((k) => [k, k.toUpperCase()]),
+          ),
+        );
       const load = createBatcher(batchFn, { maxWaitMs: 10, maxSize: 100 });
 
       const present = load('a');

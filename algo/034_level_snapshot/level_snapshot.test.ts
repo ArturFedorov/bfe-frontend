@@ -50,11 +50,7 @@ describe('levelSnapshot', () => {
   });
 
   it('handles uneven branch depths without gaps', () => {
-    const tree = n(
-      'root',
-      n('shallow'),
-      n('deep', n('deeper', n('deepest'))),
-    );
+    const tree = n('root', n('shallow'), n('deep', n('deeper', n('deepest'))));
     expect(levelSnapshot(tree)).toEqual([
       ['root'],
       ['shallow', 'deep'],

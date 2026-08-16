@@ -46,7 +46,13 @@ describe('buildOrder (Kahn)', () => {
   });
 
   it('orders disconnected components', () => {
-    const graph: DependencyGraph = { a: ['b'], b: [], x: ['y'], y: [], lone: [] };
+    const graph: DependencyGraph = {
+      a: ['b'],
+      b: [],
+      x: ['y'],
+      y: [],
+      lone: [],
+    };
     expectValidOrder(buildOrder(graph), graph);
   });
 
@@ -86,11 +92,19 @@ describe('buildOrder (Kahn)', () => {
     });
 
     it('throws on a longer cycle', () => {
-      expect(() => buildOrder({ a: ['b'], b: ['c'], c: ['d'], d: ['a'] })).toThrow();
+      expect(() =>
+        buildOrder({ a: ['b'], b: ['c'], c: ['d'], d: ['a'] }),
+      ).toThrow();
     });
 
     it('throws when the cycle sits next to an acyclic component', () => {
-      const graph: DependencyGraph = { ok1: [], ok2: ['ok1'], a: ['b'], b: ['c'], c: ['a'] };
+      const graph: DependencyGraph = {
+        ok1: [],
+        ok2: ['ok1'],
+        a: ['b'],
+        b: ['c'],
+        c: ['a'],
+      };
       expect(() => buildOrder(graph)).toThrow();
     });
   });

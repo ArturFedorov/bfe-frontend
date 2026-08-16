@@ -17,7 +17,7 @@ describe('mergeBusySlots', () => {
         { start: 50, end: 60 },
         { start: 0, end: 10 },
         { start: 20, end: 30 },
-      ])
+      ]),
     ).toEqual([
       { start: 0, end: 10 },
       { start: 20, end: 30 },
@@ -30,7 +30,7 @@ describe('mergeBusySlots', () => {
       mergeBusySlots([
         { start: 10, end: 30 },
         { start: 20, end: 40 },
-      ])
+      ]),
     ).toEqual([{ start: 10, end: 40 }]);
   });
 
@@ -40,7 +40,7 @@ describe('mergeBusySlots', () => {
         mergeBusySlots([
           { start: 1, end: 3 },
           { start: 3, end: 5 },
-        ])
+        ]),
       ).toEqual([{ start: 1, end: 5 }]);
     });
 
@@ -51,7 +51,7 @@ describe('mergeBusySlots', () => {
           { start: 0, end: 10 },
           { start: 10, end: 20 },
           { start: 20, end: 30 },
-        ])
+        ]),
       ).toEqual([{ start: 0, end: 40 }]);
     });
 
@@ -60,7 +60,7 @@ describe('mergeBusySlots', () => {
         mergeBusySlots([
           { start: 0, end: 10 },
           { start: 11, end: 20 },
-        ])
+        ]),
       ).toEqual([
         { start: 0, end: 10 },
         { start: 11, end: 20 },
@@ -74,7 +74,7 @@ describe('mergeBusySlots', () => {
         mergeBusySlots([
           { start: 0, end: 100 },
           { start: 40, end: 50 },
-        ])
+        ]),
       ).toEqual([{ start: 0, end: 100 }]);
     });
 
@@ -85,7 +85,7 @@ describe('mergeBusySlots', () => {
           { start: 0, end: 100 },
           { start: 90, end: 95 },
           { start: 50, end: 60 },
-        ])
+        ]),
       ).toEqual([{ start: 0, end: 100 }]);
     });
 
@@ -95,7 +95,7 @@ describe('mergeBusySlots', () => {
           { start: 5, end: 15 },
           { start: 5, end: 15 },
           { start: 5, end: 15 },
-        ])
+        ]),
       ).toEqual([{ start: 5, end: 15 }]);
     });
 
@@ -104,7 +104,7 @@ describe('mergeBusySlots', () => {
         mergeBusySlots([
           { start: 10, end: 20 },
           { start: 10, end: 50 },
-        ])
+        ]),
       ).toEqual([{ start: 10, end: 50 }]);
     });
   });
@@ -119,7 +119,7 @@ describe('mergeBusySlots', () => {
           { start: 12, end: 20 },
           { start: 40, end: 55 },
           { start: 50, end: 60 },
-        ])
+        ]),
       ).toEqual([
         { start: 0, end: 20 },
         { start: 40, end: 60 },

@@ -21,11 +21,15 @@ describe('stableMergeSort', () => {
   });
 
   it('handles an already sorted array', () => {
-    expect(stableMergeSort([1, 2, 3, 4], (a, b) => a - b)).toEqual([1, 2, 3, 4]);
+    expect(stableMergeSort([1, 2, 3, 4], (a, b) => a - b)).toEqual([
+      1, 2, 3, 4,
+    ]);
   });
 
   it('handles a reverse-sorted array', () => {
-    expect(stableMergeSort([4, 3, 2, 1], (a, b) => a - b)).toEqual([1, 2, 3, 4]);
+    expect(stableMergeSort([4, 3, 2, 1], (a, b) => a - b)).toEqual([
+      1, 2, 3, 4,
+    ]);
   });
 
   it('handles odd lengths and duplicates', () => {
@@ -72,7 +76,7 @@ describe('stableMergeSort', () => {
       ];
       const byScoreThenTeam = stableMergeSort(
         stableMergeSort(rows, byScoreAsc),
-        byTeamAsc
+        byTeamAsc,
       );
       // Grouped by team; scores ascending within each team.
       expect(byScoreThenTeam.map((r) => r.id)).toEqual([2, 4, 3, 1]);
@@ -110,8 +114,8 @@ describe('stableMergeSort', () => {
     it('works with string elements', () => {
       expect(
         stableMergeSort(['pear', 'apple', 'fig'], (a, b) =>
-          a < b ? -1 : a > b ? 1 : 0
-        )
+          a < b ? -1 : a > b ? 1 : 0,
+        ),
       ).toEqual(['apple', 'fig', 'pear']);
     });
   });
@@ -138,7 +142,7 @@ describe('stableMergeSort', () => {
         // Original order was id-ascending, so equal scores must keep ids ascending.
         if (prev.score === curr.score && prev.id > curr.id) {
           throw new Error(
-            `Stability violated at index ${i}: id ${prev.id} before id ${curr.id}`
+            `Stability violated at index ${i}: id ${prev.id} before id ${curr.id}`,
           );
         }
       }

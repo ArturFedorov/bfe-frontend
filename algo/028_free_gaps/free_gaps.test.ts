@@ -28,8 +28,8 @@ describe('freeGaps', () => {
           { start: 300, end: 360 },
         ],
         day,
-        30
-      )
+        30,
+      ),
     ).toEqual([
       { start: 0, end: 60 },
       { start: 120, end: 300 },
@@ -46,8 +46,8 @@ describe('freeGaps', () => {
             { start: 130, end: 480 },
           ],
           day,
-          30
-        )
+          30,
+        ),
       ).toEqual([{ start: 100, end: 130 }]);
     });
 
@@ -59,8 +59,8 @@ describe('freeGaps', () => {
             { start: 129, end: 480 },
           ],
           day,
-          30
-        )
+          30,
+        ),
       ).toEqual([]);
     });
 
@@ -73,8 +73,8 @@ describe('freeGaps', () => {
             { start: 260, end: 480 }, // 60-minute gap: qualifies
           ],
           day,
-          30
-        )
+          30,
+        ),
       ).toEqual([{ start: 200, end: 260 }]);
     });
   });
@@ -88,14 +88,21 @@ describe('freeGaps', () => {
             { start: 240, end: 480 },
           ],
           day,
-          1
-        )
+          1,
+        ),
       ).toEqual([]);
     });
 
     it('clamps a booking sticking out past both ends of the day', () => {
       expect(
-        freeGaps([{ start: -100, end: 60 }, { start: 400, end: 999 }], day, 30)
+        freeGaps(
+          [
+            { start: -100, end: 60 },
+            { start: 400, end: 999 },
+          ],
+          day,
+          30,
+        ),
       ).toEqual([{ start: 60, end: 400 }]);
     });
 
@@ -107,8 +114,8 @@ describe('freeGaps', () => {
             { start: 600, end: 700 },
           ],
           day,
-          60
-        )
+          60,
+        ),
       ).toEqual([{ start: 0, end: 480 }]);
     });
   });
@@ -122,8 +129,8 @@ describe('freeGaps', () => {
             { start: 100, end: 200 },
           ],
           day,
-          30
-        )
+          30,
+        ),
       ).toEqual([
         { start: 0, end: 60 },
         { start: 200, end: 480 },
@@ -139,8 +146,8 @@ describe('freeGaps', () => {
             { start: 100, end: 300 },
           ],
           day,
-          30
-        )
+          30,
+        ),
       ).toEqual([
         { start: 0, end: 100 },
         { start: 300, end: 480 },
@@ -155,8 +162,8 @@ describe('freeGaps', () => {
             { start: 200, end: 300 },
           ],
           day,
-          30
-        )
+          30,
+        ),
       ).toEqual([
         { start: 0, end: 100 },
         { start: 300, end: 480 },
@@ -171,8 +178,8 @@ describe('freeGaps', () => {
             { start: 60, end: 120 },
           ],
           day,
-          30
-        )
+          30,
+        ),
       ).toEqual([
         { start: 0, end: 60 },
         { start: 120, end: 300 },

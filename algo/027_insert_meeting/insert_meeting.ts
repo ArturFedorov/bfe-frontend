@@ -3,7 +3,10 @@ export interface Interval {
   end: number;
 }
 
-export function insertMeeting(calendar: Interval[], meeting: Interval): Interval[] {
+export function insertMeeting(
+  calendar: Interval[],
+  meeting: Interval,
+): Interval[] {
   // TODO: implement
   throw new Error('Not implemented');
 }

@@ -51,11 +51,7 @@ describe('minimapView', () => {
   });
 
   it('uses document order within a level, not subtree order', () => {
-    const tree = n(
-      'root',
-      n('left', n('l1'), n('l2')),
-      n('right'),
-    );
+    const tree = n('root', n('left', n('l1'), n('l2')), n('right'));
     // level 1 ends with 'right'; level 2 exists only under 'left'
     expect(minimapView(tree)).toEqual(['root', 'right', 'l2']);
   });
