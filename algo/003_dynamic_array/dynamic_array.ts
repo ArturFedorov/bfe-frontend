@@ -1,36 +1,53 @@
 export class DynamicArray<T> {
+  private _capacity: number;
+  private count: number = 0;
+  private buffer: Array<T>;
+  private _resizeCount: number = 0;
+
   constructor(initialCapacity: number = 4) {
-    // TODO: implement
-    throw new Error('Not implemented');
+    if (!Number.isInteger(initialCapacity) || initialCapacity <= 0) {
+      throw new RangeError('Invalid capacity');
+    }
+
+    this._capacity = initialCapacity;
+    this.buffer = new Array<T>(initialCapacity);
   }
 
   get length(): number {
-    // TODO: implement
-    throw new Error('Not implemented');
+    return this.count;
   }
 
   get capacity(): number {
-    // TODO: implement
-    throw new Error('Not implemented');
+    return this._capacity;
   }
 
   get resizeCount(): number {
-    // TODO: implement
-    throw new Error('Not implemented');
+    return this._resizeCount;
   }
 
   push(item: T): void {
-    // TODO: implement
-    throw new Error('Not implemented');
+    if (this.count >= this.capacity) {
+      this._capacity *= 2;
+      const copy = new Array<T>(this._capacity);
+
+      for (let i = 0; i < this.count; i++) copy[i] = this.buffer[i];
+
+      this.buffer = copy;
+      this._resizeCount++;
+    }
+
+    this.buffer[this.count++] = item;
   }
 
   get(index: number): T {
-    // TODO: implement
-    throw new Error('Not implemented');
+    if (index >= this.count || index < 0 || !Number.isInteger(index)) {
+      throw new RangeError('Index out of range');
+    }
+
+    return this.buffer[index];
   }
 
   toArray(): T[] {
-    // TODO: implement
-    throw new Error('Not implemented');
+    return this.buffer.slice(0, this.count);
   }
 }
