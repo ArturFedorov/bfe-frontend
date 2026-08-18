@@ -5,14 +5,25 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:react": "jest frontend/netflix/react",
+    "test:ts": "jest frontend/netflix/typescript",
+    "test:node": "jest frontend/netflix/node",
     "format": "prettier --write \"**/*.ts\"",
     "format:check": "prettier --check \"**/*.ts\""
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.5",
     "@types/jest": "^29.5.14",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "graphql": "^17.0.2",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^30.3.0",
+    "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.8.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "ts-jest": "^29.2.5",
     "typescript": "^5.7.0"
   }
