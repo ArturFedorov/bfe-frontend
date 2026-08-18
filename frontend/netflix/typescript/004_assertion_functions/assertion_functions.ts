@@ -13,7 +13,10 @@ export function assertDelivered(status: DeliveryStatus): void {
 }
 
 // TODO: the return type must be a generic asserts annotation, not void
-export function assertPresent<T>(value: T | null | undefined, label: string): void {
+export function assertPresent<T>(
+  value: T | null | undefined,
+  label: string,
+): void {
   // TODO: implement
   throw new Error('Not implemented');
 }

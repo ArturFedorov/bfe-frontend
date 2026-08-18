@@ -1,4 +1,9 @@
-import { createLogger, getRequestId, LogEntry, runWithContext } from './request_context';
+import {
+  createLogger,
+  getRequestId,
+  LogEntry,
+  runWithContext,
+} from './request_context';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const microtask = () => new Promise<void>((resolve) => queueMicrotask(resolve));
@@ -13,7 +18,9 @@ describe('runWithContext / getRequestId', () => {
   });
 
   it('passes the resolved value through', async () => {
-    await expect(runWithContext('req-1', async () => 'payload')).resolves.toBe('payload');
+    await expect(runWithContext('req-1', async () => 'payload')).resolves.toBe(
+      'payload',
+    );
   });
 
   it('passes rejections through unchanged', async () => {
@@ -26,7 +33,9 @@ describe('runWithContext / getRequestId', () => {
   });
 
   it('supports synchronous fns too', async () => {
-    await expect(runWithContext('req-s', () => getRequestId())).resolves.toBe('req-s');
+    await expect(runWithContext('req-s', () => getRequestId())).resolves.toBe(
+      'req-s',
+    );
   });
 
   it('survives awaits, timers, and microtasks', async () => {
@@ -47,7 +56,9 @@ describe('runWithContext / getRequestId', () => {
       await sleep(1);
       return getRequestId();
     }
-    await expect(runWithContext('req-deep', () => deepThirdPartyIsh())).resolves.toBe('req-deep');
+    await expect(
+      runWithContext('req-deep', () => deepThirdPartyIsh()),
+    ).resolves.toBe('req-deep');
   });
 
   it('two interleaved contexts never bleed into each other', async () => {
@@ -63,7 +74,10 @@ describe('runWithContext / getRequestId', () => {
       });
 
     // interleave: a and b yield back and forth on different cadences
-    await Promise.all([run('a', 'req-A', [1, 3, 1]), run('b', 'req-B', [2, 1, 2])]);
+    await Promise.all([
+      run('a', 'req-A', [1, 3, 1]),
+      run('b', 'req-B', [2, 1, 2]),
+    ]);
 
     expect(observed.a).toEqual(['req-A', 'req-A', 'req-A', 'req-A']);
     expect(observed.b).toEqual(['req-B', 'req-B', 'req-B', 'req-B']);
@@ -120,7 +134,8 @@ describe('createLogger', () => {
       }),
     ]);
 
-    const byId = (id: string) => entries.filter((e) => e.requestId === id).map((e) => e.message);
+    const byId = (id: string) =>
+      entries.filter((e) => e.requestId === id).map((e) => e.message);
     expect(byId('req-A')).toEqual(['A step 1', 'A step 2']);
     expect(byId('req-B')).toEqual(['B step 1', 'B step 2']);
     expect(entries).toHaveLength(4);
@@ -133,6 +148,8 @@ describe('createLogger', () => {
       logger = createLogger((entry) => entries.push(entry));
     });
     await runWithContext('call-ctx', async () => logger.info('hello'));
-    expect(entries).toEqual([{ requestId: 'call-ctx', level: 'info', message: 'hello' }]);
+    expect(entries).toEqual([
+      { requestId: 'call-ctx', level: 'info', message: 'hello' },
+    ]);
   });
 });

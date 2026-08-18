@@ -8,14 +8,19 @@ import {
 } from './typed_api_client';
 
 type Expect<T extends true> = T;
-type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-  ? true
-  : false;
+type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 const cannedResponses: Record<string, unknown> = {
   '/partners': [{ id: 'p-1', name: 'Acme', tier: 'preferred' }],
   '/partners/:id': { id: 'p-1', name: 'Acme', tier: 'preferred' },
-  '/integrations/:id/status': { integrationId: 'i-1', state: 'healthy', checkedAt: 1700000000 },
+  '/integrations/:id/status': {
+    integrationId: 'i-1',
+    state: 'healthy',
+    checkedAt: 1700000000,
+  },
   '/reports/:id': { reportId: 'r-1', rows: 42, generatedAt: 1700000001 },
 };
 

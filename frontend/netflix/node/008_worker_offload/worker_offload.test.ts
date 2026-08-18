@@ -1,7 +1,8 @@
 import { createHash } from 'crypto';
 import { checksum, checksumInWorker } from './worker_offload';
 
-const sha256 = (input: string) => createHash('sha256').update(input).digest('hex');
+const sha256 = (input: string) =>
+  createHash('sha256').update(input).digest('hex');
 
 /**
  * Pick a round count that keeps the worker busy for roughly 250ms on THIS
@@ -19,7 +20,9 @@ function calibrateRounds(): number {
 
 describe('checksum (blocking reference)', () => {
   it('computes a single-round sha256 hex digest', () => {
-    expect(checksum('delivery-archive-bytes')).toBe(sha256('delivery-archive-bytes'));
+    expect(checksum('delivery-archive-bytes')).toBe(
+      sha256('delivery-archive-bytes'),
+    );
   });
 
   it('iterates: round N hashes the hex digest of round N-1', () => {
@@ -36,7 +39,9 @@ describe('checksum (blocking reference)', () => {
 
 describe('checksumInWorker', () => {
   it('matches the reference implementation (single round, default)', async () => {
-    await expect(checksumInWorker('partner-archive')).resolves.toBe(checksum('partner-archive'));
+    await expect(checksumInWorker('partner-archive')).resolves.toBe(
+      checksum('partner-archive'),
+    );
   });
 
   it('matches the reference implementation for iterated rounds', async () => {

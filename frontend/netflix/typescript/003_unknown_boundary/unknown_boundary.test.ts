@@ -11,7 +11,9 @@ import {
 
 type Expect<T extends true> = T;
 type Equal<A, B> =
-  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+  (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
+    ? true
+    : false;
 
 // --- Compile-time: isRecord narrows unknown -------------------------------
 
@@ -27,7 +29,9 @@ void recordProbe;
 function typeProbe(payload: unknown) {
   const parsed = parseDeliveryWebhook(payload);
   type _event = Expect<Equal<typeof parsed.event, 'delivery.completed'>>;
-  type _assets = Expect<Equal<(typeof parsed.assets)[number]['sizeBytes'], number>>;
+  type _assets = Expect<
+    Equal<(typeof parsed.assets)[number]['sizeBytes'], number>
+  >;
   // @ts-expect-error — undeclared fields do not survive the boundary
   return parsed.rawBody;
 }
@@ -47,29 +51,37 @@ const valid = {
 
 describe('parseDeliveryWebhook', () => {
   it('parses a valid payload', () => {
-    const parsed: DeliveryWebhook = parseDeliveryWebhook(JSON.parse(JSON.stringify(valid)));
+    const parsed: DeliveryWebhook = parseDeliveryWebhook(
+      JSON.parse(JSON.stringify(valid)),
+    );
     expect(parsed).toEqual(valid);
   });
 
   it('rejects a non-object payload with the root path', () => {
-    expect(() => parseDeliveryWebhook(null)).toThrow('Invalid webhook at $: expected object');
-    expect(() => parseDeliveryWebhook('body')).toThrow('Invalid webhook at $: expected object');
-    expect(() => parseDeliveryWebhook([valid])).toThrow('Invalid webhook at $: expected object');
+    expect(() => parseDeliveryWebhook(null)).toThrow(
+      'Invalid webhook at $: expected object',
+    );
+    expect(() => parseDeliveryWebhook('body')).toThrow(
+      'Invalid webhook at $: expected object',
+    );
+    expect(() => parseDeliveryWebhook([valid])).toThrow(
+      'Invalid webhook at $: expected object',
+    );
   });
 
   it('rejects a wrong event name', () => {
-    expect(() => parseDeliveryWebhook({ ...valid, event: 'delivery.started' })).toThrow(
-      'Invalid webhook at $.event: expected "delivery.completed"',
-    );
+    expect(() =>
+      parseDeliveryWebhook({ ...valid, event: 'delivery.started' }),
+    ).toThrow('Invalid webhook at $.event: expected "delivery.completed"');
   });
 
   it('rejects non-string ids with their field path', () => {
     expect(() => parseDeliveryWebhook({ ...valid, deliveryId: 7 })).toThrow(
       'Invalid webhook at $.deliveryId: expected string',
     );
-    expect(() => parseDeliveryWebhook({ ...valid, partnerId: undefined })).toThrow(
-      'Invalid webhook at $.partnerId: expected string',
-    );
+    expect(() =>
+      parseDeliveryWebhook({ ...valid, partnerId: undefined }),
+    ).toThrow('Invalid webhook at $.partnerId: expected string');
   });
 
   it('rejects a non-array assets field', () => {
@@ -79,7 +91,10 @@ describe('parseDeliveryWebhook', () => {
   });
 
   it('points at the exact broken asset element', () => {
-    const payload = { ...valid, assets: [{ id: 'a-1', sizeBytes: 1 }, { id: 'a-2' }] };
+    const payload = {
+      ...valid,
+      assets: [{ id: 'a-1', sizeBytes: 1 }, { id: 'a-2' }],
+    };
     expect(() => parseDeliveryWebhook(payload)).toThrow(
       'Invalid webhook at $.assets[1].sizeBytes: expected number',
     );
@@ -105,7 +120,10 @@ describe('isRecord', () => {
 
 describe('zero-cast rule', () => {
   it('the source contains no cast or non-null-assertion syntax', () => {
-    const source = fs.readFileSync(path.join(__dirname, 'unknown_boundary.ts'), 'utf8');
+    const source = fs.readFileSync(
+      path.join(__dirname, 'unknown_boundary.ts'),
+      'utf8',
+    );
     expect(source).not.toMatch(/\bas\s+(const|any|unknown|never|[A-Z])/);
     expect(source).not.toMatch(/!\./);
   });

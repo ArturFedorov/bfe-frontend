@@ -3,9 +3,10 @@
 import { IntegrationEvents, TypedEmitter } from './typed_event_emitter';
 
 type Expect<T extends true> = T;
-type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-  ? true
-  : false;
+type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 describe('015 typed_event_emitter — runtime', () => {
   let emitter: TypedEmitter<IntegrationEvents>;
@@ -16,8 +17,10 @@ describe('015 typed_event_emitter — runtime', () => {
 
   it('delivers the payload to a subscribed handler', () => {
     const seen: string[] = [];
-    emitter.on('partner:connected', (payload: IntegrationEvents['partner:connected']) =>
-      seen.push(payload.partnerId)
+    emitter.on(
+      'partner:connected',
+      (payload: IntegrationEvents['partner:connected']) =>
+        seen.push(payload.partnerId),
     );
 
     emitter.emit('partner:connected', { partnerId: 'p-1', at: 1700000000 });
@@ -38,12 +41,17 @@ describe('015 typed_event_emitter — runtime', () => {
     emitter.on('partner:connected', () => seen.push('connected'));
     emitter.on('partner:disconnected', () => seen.push('disconnected'));
 
-    emitter.emit('partner:disconnected', { partnerId: 'p-1', reason: 'credentials expired' });
+    emitter.emit('partner:disconnected', {
+      partnerId: 'p-1',
+      reason: 'credentials expired',
+    });
     expect(seen).toEqual(['disconnected']);
   });
 
   it('emit with no handlers is a no-op', () => {
-    expect(() => emitter.emit('report:ready', { reportId: 'r-9', rows: 0 })).not.toThrow();
+    expect(() =>
+      emitter.emit('report:ready', { reportId: 'r-9', rows: 0 }),
+    ).not.toThrow();
   });
 
   it('off removes a handler', () => {
@@ -84,7 +92,7 @@ describe('015 typed_event_emitter — runtime', () => {
   it('once receives the payload of the first emit', () => {
     const seen: number[] = [];
     emitter.once('report:ready', (payload: IntegrationEvents['report:ready']) =>
-      seen.push(payload.rows)
+      seen.push(payload.rows),
     );
 
     emitter.emit('report:ready', { reportId: 'r-1', rows: 42 });
@@ -98,7 +106,9 @@ const _contracts = () => {
   const emitter = new TypedEmitter<IntegrationEvents>();
 
   emitter.on('report:ready', (payload) => {
-    type _ReportPayload = Expect<Equal<typeof payload, { reportId: string; rows: number }>>;
+    type _ReportPayload = Expect<
+      Equal<typeof payload, { reportId: string; rows: number }>
+    >;
   });
 
   emitter.on('partner:disconnected', (payload) => {
@@ -114,7 +124,10 @@ const _contracts = () => {
   emitter.emit('report:ready', { reportId: 'r-1' });
 
   // @ts-expect-error — payload from a different event does not fit
-  emitter.emit('partner:connected', { partnerId: 'p-1', reason: 'wrong shape' });
+  emitter.emit('partner:connected', {
+    partnerId: 'p-1',
+    reason: 'wrong shape',
+  });
 
   // @ts-expect-error — unknown event cannot be emitted
   emitter.emit('nope', {});

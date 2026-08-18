@@ -28,7 +28,10 @@ void storage;
  * via getRequestId() anywhere down the async call chain of `fn` — awaits,
  * timers, microtasks — and never bleeds into other concurrent contexts.
  */
-export function runWithContext<T>(requestId: string, fn: () => Promise<T> | T): Promise<T> {
+export function runWithContext<T>(
+  requestId: string,
+  fn: () => Promise<T> | T,
+): Promise<T> {
   // TODO: implement
   throw new Error('Not implemented');
 }

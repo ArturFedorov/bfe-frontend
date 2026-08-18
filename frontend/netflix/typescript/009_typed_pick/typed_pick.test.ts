@@ -3,9 +3,10 @@
 import { pick } from './typed_pick';
 
 type Expect<T extends true> = T;
-type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-  ? true
-  : false;
+type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 interface Partner {
   id: string;
@@ -23,7 +24,10 @@ const partner: Partner = {
 
 describe('009 typed_pick — runtime', () => {
   it('picks only the requested keys', () => {
-    expect(pick(partner, ['id', 'name'])).toEqual({ id: 'p-1', name: 'Acme Streaming' });
+    expect(pick(partner, ['id', 'name'])).toEqual({
+      id: 'p-1',
+      name: 'Acme Streaming',
+    });
   });
 
   it('does not leak unpicked keys onto the result', () => {
@@ -51,7 +55,9 @@ describe('009 typed_pick — runtime', () => {
 // --- inference contracts (compile-time only; never executed) ---
 const _contracts = () => {
   const picked = pick(partner, ['id', 'tier']);
-  type _ReturnsExactPick = Expect<Equal<typeof picked, Pick<Partner, 'id' | 'tier'>>>;
+  type _ReturnsExactPick = Expect<
+    Equal<typeof picked, Pick<Partner, 'id' | 'tier'>>
+  >;
 
   const single = pick(partner, ['active']);
   type _SingleKey = Expect<Equal<typeof single, Pick<Partner, 'active'>>>;

@@ -9,14 +9,14 @@ export interface Paginated<T, Meta = undefined> {
 export function paginate<T>(
   items: readonly T[],
   page: number,
-  pageSize: number
+  pageSize: number,
 ): Paginated<T> {
   throw new Error('Not implemented');
 }
 
 export function mapPaginated<T, U, Meta>(
   page: Paginated<T, Meta>,
-  fn: (item: T, index: number) => U
+  fn: (item: T, index: number) => U,
 ): Paginated<U, Meta> {
   throw new Error('Not implemented');
 }

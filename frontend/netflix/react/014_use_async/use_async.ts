@@ -6,12 +6,15 @@ export interface UseAsyncState<T> {
   error: Error | null;
 }
 
-export interface UseAsyncResult<T, Args extends unknown[]> extends UseAsyncState<T> {
+export interface UseAsyncResult<
+  T,
+  Args extends unknown[],
+> extends UseAsyncState<T> {
   run: (...args: Args) => Promise<void>;
 }
 
 export function useAsync<T, Args extends unknown[] = []>(
-  fn: (...args: Args) => Promise<T>
+  fn: (...args: Args) => Promise<T>,
 ): UseAsyncResult<T, Args> {
   // TODO: implement
   throw new Error('Not implemented');

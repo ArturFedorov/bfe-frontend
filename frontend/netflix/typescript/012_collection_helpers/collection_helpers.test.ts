@@ -3,9 +3,10 @@
 import { groupBy, indexBy } from './collection_helpers';
 
 type Expect<T extends true> = T;
-type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-  ? true
-  : false;
+type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 interface Integration {
   id: string;
@@ -62,13 +63,17 @@ const _contracts = () => {
   >;
 
   const byState = groupBy(integrations, (i) => i.state);
-  type _AnotherUnion = Expect<Equal<typeof byState, Record<'healthy' | 'down', Integration[]>>>;
+  type _AnotherUnion = Expect<
+    Equal<typeof byState, Record<'healthy' | 'down', Integration[]>>
+  >;
 
   const byId = indexBy(integrations, (i) => i.id);
   type _StringKey = Expect<Equal<typeof byId, Record<string, Integration>>>;
 
   const byRegionOne = indexBy(integrations, (i) => i.region);
-  type _IndexValueIsSingle = Expect<Equal<(typeof byRegionOne)['emea'], Integration>>;
+  type _IndexValueIsSingle = Expect<
+    Equal<(typeof byRegionOne)['emea'], Integration>
+  >;
 
   // @ts-expect-error — key callback must return a valid object key
   groupBy(integrations, (i) => ({ bad: i.id }));

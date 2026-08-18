@@ -11,7 +11,9 @@ import {
 
 type Expect<T extends true> = T;
 type Equal<A, B> =
-  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+  (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
+    ? true
+    : false;
 
 const accounts: Account[] = [
   { kind: 'partner', id: 'p-1', name: 'Dolby', tier: 'strategic' },
@@ -30,7 +32,9 @@ type _names = Expect<Equal<typeof names, string[]>>;
 
 // Boolean is typed (value?: unknown) => boolean — no predicate, no narrowing.
 const viaBoolean = rawNames.filter(Boolean);
-type _viaBoolean = Expect<Equal<typeof viaBoolean, (string | null | undefined)[]>>;
+type _viaBoolean = Expect<
+  Equal<typeof viaBoolean, (string | null | undefined)[]>
+>;
 
 // --- Compile-time: narrowing works in an if-statement too -----------------
 
@@ -47,11 +51,20 @@ void tierOf;
 
 describe('isPartner', () => {
   it('accepts partner accounts', () => {
-    expect(isPartner({ kind: 'partner', id: 'p-1', name: 'Dolby', tier: 'strategic' })).toBe(true);
+    expect(
+      isPartner({
+        kind: 'partner',
+        id: 'p-1',
+        name: 'Dolby',
+        tier: 'strategic',
+      }),
+    ).toBe(true);
   });
 
   it('rejects internal teams', () => {
-    expect(isPartner({ kind: 'internal', id: 't-9', teamName: 'Encoding' })).toBe(false);
+    expect(
+      isPartner({ kind: 'internal', id: 't-9', teamName: 'Encoding' }),
+    ).toBe(false);
   });
 });
 
@@ -77,7 +90,9 @@ describe('selectPartners', () => {
   });
 
   it('returns an empty array when there are no partners', () => {
-    expect(selectPartners([{ kind: 'internal', id: 't-1', teamName: 'Delivery' }])).toEqual([]);
+    expect(
+      selectPartners([{ kind: 'internal', id: 't-1', teamName: 'Delivery' }]),
+    ).toEqual([]);
   });
 });
 

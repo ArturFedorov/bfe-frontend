@@ -36,7 +36,9 @@ describe('ShutdownCoordinator', () => {
     jest.useRealTimers();
   });
 
-  const make = (overrides: { drainDeadlineMs?: number; timers?: ShutdownTimers } = {}) => {
+  const make = (
+    overrides: { drainDeadlineMs?: number; timers?: ShutdownTimers } = {},
+  ) => {
     const onForceExit = jest.fn();
     const coordinator = new ShutdownCoordinator({
       drainDeadlineMs: overrides.drainDeadlineMs ?? 10_000,
@@ -49,7 +51,9 @@ describe('ShutdownCoordinator', () => {
   describe('before any signal', () => {
     it('track passes values and rejections through', async () => {
       const { coordinator } = make();
-      await expect(coordinator.track(Promise.resolve('report'))).resolves.toBe('report');
+      await expect(coordinator.track(Promise.resolve('report'))).resolves.toBe(
+        'report',
+      );
       const boom = new Error('job failed');
       await expect(coordinator.track(Promise.reject(boom))).rejects.toBe(boom);
     });
@@ -151,9 +155,14 @@ describe('ShutdownCoordinator', () => {
     });
 
     it('resolves "drained" immediately with nothing in flight — deadline never scheduled', async () => {
-      const timerSpy = jest.fn((cb: () => void, ms: number) => setTimeout(cb, ms));
+      const timerSpy = jest.fn((cb: () => void, ms: number) =>
+        setTimeout(cb, ms),
+      );
       const { coordinator, onForceExit } = make({
-        timers: { setTimeout: timerSpy, clearTimeout: (h) => clearTimeout(h as NodeJS.Timeout) },
+        timers: {
+          setTimeout: timerSpy,
+          clearTimeout: (h) => clearTimeout(h as NodeJS.Timeout),
+        },
       });
       await expect(coordinator.onSignal()).resolves.toBe('drained');
       expect(timerSpy).not.toHaveBeenCalled();
@@ -201,9 +210,9 @@ describe('ShutdownCoordinator', () => {
       void coordinator.onSignal();
 
       expect(coordinator.isShuttingDown).toBe(true);
-      await expect(coordinator.track(Promise.resolve('late job'))).rejects.toBeInstanceOf(
-        ShutdownInProgressError,
-      );
+      await expect(
+        coordinator.track(Promise.resolve('late job')),
+      ).rejects.toBeInstanceOf(ShutdownInProgressError);
       // the rejected work was never added to the drain set
       expect(coordinator.inFlightCount).toBe(1);
 

@@ -4,7 +4,11 @@ export interface HistoryState<S> {
   future: S[];
 }
 
-export type HistoryAction<A> = A | { type: 'undo' } | { type: 'redo' } | { type: 'checkpoint' };
+export type HistoryAction<A> =
+  | A
+  | { type: 'undo' }
+  | { type: 'redo' }
+  | { type: 'checkpoint' };
 
 export function createHistoryState<S>(present: S): HistoryState<S> {
   // TODO: implement

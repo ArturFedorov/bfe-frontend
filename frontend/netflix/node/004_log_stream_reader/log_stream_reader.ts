@@ -11,7 +11,9 @@ export type ChunkSource = AsyncIterable<Buffer | string>;
  * - Memory: only the current unterminated tail may be buffered — never
  *   concatenate the whole stream.
  */
-export async function* splitLines(source: ChunkSource): AsyncGenerator<string, void, undefined> {
+export async function* splitLines(
+  source: ChunkSource,
+): AsyncGenerator<string, void, undefined> {
   // TODO: implement
   throw new Error('Not implemented');
 }

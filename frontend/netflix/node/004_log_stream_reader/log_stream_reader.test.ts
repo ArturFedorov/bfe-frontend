@@ -10,7 +10,9 @@ describe('splitLines', () => {
   });
 
   it('reassembles a line split mid-word across chunks', async () => {
-    const lines = await collectLines(from(['{"partner":"ac', 'me","status":"deliv', 'ered"}\n']));
+    const lines = await collectLines(
+      from(['{"partner":"ac', 'me","status":"deliv', 'ered"}\n']),
+    );
     expect(lines).toEqual(['{"partner":"acme","status":"delivered"}']);
   });
 
@@ -93,6 +95,10 @@ describe('splitLines', () => {
 
 describe('collectLines', () => {
   it('drains the generator into an array', async () => {
-    await expect(collectLines(from(['a\nb\nc']))).resolves.toEqual(['a', 'b', 'c']);
+    await expect(collectLines(from(['a\nb\nc']))).resolves.toEqual([
+      'a',
+      'b',
+      'c',
+    ]);
   });
 });

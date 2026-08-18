@@ -21,7 +21,10 @@ export const initialWizardState: WizardState = {
   data: { companyName: '', contactEmail: '' },
 };
 
-export function wizardReducer(state: WizardState, action: WizardAction): WizardState {
+export function wizardReducer(
+  state: WizardState,
+  action: WizardAction,
+): WizardState {
   // TODO: implement — legal transitions only; illegal transitions return the
   // SAME state reference (no-op, never throw). See README for the transition table.
   throw new Error('Not implemented');

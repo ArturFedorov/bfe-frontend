@@ -11,12 +11,19 @@ import {
 
 type Expect<T extends true> = T;
 type Equal<A, B> =
-  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+  (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
+    ? true
+    : false;
 
 // --- Compile-time: per-key handler parameters are exact ---------------------
 
 type _cases = [
-  Expect<Equal<WebhookEventType, 'delivery.created' | 'delivery.failed' | 'partner.linked'>>,
+  Expect<
+    Equal<
+      WebhookEventType,
+      'delivery.created' | 'delivery.failed' | 'partner.linked'
+    >
+  >,
   Expect<
     Equal<
       Parameters<HandlerRegistry['delivery.created']>[0],
@@ -80,7 +87,11 @@ function makeRegistry() {
 describe('dispatchEvent', () => {
   it('routes delivery.created to its handler with the full event', () => {
     const { registry, created, failed, linked } = makeRegistry();
-    const event: WebhookEvent = { type: 'delivery.created', deliveryId: 'd-1', partnerId: 'p-1' };
+    const event: WebhookEvent = {
+      type: 'delivery.created',
+      deliveryId: 'd-1',
+      partnerId: 'p-1',
+    };
     dispatchEvent(registry, event);
     expect(created).toHaveBeenCalledTimes(1);
     expect(created).toHaveBeenCalledWith(event);
@@ -90,7 +101,11 @@ describe('dispatchEvent', () => {
 
   it('routes delivery.failed to its handler', () => {
     const { registry, created, failed } = makeRegistry();
-    const event: WebhookEvent = { type: 'delivery.failed', deliveryId: 'd-2', errorCode: 429 };
+    const event: WebhookEvent = {
+      type: 'delivery.failed',
+      deliveryId: 'd-2',
+      errorCode: 429,
+    };
     dispatchEvent(registry, event);
     expect(failed).toHaveBeenCalledWith(event);
     expect(created).not.toHaveBeenCalled();
@@ -98,7 +113,11 @@ describe('dispatchEvent', () => {
 
   it('routes partner.linked to its handler', () => {
     const { registry, linked } = makeRegistry();
-    const event: WebhookEvent = { type: 'partner.linked', partnerId: 'p-9', linkedBy: 'ops' };
+    const event: WebhookEvent = {
+      type: 'partner.linked',
+      partnerId: 'p-9',
+      linkedBy: 'ops',
+    };
     dispatchEvent(registry, event);
     expect(linked).toHaveBeenCalledWith(event);
   });

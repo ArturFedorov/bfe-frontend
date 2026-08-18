@@ -27,7 +27,9 @@ export interface RouteResponseMap {
 // TODO: design the client type. `get` must be ONE generic method whose route
 // argument is constrained to the map and whose Promise result type is looked up
 // from RouteResponseMap for that exact route. The `any`s below are the task.
-export function createApiClient(fetcher: (route: string) => Promise<unknown>): any {
+export function createApiClient(
+  fetcher: (route: string) => Promise<unknown>,
+): any {
   return {
     get(route: any): any {
       throw new Error('Not implemented');

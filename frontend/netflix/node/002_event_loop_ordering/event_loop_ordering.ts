@@ -1,4 +1,9 @@
-export type Phase = 'sync' | 'nextTick' | 'promise' | 'setImmediate' | 'setTimeout';
+export type Phase =
+  | 'sync'
+  | 'nextTick'
+  | 'promise'
+  | 'setImmediate'
+  | 'setTimeout';
 
 export type MicrotaskLabel = 'tickA' | 'tickB' | 'promiseA' | 'promiseB';
 

@@ -3,12 +3,14 @@
 import { pipe } from './typed_pipe';
 
 type Expect<T extends true> = T;
-type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-  ? true
-  : false;
+type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 const parseChecks = (raw: string): number[] => JSON.parse(raw);
-const countPassing = (checks: number[]): number => checks.filter((c) => c > 0).length;
+const countPassing = (checks: number[]): number =>
+  checks.filter((c) => c > 0).length;
 const label = (passing: number): string => `${passing} passing`;
 const shout = (text: string): string => text.toUpperCase();
 
@@ -38,7 +40,7 @@ describe('013 typed_pipe — runtime', () => {
       (n: number) => {
         order.push('second');
         return n * 10;
-      }
+      },
     );
     expect(run(2)).toBe(30);
     expect(order).toEqual(['first', 'second']);
@@ -58,12 +60,17 @@ const _contracts = () => {
 
   const inferred = pipe(
     (s: string) => s.length,
-    (n) => n > 0
+    (n) => n > 0,
   );
-  type _MiddleParamInferred = Expect<Equal<typeof inferred, (a: string) => boolean>>;
+  type _MiddleParamInferred = Expect<
+    Equal<typeof inferred, (a: string) => boolean>
+  >;
 
   // @ts-expect-error — number output cannot feed a boolean input
-  pipe((s: string) => s.length, (b: boolean) => !b);
+  pipe(
+    (s: string) => s.length,
+    (b: boolean) => !b,
+  );
 
   // @ts-expect-error — broken middle link in a 3-step chain
   pipe(parseChecks, label, shout);

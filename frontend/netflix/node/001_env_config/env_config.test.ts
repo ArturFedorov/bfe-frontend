@@ -60,7 +60,9 @@ describe('loadConfig', () => {
     });
 
     it('treats an empty string as missing', () => {
-      expect(() => loadConfig({ DELIVERY_DB_URL: '' }, spec)).toThrow(ConfigError);
+      expect(() => loadConfig({ DELIVERY_DB_URL: '' }, spec)).toThrow(
+        ConfigError,
+      );
     });
 
     it('aggregates every missing required var, not just the first', () => {
@@ -83,14 +85,18 @@ describe('loadConfig', () => {
     it('coerces numbers and rejects non-numeric strings', () => {
       const ok = loadConfig({ DELIVERY_DB_URL: 'x', PORT: '9090' }, spec);
       expect(ok.port).toBe(9090);
-      expect(() => loadConfig({ DELIVERY_DB_URL: 'x', PORT: 'fast' }, spec)).toThrow(ConfigError);
+      expect(() =>
+        loadConfig({ DELIVERY_DB_URL: 'x', PORT: 'fast' }, spec),
+      ).toThrow(ConfigError);
     });
 
     it('rejects NaN and Infinity-producing values', () => {
-      expect(() => loadConfig({ DELIVERY_DB_URL: 'x', PORT: 'NaN' }, spec)).toThrow(ConfigError);
-      expect(() => loadConfig({ DELIVERY_DB_URL: 'x', PORT: 'Infinity' }, spec)).toThrow(
-        ConfigError,
-      );
+      expect(() =>
+        loadConfig({ DELIVERY_DB_URL: 'x', PORT: 'NaN' }, spec),
+      ).toThrow(ConfigError);
+      expect(() =>
+        loadConfig({ DELIVERY_DB_URL: 'x', PORT: 'Infinity' }, spec),
+      ).toThrow(ConfigError);
     });
 
     it('accepts true/1/false/0 as booleans, case-insensitively', () => {
@@ -98,14 +104,16 @@ describe('loadConfig', () => {
       expect(loadConfig({ ...base, VERBOSE: 'true' }, spec).verbose).toBe(true);
       expect(loadConfig({ ...base, VERBOSE: 'TRUE' }, spec).verbose).toBe(true);
       expect(loadConfig({ ...base, VERBOSE: '1' }, spec).verbose).toBe(true);
-      expect(loadConfig({ ...base, VERBOSE: 'false' }, spec).verbose).toBe(false);
+      expect(loadConfig({ ...base, VERBOSE: 'false' }, spec).verbose).toBe(
+        false,
+      );
       expect(loadConfig({ ...base, VERBOSE: '0' }, spec).verbose).toBe(false);
     });
 
     it('rejects anything else for booleans', () => {
-      expect(() => loadConfig({ DELIVERY_DB_URL: 'x', VERBOSE: 'yes' }, spec)).toThrow(
-        ConfigError,
-      );
+      expect(() =>
+        loadConfig({ DELIVERY_DB_URL: 'x', VERBOSE: 'yes' }, spec),
+      ).toThrow(ConfigError);
     });
 
     it('reports the failing env var name and reason in invalid[]', () => {
@@ -115,7 +123,10 @@ describe('loadConfig', () => {
       } catch (err) {
         const invalid = (err as ConfigError).invalid;
         expect(invalid).toHaveLength(1);
-        expect(invalid[0]).toEqual({ key: 'PORT', reason: expect.stringContaining('fast') });
+        expect(invalid[0]).toEqual({
+          key: 'PORT',
+          reason: expect.stringContaining('fast'),
+        });
       }
     });
   });

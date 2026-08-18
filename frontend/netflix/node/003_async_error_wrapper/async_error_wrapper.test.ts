@@ -41,16 +41,25 @@ describe('isOperationalError', () => {
     expect(isOperationalError(null)).toBe(false);
     expect(isOperationalError(undefined)).toBe(false);
     expect(isOperationalError('NOT_FOUND')).toBe(false);
-    expect(isOperationalError({ code: 'NOT_FOUND', statusCode: 404, message: 'fake' })).toBe(
-      false,
-    );
+    expect(
+      isOperationalError({
+        code: 'NOT_FOUND',
+        statusCode: 404,
+        message: 'fake',
+      }),
+    ).toBe(false);
   });
 });
 
 describe('withErrorHandling', () => {
   it('passes arguments through and returns { ok: true, value } on success', async () => {
-    const handler = withErrorHandling(async (a: number, b: string) => `${b}:${a}`);
-    await expect(handler(42, 'partner')).resolves.toEqual({ ok: true, value: 'partner:42' });
+    const handler = withErrorHandling(
+      async (a: number, b: string) => `${b}:${a}`,
+    );
+    await expect(handler(42, 'partner')).resolves.toEqual({
+      ok: true,
+      value: 'partner:42',
+    });
   });
 
   it('formats operational errors instead of rejecting', async () => {
@@ -59,7 +68,11 @@ describe('withErrorHandling', () => {
     });
     await expect(handler('p-9')).resolves.toEqual({
       ok: false,
-      error: { code: 'NOT_FOUND', message: 'partner p-9 not found', statusCode: 404 },
+      error: {
+        code: 'NOT_FOUND',
+        message: 'partner p-9 not found',
+        statusCode: 404,
+      },
     });
   });
 
@@ -71,7 +84,11 @@ describe('withErrorHandling', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error).not.toBeInstanceOf(Error);
-      expect(Object.keys(result.error).sort()).toEqual(['code', 'message', 'statusCode']);
+      expect(Object.keys(result.error).sort()).toEqual([
+        'code',
+        'message',
+        'statusCode',
+      ]);
     }
   });
 

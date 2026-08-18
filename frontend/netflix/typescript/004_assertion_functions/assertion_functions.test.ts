@@ -11,7 +11,9 @@ import {
 
 type Expect<T extends true> = T;
 type Equal<A, B> =
-  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+  (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
+    ? true
+    : false;
 
 // --- Compile-time: Delivered is derived from the union --------------------
 
@@ -55,19 +57,23 @@ describe('assertDelivered', () => {
     expect(() => assertDelivered({ state: 'queued', position: 3 })).toThrow(
       'Expected delivered, got queued',
     );
-    expect(() => assertDelivered({ state: 'in_transit', carrier: 'DHL' })).toThrow(
-      'Expected delivered, got in_transit',
-    );
-    expect(() => assertDelivered({ state: 'failed', reason: 'checksum' })).toThrow(
-      'Expected delivered, got failed',
-    );
+    expect(() =>
+      assertDelivered({ state: 'in_transit', carrier: 'DHL' }),
+    ).toThrow('Expected delivered, got in_transit');
+    expect(() =>
+      assertDelivered({ state: 'failed', reason: 'checksum' }),
+    ).toThrow('Expected delivered, got failed');
   });
 });
 
 describe('assertPresent', () => {
   it('throws a labeled error on null and undefined', () => {
-    expect(() => assertPresent(null, 'webhookUrl')).toThrow('webhookUrl is missing');
-    expect(() => assertPresent(undefined, 'apiKey')).toThrow('apiKey is missing');
+    expect(() => assertPresent(null, 'webhookUrl')).toThrow(
+      'webhookUrl is missing',
+    );
+    expect(() => assertPresent(undefined, 'apiKey')).toThrow(
+      'apiKey is missing',
+    );
   });
 
   it('keeps falsy-but-present values', () => {

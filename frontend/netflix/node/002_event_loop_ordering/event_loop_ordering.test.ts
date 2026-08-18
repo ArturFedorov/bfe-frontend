@@ -19,7 +19,13 @@ describe('observeEventLoopOrder', () => {
   it('is deterministic across repeated runs (the whole point of the harness)', async () => {
     for (let i = 0; i < 10; i += 1) {
       const order = await observeEventLoopOrder();
-      expect(order).toEqual(['sync', 'nextTick', 'promise', 'setImmediate', 'setTimeout']);
+      expect(order).toEqual([
+        'sync',
+        'nextTick',
+        'promise',
+        'setImmediate',
+        'setTimeout',
+      ]);
     }
   });
 

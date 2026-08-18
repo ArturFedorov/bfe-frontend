@@ -3,9 +3,10 @@
 import { getField } from './constrained_getters';
 
 type Expect<T extends true> = T;
-type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-  ? true
-  : false;
+type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 interface Integration {
   id: string;
@@ -22,7 +23,11 @@ const integrations: Integration[] = [
 
 describe('010 constrained_getters — runtime', () => {
   it('extracts the requested field from every item', () => {
-    expect(getField(integrations, 'partner')).toEqual(['Acme', 'Globex', 'Initech']);
+    expect(getField(integrations, 'partner')).toEqual([
+      'Acme',
+      'Globex',
+      'Initech',
+    ]);
     expect(getField(integrations, 'retries')).toEqual([0, 3, 1]);
   });
 
@@ -47,7 +52,9 @@ const _contracts = () => {
   type _StringField = Expect<Equal<typeof names, string[]>>;
 
   const states = getField(integrations, 'state');
-  type _LiteralUnionSurvives = Expect<Equal<typeof states, ('healthy' | 'degraded' | 'down')[]>>;
+  type _LiteralUnionSurvives = Expect<
+    Equal<typeof states, ('healthy' | 'degraded' | 'down')[]>
+  >;
 
   const retries = getField(integrations, 'retries');
   type _NumberField = Expect<Equal<typeof retries, number[]>>;

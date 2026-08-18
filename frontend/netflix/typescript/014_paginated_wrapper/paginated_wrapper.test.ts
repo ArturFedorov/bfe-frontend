@@ -3,9 +3,10 @@
 import { mapPaginated, paginate, Paginated } from './paginated_wrapper';
 
 type Expect<T extends true> = T;
-type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-  ? true
-  : false;
+type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 interface Partner {
   id: string;
@@ -82,13 +83,20 @@ const _contracts = () => {
     meta: { cursor: 'abc' },
   };
   const mappedCursor = mapPaginated(withCursor, (p) => p.id.length);
-  type _MetaPreserved = Expect<Equal<typeof mappedCursor, Paginated<number, { cursor: string }>>>;
+  type _MetaPreserved = Expect<
+    Equal<typeof mappedCursor, Paginated<number, { cursor: string }>>
+  >;
 
   // @ts-expect-error — mapper parameter must match the item type
   mapPaginated(page, (n: number) => n + 1);
 
   // @ts-expect-error — meta is part of the envelope type
-  const bad: Paginated<Partner> = { items: partners, page: 1, pageSize: 5, total: 5 };
+  const bad: Paginated<Partner> = {
+    items: partners,
+    page: 1,
+    pageSize: 5,
+    total: 5,
+  };
   void bad;
 };
 void _contracts;

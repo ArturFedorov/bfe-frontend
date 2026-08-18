@@ -16,5 +16,10 @@
     "rootDir": "."
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "frontend/netflix/react/playground",
+    "frontend/ui_components"
+  ]
 }

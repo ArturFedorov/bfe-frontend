@@ -33,7 +33,10 @@ export const emptyStoreState: StoreState = {
   integrations: { byId: {}, allIds: [] },
 };
 
-export function storeReducer(state: StoreState, action: StoreAction): StoreState {
+export function storeReducer(
+  state: StoreState,
+  action: StoreAction,
+): StoreState {
   // TODO: implement — untouched tables and entities must keep their references;
   // unknown-id updates/removes and same-status updates are same-reference no-ops.
   throw new Error('Not implemented');

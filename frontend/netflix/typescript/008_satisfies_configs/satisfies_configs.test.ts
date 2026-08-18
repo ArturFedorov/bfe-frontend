@@ -5,12 +5,19 @@ import { RouteConfig, RouteName, getRoute, routes } from './satisfies_configs';
 
 type Expect<T extends true> = T;
 type Equal<A, B> =
-  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+  (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
+    ? true
+    : false;
 
 // --- Compile-time: literal inference survives -------------------------------
 
 type _cases = [
-  Expect<Equal<RouteName, 'partnerList' | 'partnerDetail' | 'createDelivery' | 'healthCheck'>>,
+  Expect<
+    Equal<
+      RouteName,
+      'partnerList' | 'partnerDetail' | 'createDelivery' | 'healthCheck'
+    >
+  >,
   Expect<Equal<typeof routes.partnerList.method, 'GET'>>,
   Expect<Equal<typeof routes.createDelivery.method, 'POST'>>,
   Expect<Equal<typeof routes.partnerDetail.path, '/partners/:id'>>,
@@ -56,14 +63,25 @@ void annotated;
 
 describe('routes', () => {
   it('holds the documented entries', () => {
-    expect(routes.partnerList).toEqual({ path: '/partners', method: 'GET', requiresAuth: true });
-    expect(routes.healthCheck).toEqual({ path: '/health', method: 'GET', requiresAuth: false });
+    expect(routes.partnerList).toEqual({
+      path: '/partners',
+      method: 'GET',
+      requiresAuth: true,
+    });
+    expect(routes.healthCheck).toEqual({
+      path: '/health',
+      method: 'GET',
+      requiresAuth: false,
+    });
   });
 
   it('has exactly four routes', () => {
-    expect(Object.keys(routes).sort()).toEqual(
-      ['createDelivery', 'healthCheck', 'partnerDetail', 'partnerList'],
-    );
+    expect(Object.keys(routes).sort()).toEqual([
+      'createDelivery',
+      'healthCheck',
+      'partnerDetail',
+      'partnerList',
+    ]);
   });
 });
 
@@ -71,7 +89,11 @@ describe('getRoute', () => {
   it('returns the config for a name', () => {
     const route = getRoute('createDelivery');
     type _method = Expect<Equal<typeof route.method, 'POST'>>;
-    expect(route).toEqual({ path: '/deliveries', method: 'POST', requiresAuth: true });
+    expect(route).toEqual({
+      path: '/deliveries',
+      method: 'POST',
+      requiresAuth: true,
+    });
   });
 
   it('returns the exact object from the table', () => {

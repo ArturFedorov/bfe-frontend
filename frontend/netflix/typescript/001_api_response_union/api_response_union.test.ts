@@ -10,7 +10,9 @@ import {
 
 type Expect<T extends true> = T;
 type Equal<A, B> =
-  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+  (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
+    ? true
+    : false;
 
 // --- Compile-time: the union has the right shape --------------------------
 
@@ -18,7 +20,9 @@ type Success = Extract<IntegrationStatusResponse, { status: 'success' }>;
 type Err = Extract<IntegrationStatusResponse, { status: 'error' }>;
 
 type _cases = [
-  Expect<Equal<IntegrationStatusResponse['status'], 'loading' | 'success' | 'error'>>,
+  Expect<
+    Equal<IntegrationStatusResponse['status'], 'loading' | 'success' | 'error'>
+  >,
   Expect<Equal<Success['integrations'], Integration[]>>,
   Expect<Equal<Success['fetchedAt'], string>>,
   Expect<Equal<Err['code'], number>>,
@@ -43,7 +47,9 @@ void narrowingProbe;
 
 type TimeoutResponse = { status: 'timeout'; retryAfterMs: number };
 
-function handleWithTimeout(res: IntegrationStatusResponse | TimeoutResponse): string {
+function handleWithTimeout(
+  res: IntegrationStatusResponse | TimeoutResponse,
+): string {
   switch (res.status) {
     case 'loading':
       return 'loading';
@@ -94,7 +100,11 @@ describe('describeResponse', () => {
 
   it('describes the error state', () => {
     expect(
-      describeResponse({ status: 'error', code: 503, message: 'upstream unavailable' }),
+      describeResponse({
+        status: 'error',
+        code: 503,
+        message: 'upstream unavailable',
+      }),
     ).toBe('Failed (503): upstream unavailable');
   });
 });

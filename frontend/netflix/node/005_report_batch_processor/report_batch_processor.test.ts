@@ -20,11 +20,9 @@ const flush = () => new Promise((resolve) => setImmediate(resolve));
 
 describe('processBatch', () => {
   it('processes every job and returns results in input order', async () => {
-    const results = await processBatch(
-      [1, 2, 3, 4, 5],
-      async (n) => n * 10,
-      { concurrency: 2 },
-    );
+    const results = await processBatch([1, 2, 3, 4, 5], async (n) => n * 10, {
+      concurrency: 2,
+    });
     expect(results).toEqual([
       { status: 'fulfilled', value: 10 },
       { status: 'fulfilled', value: 20 },
@@ -174,19 +172,30 @@ describe('processBatch', () => {
 
   it('resolves [] for an empty batch without calling the worker', async () => {
     const worker = jest.fn(async () => 'never');
-    await expect(processBatch([], worker, { concurrency: 4 })).resolves.toEqual([]);
+    await expect(processBatch([], worker, { concurrency: 4 })).resolves.toEqual(
+      [],
+    );
     expect(worker).not.toHaveBeenCalled();
   });
 
-  it.each([0, -1, 1.5, NaN, Infinity])('throws RangeError for concurrency = %p', (bad) => {
-    expect(() => processBatch([1], async (n) => n, { concurrency: bad })).toThrow(RangeError);
-  });
+  it.each([0, -1, 1.5, NaN, Infinity])(
+    'throws RangeError for concurrency = %p',
+    (bad) => {
+      expect(() =>
+        processBatch([1], async (n) => n, { concurrency: bad }),
+      ).toThrow(RangeError);
+    },
+  );
 
   it('scales: 10k jobs at concurrency 50, results all in order', async () => {
     const jobs = Array.from({ length: 10_000 }, (_, i) => i);
-    const results = await processBatch(jobs, async (n) => n * 2, { concurrency: 50 });
+    const results = await processBatch(jobs, async (n) => n * 2, {
+      concurrency: 50,
+    });
     expect(results).toHaveLength(10_000);
-    expect(results.every((r, i) => r.status === 'fulfilled' && r.value === i * 2)).toBe(true);
+    expect(
+      results.every((r, i) => r.status === 'fulfilled' && r.value === i * 2),
+    ).toBe(true);
   });
 });
 

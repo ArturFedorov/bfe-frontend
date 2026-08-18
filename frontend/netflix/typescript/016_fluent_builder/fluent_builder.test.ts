@@ -3,9 +3,10 @@
 import { createQuery, Query } from './fluent_builder';
 
 type Expect<T extends true> = T;
-type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-  ? true
-  : false;
+type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 interface PartnerRow {
   id: string;
@@ -22,7 +23,10 @@ describe('016 fluent_builder — runtime', () => {
   });
 
   it('accumulates fields across repeated select calls, without duplicates', () => {
-    const query = createQuery<PartnerRow>().select('id').select('name', 'id').build();
+    const query = createQuery<PartnerRow>()
+      .select('id')
+      .select('name', 'id')
+      .build();
     expect(query.fields).toEqual(['id', 'name']);
   });
 
@@ -53,11 +57,17 @@ const _contracts = () => {
     .select('name', 'tier')
     .where('tier', 'preferred')
     .build();
-  type _AccumulatedQuery = Expect<Equal<typeof query, Query<PartnerRow, 'name' | 'tier'>>>;
-  type _FieldsNarrowed = Expect<Equal<(typeof query)['fields'], ('name' | 'tier')[]>>;
+  type _AccumulatedQuery = Expect<
+    Equal<typeof query, Query<PartnerRow, 'name' | 'tier'>>
+  >;
+  type _FieldsNarrowed = Expect<
+    Equal<(typeof query)['fields'], ('name' | 'tier')[]>
+  >;
 
   const grown = createQuery<PartnerRow>().select('id').select('active').build();
-  type _SelectAccumulates = Expect<Equal<typeof grown, Query<PartnerRow, 'id' | 'active'>>>;
+  type _SelectAccumulates = Expect<
+    Equal<typeof grown, Query<PartnerRow, 'id' | 'active'>>
+  >;
 
   // where accepts a field selected by a *later* select in the chain state
   createQuery<PartnerRow>().select('id').select('active').where('active', true);

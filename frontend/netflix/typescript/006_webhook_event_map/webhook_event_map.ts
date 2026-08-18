@@ -11,7 +11,10 @@ export type EventOfType<T extends WebhookEventType> = any; // TODO: one variant,
 // each parameter typed as exactly its event variant
 export type HandlerRegistry = Record<string, (event: any) => void>;
 
-export function dispatchEvent(registry: HandlerRegistry, event: WebhookEvent): void {
+export function dispatchEvent(
+  registry: HandlerRegistry,
+  event: WebhookEvent,
+): void {
   // TODO: implement — route the event to its handler, no casts
   throw new Error('Not implemented');
 }
