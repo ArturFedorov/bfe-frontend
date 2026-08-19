@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import {ReactElement, useState} from 'react';
 
 export interface Partner {
   id: string;
@@ -16,6 +16,8 @@ export interface PartnerListProps {
 }
 
 export function PartnerList({ endpoint = '/api/partners' }: PartnerListProps): ReactElement {
-  // TODO: implement
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | undefined>(undefined);
+
   throw new Error('Not implemented');
 }

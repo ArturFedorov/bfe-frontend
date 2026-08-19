@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import {ReactElement, ReactNode, useId, useState} from 'react';
 
 export type CollapseMode = 'unmount' | 'hidden';
 
@@ -21,6 +21,26 @@ export function CollapsiblePanel({
   defaultOpen = false,
   mode = 'unmount',
 }: CollapsiblePanelProps): ReactElement {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const id = useId();
+  const headerId = `${id}-header`;
+  const panelId = `${id}-panel`;
+
+  const [opened, setOpen] = useState(defaultOpen);
+
+
+  const togglePanel = () => {
+    setOpen((o) => !o);
+  }
+
+  return (
+    <div>
+      <button id={headerId} aria-expanded={opened} aria-controls={panelId} onClick={togglePanel}>{title}</button>
+      {(mode === 'hidden' || opened) && (
+        <div role="region" id={panelId} aria-labelledby={headerId} hidden={mode === 'hidden' && !opened}>
+          {children}
+        </div>
+      )}
+    </div>
+
+  )
 }
