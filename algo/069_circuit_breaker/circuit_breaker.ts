@@ -16,13 +16,46 @@ export interface CircuitBreakerOptions {
 }
 
 export class CircuitBreaker {
+  private now: () => number;
+  private consecutiveFailures: number = 0;
+  private cooldownMs: number;
+  private failureThreshold: number;
+  private openedAt: number | null = null;
+
   constructor(options: CircuitBreakerOptions) {
-    // TODO: implement
-    throw new Error('Not implemented');
+    this.now = options.now ?? Date.now;
+    this.failureThreshold = options.failureThreshold || 0;
+    this.cooldownMs = options.cooldownMs;
   }
 
-  exec<T>(fn: () => Promise<T>): Promise<T> {
-    // TODO: implement
-    throw new Error('Not implemented');
+  async exec<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.openedAt !== null) {
+      if (this.now() - this.openedAt < this.cooldownMs) {
+        throw new CircuitOpenError();
+      }
+
+      try {
+        const result = await fn();
+        this.openedAt = null;
+        this.consecutiveFailures = 0;
+        return result;
+      } catch (err) {
+        this.openedAt = this.now();
+        throw err;
+      }
+    }
+
+    try {
+      const result = await fn();
+      this.consecutiveFailures = 0;
+      return result;
+    } catch (err) {
+      this.consecutiveFailures += 1;
+      if (this.consecutiveFailures >= this.failureThreshold) {
+        this.openedAt = this.now();
+      }
+
+      throw err;
+    }
   }
 }

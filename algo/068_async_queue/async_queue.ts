@@ -1,6 +1,9 @@
 export class AsyncQueue {
+  private tail: Promise<unknown> = Promise.resolve();
+
   enqueue<T>(task: () => Promise<T>): Promise<T> {
-    // TODO: implement
-    throw new Error('Not implemented');
+    const result = this.tail.then(() => task());
+    this.tail = result.catch(() => {});
+    return result;
   }
 }
