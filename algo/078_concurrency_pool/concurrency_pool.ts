@@ -20,6 +20,45 @@ export class PoolError extends Error {
  * to settle and rejects with a PoolError. Throws RangeError if k < 1.
  */
 export function runPool<T>(tasks: Array<Task<T>>, k: number): Promise<T[]> {
-  // TODO: implement
-  throw new Error('Not implemented');
+  if (k < 1) throw new RangeError('k must be at least 1');
+
+  return runPoolInternal(tasks, k);
+}
+
+async function runPoolInternal<T>(
+  tasks: Array<Task<T>>,
+  k: number,
+): Promise<T[]> {
+  const results = new Array<T>(tasks.length);
+  const executing = new Set<Promise<T>>();
+  const all: Promise<T>[] = [];
+  const errors: unknown[] = [];
+
+  for (let i = 0; i < tasks.length; i++) {
+    const promise = Promise.resolve()
+      .then(() => tasks[i]())
+      .then(
+        (result) => {
+          results[i] = result;
+        },
+        (err) => {
+          errors[i] = err;
+        },
+      ) as Promise<T>;
+
+    all.push(promise);
+    executing.add(promise);
+
+    promise.finally(() => executing.delete(promise));
+
+    if (executing.size >= k) {
+      await Promise.race(executing);
+    }
+  }
+
+  await Promise.all(all);
+
+  if (errors.length > 0) throw new PoolError(errors.filter(Boolean));
+
+  return results;
 }
