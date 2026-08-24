@@ -99,6 +99,20 @@ No new problems. Re-read review notes (recurring themes below). Skim the culture
 
 ---
 
+## Prompt archetypes → repo tasks (probability-ranked)
+
+The email describes a **staged composite prompt**: one widget, all four axes (state / async / DS / perf), requirements fed in stages. Mapping to what's built:
+
+| Archetype (est.) | Repo tasks | Status |
+| --- | --- | --- |
+| **1. Typeahead/search engine** (~30%) | `react/024_partner_autocomplete` · `react/006_race_free_search` · `react/010_use_debounced_value` · `algo/067` dedupe · `algo/070` SWR cache · `algo/016` ⭐ highlight | algo parts ✓ solved; **react fusion tasks open** |
+| **2. Async tree engine** (~20%) | `algo/053` ⭐ build-order DFS · `algo/056` spreadsheet recalc · `algo/044` ⭐ router reachability · `algo/035` ✓ · `038` ✓ · `042` ✓ · `ui_components/003` nested checkboxes ✓ · `016` file explorer ✓ | statics ✓; **graph trio open** |
+| **3. Data-table engine** (~20%) | `react/019_paginated_table` · `react/038_row_selection_state` · `react/033_filter_reducer` · `react/044_derived_data_memo` · `algo/005` ✓ grouping · `ui_components/028` ✓ | **all four react tasks open** |
+| **4. Scheduler / API cache** (~15%) | `algo/068–071` ✓ · `077–078` ✓ · `079_token_bucket` · `080_request_batcher` · `073` capstone · `react/021_retry_panel` · `react/022_polling_status_widget` | core ✓; 073/079/080 + react pair open |
+| **5. Other** (~15%) — undo/redo store, notification center | `algo/004` ✓ · `react/016_use_undo_state` · `react/035_undo_redo_reducer` | mixed |
+
+**Coverage gap the repo doesn't close:** no single task *fuses* three mechanisms into one staged artifact (e.g., typeahead = debounce + dedupe + cache + cancel grown over 4 stages). That fusion under staged requirements is the closest simulation of the actual round — get it via a generated composite task or a live mock.
+
 ## The 60-minute protocol (their email IS the rubric — rehearse verbatim)
 
 | Minutes | What you do |
