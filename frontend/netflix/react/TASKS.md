@@ -1,4 +1,4 @@
-# React Practice Tasks — Netflix POSA Prep
+# React Practice Tasks — Netflix POSA Prep · Apple AIML Tier 3
 
 **Companion to:** [../POSA_PREP.md](../POSA_PREP.md) · **Priority: #1 track** (React is "obligatory" in the JD)
 **Style:** every task is an internal-tools scenario from the POSA domain — partner portals, integration monitoring, delivery dashboards. No toy counters.
@@ -145,13 +145,53 @@ Internal tools are multi-page SPAs. Built dependency-free: you write the mini-ro
 
 ---
 
+# Tier 3 — Apple AIML Annotation Platform (added Oct 2026)
+
+**Target:** Apple · AIML Frontend Engineer, Annotation Platform & Agentic UI Experiences (Heidelberg). Technical Screen on CoderPad — frontend coding plus general technical questions, collaborative format.
+**Why a new tier:** the Apple JD adds two themes the Netflix track never needed — *agentic UI* (streaming model output, long-running async tasks, event-driven state) and *annotation / task-editor interfaces* (keyboard-first labeling, span selection, schema-driven editors). Tiers 1–2 still cover the async-correctness core; this tier fills the gaps.
+**Style:** scenarios move from the POSA partner portal to an ML data-annotation platform — annotators, QA analysts, model-assisted suggestions. Same contract: README + stub is the prompt, tests are the grader, no solution files.
+
+## Topic 10: Agentic UI & Annotation Interfaces — training order for the Apple screen
+
+One list, in the order to work through it. Prio **1** = most likely CoderPad prompt for this team; **2** = likely twist or second exercise; **3** = architecture / design-system signal. Tasks marked *redo* are already solved — re-solve from a blank file. Talk-only JD topics (Core Web Vitals, BFF, security, testing layers, AI tooling) are not listed; prepare two-sentence answers.
+
+| Order | Topic | Task | Folder | Prio | Diff | Status |
+| ----- | ------------------------------------- | ---- | ------------------------- | ---- | ---- | ------ |
+| 1 | Agentic UI: streaming model output | 068 | `streaming_transcript` | 1 | M | todo |
+| 2 | Long-running tasks: polling, terminal states | 022 | `polling_status_widget` | 1 | M | todo |
+| 3 | Agentic UI capstone: run timeline, cancel, retry | 073 | `agent_run_timeline` | 1 | H | todo |
+| 4 | Async states, no impossible states | 018 | `async_states_panel` | 1 | E | todo |
+| 5 | Race conditions, cancellation (redo) | 006 | `race_free_search` | 1 | M | redo |
+| 6 | Async state machine hook (redo) | 014 | `use_async` | 1 | M | redo |
+| 7 | Review flow: optimistic update, rollback | 023 | `optimistic_toggle` | 2 | H | todo |
+| 8 | Review queue: bulk selection across pages | 038 | `row_selection_state` | 2 | M | todo |
+| 9 | Annotation: keyboard-first labeling | 070 | `label_hotkeys` | 2 | M | todo |
+| 10 | Annotation: span selection, overlap rules | 071 | `span_labeler` | 2 | H | todo |
+| 11 | Task editor: schema form, blur validation, autosave | 072 | `annotation_task_editor` | 2 | M | todo |
+| 12 | Event-driven state: idempotency, reconnect | 069 | `live_task_feed` | 2 | H | todo |
+| 13 | Server pagination, derived request params | 019 | `paginated_table` | 2 | M | todo |
+| 14 | Auto-retry with backoff | 021 | `retry_panel` | 2 | M | todo |
+| 15 | Data-dense UI: windowing | 045 | `virtualized_list` | 2 | H | todo |
+| 16 | Refs, imperative focus, form a11y | 008 | `focus_shortcuts` | 2 | M | todo |
+| 17 | Compound component, ARIA tabs | 027 | `compound_tabs` | 3 | M | todo |
+| 18 | Controlled vs uncontrolled API | 026 | `flexible_input` | 3 | M | todo |
+| 19 | Dialog a11y, focus trap, portal | 029 | `modal_portal` | 3 | M | todo |
+| 20 | Context performance, state/dispatch split | 039 | `context_splitting` | 3 | M | todo |
+| 21 | Reducer with discriminated-union actions | 033 | `filter_reducer` | 3 | M | todo |
+| 22 | Infinite scroll, in-flight guards | 020 | `infinite_partner_feed` | 3 | M | todo |
+
+**CoderPad habits to rehearse:** narrate the state shape first (discriminated union before any JSX), name the race or cleanup hazard before writing the effect, ask one qualifying question about data shape and one about failure handling before coding, and say out loud which test you would write first.
+
+---
+
 ## Progress Summary
 
 | Tier | Topics | Tasks | Range |
 | ---- | ------ | ----- | ------- |
 | 1 | 6 | 46 | 001–046 |
 | 2 | 3 | 21 | 047–067 |
-| **Total** | **9** | **67** | |
+| 3 | 1 | 6 | 068–073 |
+| **Total** | **10** | **73** | |
 
 Re-solve rule from algo applies: anything solved with hints goes back in the queue for a blank-file redo a week later.
 
