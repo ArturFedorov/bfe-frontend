@@ -153,7 +153,7 @@ Internal tools are multi-page SPAs. Built dependency-free: you write the mini-ro
 
 ## Topic 10: Agentic UI & Annotation Interfaces — training order for the Apple screen
 
-One list, in the order to work through it. Prio **1** = most likely CoderPad prompt for this team; **2** = likely twist or second exercise; **3** = architecture / design-system signal. Tasks marked *redo* are already solved — re-solve from a blank file. Talk-only JD topics (Core Web Vitals, BFF, security, testing layers, AI tooling) are not listed; prepare two-sentence answers.
+One list, in the order to work through it. Prio **1** = most likely CoderPad prompt for this team; **2** = likely twist or second exercise; **3** = architecture / design-system signal. Tasks marked *redo* are already solved — re-solve from a blank file. Talk-only JD topics are in the second table below.
 
 | Order | Topic | Task | Folder | Prio | Diff | Status |
 | ----- | ------------------------------------- | ---- | ------------------------- | ---- | ---- | ------ |
@@ -179,6 +179,30 @@ One list, in the order to work through it. Prio **1** = most likely CoderPad pro
 | 20 | Context performance, state/dispatch split | 039 | `context_splitting` | 3 | M | todo |
 | 21 | Reducer with discriminated-union actions | 033 | `filter_reducer` | 3 | M | todo |
 | 22 | Infinite scroll, in-flight guards | 020 | `infinite_partner_feed` | 3 | M | todo |
+
+### Topics to discuss — the "general technical questions" half of the screen
+
+Prepare a two-sentence answer plus one concrete example for each. "Evidence" points at tasks in this repo you can cite as something you have actually built.
+
+| Order | Topic | JD line | Be ready to explain | Evidence in repo |
+| ----- | ----- | ------- | ------------------- | ---------------- |
+| 1 | Race conditions and cancellation | Async data patterns | Ignore flag vs AbortController: the flag guarantees stale results never render, abort frees the network; use both. Where the cleanup runs (before every effect re-run, not only unmount). | 006, 012, 014, 024 |
+| 2 | Streaming vs polling vs WebSocket vs SSE | WebSockets / SSE, agentic UI | SSE is one-way, auto-reconnects, works over plain HTTP; WebSocket is bidirectional but needs your own reconnect and heartbeat; polling is fine for low-frequency terminal-state jobs. Idempotency and ordering are the client's problem in all three. | 022, 068, 069, 073 |
+| 3 | Long-running task UX | Agentic UI, long-running async | Explicit state machine (idle / running / succeeded / failed / cancelled), partial output kept on failure, cancel that actually aborts, retry that ignores events from the old run, resume after reload. | 014, 073 |
+| 4 | State modelling | React architecture, state management | Discriminated unions over boolean flags; reducer when transitions have rules; normalised byId/allIds for relational data; derive, do not duplicate. When context is enough and when it is not. | 018, 034, 037, 044 |
+| 5 | Re-render control | Rendering optimization | What triggers a render; React.memo only at a measured boundary; referential stability of callbacks and objects; children-as-prop; cost of over-memoising. | 040, 041, 042, 043 |
+| 6 | Bundle budgets and lazy loading | Bundle optimization, lazy loading | Route and feature-level code splitting; preload on intent (hover, viewport); why lazy caches a rejection; budgets enforced in CI. | 046 |
+| 7 | Core Web Vitals | Performance and observability | What moves LCP (critical path, image priority), INP (long tasks, event handler cost, rendering work), CLS (reserved space). Measuring with field data (web-vitals, RUM) vs lab (Lighthouse). | — |
+| 8 | Profiling and error tracking | Observability end-to-end | React Profiler and the browser Performance panel; what to instrument (TTI per screen, API latency, error rate by component); error boundaries plus a reporting sink. | 031, 046 |
+| 9 | Accessibility as hygiene | WCAG | Roles before test ids; labelled controls; focus management for dialogs and menus; live regions for async status; roving tabindex vs aria-activedescendant; keyboard parity with the mouse. | 002, 024, 027, 029, 070 |
+| 10 | Testing strategy | Unit, integration, e2e | Testing pyramid: RTL for behaviour at the component boundary, mock fetch not hooks, fake timers for polling and debounce, Playwright for a few critical journeys; what you would never unit test. | every task here, 056, 057 |
+| 11 | Frontend security basics | Security best practices | XSS and dangerouslySetInnerHTML discipline, CSP, where tokens live (httpOnly cookies vs storage), CSRF, dependency hygiene. | — |
+| 12 | Backend-for-frontend | BFF layers, REST / GraphQL | When a BFF earns its keep: aggregation, shaping per screen, auth boundary, hiding service churn. REST vs GraphQL trade-offs: over-fetching vs caching complexity and N+1. | `node/` track |
+| 13 | Design systems and component APIs | Design-system contribution | Controlled vs uncontrolled with the same component; compound components over prop explosion; slots; tokens; flagging when product work breaks a pattern. | 025, 026, 027, 028 |
+| 14 | Forms at scale | Task editors | Validate on blur then live after touch; dirty tracking gates submit; autosave debounce; unsaved-changes guard; optimistic concurrency on save conflicts. | 072 |
+| 15 | Data-dense UIs | Annotation and review tools | Windowing and DOM budget; keyboard-first workflows; selection across pages; undo/redo as a first-class feature. | 016, 035, 038, 045, 070, 071 |
+| 16 | AI-assisted coding with judgment | Claude Code, Copilot, Cursor | This repo's workflow: generated tests as the grader, stubs solved by hand, reviewing generated code for dead defensiveness and over-memoising; where you would not trust generated code. | this repo |
+| 17 | Collaborating with design | Design partnership | Engaging at the design stage, pushing back with a reason, pixel-fidelity review habits, when to propose a pattern change instead of a one-off. | — |
 
 **CoderPad habits to rehearse:** narrate the state shape first (discriminated union before any JSX), name the race or cleanup hazard before writing the effect, ask one qualifying question about data shape and one about failure handling before coding, and say out loud which test you would write first.
 
