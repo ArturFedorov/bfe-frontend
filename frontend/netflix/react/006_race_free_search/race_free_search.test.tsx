@@ -31,6 +31,9 @@ function jsonResponse(body: unknown, status = 200): Response {
 const AL_RESULTS: SearchResult[] = [{ id: 'p1', title: 'Almost Anything AB' }];
 const ALPHA_RESULTS: SearchResult[] = [{ id: 'p7', title: 'Alphaline Media' }];
 
+/** Every request must carry an AbortSignal so stale requests can be cancelled. */
+const WITH_SIGNAL = expect.objectContaining({ signal: expect.any(AbortSignal) });
+
 describe('ResultsPanel', () => {
   const fetchMock = jest.fn<Promise<Response>, [string]>();
 
@@ -54,7 +57,7 @@ describe('ResultsPanel', () => {
   it('fetches the encoded query and shows the loading state', () => {
     fetchMock.mockReturnValue(deferred<Response>().promise);
     render(<ResultsPanel query="dub house" />);
-    expect(fetchMock).toHaveBeenCalledWith('/api/search?q=dub%20house');
+    expect(fetchMock).toHaveBeenCalledWith('/api/search?q=dub%20house', WITH_SIGNAL);
     expect(screen.getByRole('status')).toHaveTextContent('Searching…');
   });
 
@@ -94,8 +97,8 @@ describe('ResultsPanel', () => {
     const { rerender } = render(<ResultsPanel query="al" />);
     rerender(<ResultsPanel query="alpha" />);
     await screen.findByRole('list', { name: 'Search results' });
-    expect(fetchMock).toHaveBeenNthCalledWith(1, '/api/search?q=al');
-    expect(fetchMock).toHaveBeenNthCalledWith(2, '/api/search?q=alpha');
+    expect(fetchMock).toHaveBeenNthCalledWith(1, '/api/search?q=al', WITH_SIGNAL);
+    expect(fetchMock).toHaveBeenNthCalledWith(2, '/api/search?q=alpha', WITH_SIGNAL);
   });
 
   it('discards a slow old response that resolves after a fast new one', async () => {
@@ -134,6 +137,20 @@ describe('ResultsPanel', () => {
     });
     expect(screen.getByRole('listitem')).toHaveTextContent('Alphaline Media');
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('aborts the outdated request when the query changes and on unmount', () => {
+    fetchMock.mockReturnValue(deferred<Response>().promise);
+    const { rerender, unmount } = render(<ResultsPanel query="al" />);
+    rerender(<ResultsPanel query="alpha" />);
+
+    const [, firstInit] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    const [, secondInit] = fetchMock.mock.calls[1] as unknown as [string, RequestInit];
+    expect(firstInit.signal?.aborted).toBe(true);
+    expect(secondInit.signal?.aborted).toBe(false);
+
+    unmount();
+    expect(secondInit.signal?.aborted).toBe(true);
   });
 
   it('ignores a response that lands after unmount', async () => {
