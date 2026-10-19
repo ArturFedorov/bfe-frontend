@@ -153,32 +153,45 @@ Internal tools are multi-page SPAs. Built dependency-free: you write the mini-ro
 
 ## Topic 10: Agentic UI & Annotation Interfaces — training order for the Apple screen
 
-One list, in the order to work through it. Prio **1** = most likely CoderPad prompt for this team; **2** = likely twist or second exercise; **3** = architecture / design-system signal. Tasks marked *redo* are already solved — re-solve from a blank file. Talk-only JD topics are in the second table below.
+One list, in the order to work through it, including tasks solved before — treat every row as fresh and solve from a blank file. Prio **1** = most likely CoderPad prompt for this team; **2** = likely twist or second exercise; **3** = architecture / design-system signal. Status: **new** = never solved, **redo** = solved earlier, re-solve without looking at the old code. Talk-only JD topics are in the second table below.
 
 | Order | Topic | Task | Folder | Prio | Diff | Status |
 | ----- | ------------------------------------- | ---- | ------------------------- | ---- | ---- | ------ |
-| 1 | Agentic UI: streaming model output | 068 | `streaming_transcript` | 1 | M | todo |
-| 2 | Long-running tasks: polling, terminal states | 022 | `polling_status_widget` | 1 | M | todo |
-| 3 | Agentic UI capstone: run timeline, cancel, retry | 073 | `agent_run_timeline` | 1 | H | todo |
-| 4 | Async states, no impossible states | 018 | `async_states_panel` | 1 | E | todo |
-| 5 | Race conditions, cancellation (redo) | 006 | `race_free_search` | 1 | M | redo |
-| 6 | Async state machine hook (redo) | 014 | `use_async` | 1 | M | redo |
-| 7 | Review flow: optimistic update, rollback | 023 | `optimistic_toggle` | 2 | H | todo |
-| 8 | Review queue: bulk selection across pages | 038 | `row_selection_state` | 2 | M | todo |
-| 9 | Annotation: keyboard-first labeling | 070 | `label_hotkeys` | 2 | M | todo |
-| 10 | Annotation: span selection, overlap rules | 071 | `span_labeler` | 2 | H | todo |
-| 11 | Task editor: schema form, blur validation, autosave | 072 | `annotation_task_editor` | 2 | M | todo |
-| 12 | Event-driven state: idempotency, reconnect | 069 | `live_task_feed` | 2 | H | todo |
-| 13 | Server pagination, derived request params | 019 | `paginated_table` | 2 | M | todo |
-| 14 | Auto-retry with backoff | 021 | `retry_panel` | 2 | M | todo |
-| 15 | Data-dense UI: windowing | 045 | `virtualized_list` | 2 | H | todo |
-| 16 | Refs, imperative focus, form a11y | 008 | `focus_shortcuts` | 2 | M | todo |
-| 17 | Compound component, ARIA tabs | 027 | `compound_tabs` | 3 | M | todo |
-| 18 | Controlled vs uncontrolled API | 026 | `flexible_input` | 3 | M | todo |
-| 19 | Dialog a11y, focus trap, portal | 029 | `modal_portal` | 3 | M | todo |
-| 20 | Context performance, state/dispatch split | 039 | `context_splitting` | 3 | M | todo |
-| 21 | Reducer with discriminated-union actions | 033 | `filter_reducer` | 3 | M | todo |
-| 22 | Infinite scroll, in-flight guards | 020 | `infinite_partner_feed` | 3 | M | todo |
+| 1 | Fetch states: loading / error / empty / success | 005 | `fetch_on_mount` | 1 | M | redo |
+| 2 | Race conditions, cancellation | 006 | `race_free_search` | 1 | M | redo |
+| 3 | Fetch hook with AbortController and refetch | 012 | `use_fetch` | 1 | M | redo |
+| 4 | Async state machine hook | 014 | `use_async` | 1 | M | redo |
+| 5 | Async states, no impossible states | 018 | `async_states_panel` | 1 | E | new |
+| 6 | Agentic UI: streaming model output | 068 | `streaming_transcript` | 1 | M | new |
+| 7 | Long-running tasks: polling, terminal states | 022 | `polling_status_widget` | 1 | M | new |
+| 8 | Agentic UI capstone: run timeline, cancel, retry | 073 | `agent_run_timeline` | 1 | H | new |
+| 9 | Debounce hook | 010 | `use_debounced_value` | 1 | E | redo |
+| 10 | Debounced autocomplete, combobox a11y | 024 | `partner_autocomplete` | 1 | H | redo |
+| 11 | Review flow: optimistic update, rollback | 023 | `optimistic_toggle` | 2 | H | new |
+| 12 | Review queue: bulk selection across pages | 038 | `row_selection_state` | 2 | M | new |
+| 13 | Annotation: keyboard-first labeling | 070 | `label_hotkeys` | 2 | M | new |
+| 14 | Undo/redo hook | 016 | `use_undo_state` | 2 | H | redo |
+| 15 | Annotation: span selection, overlap rules | 071 | `span_labeler` | 2 | H | new |
+| 16 | Task editor: schema form, blur validation, autosave | 072 | `annotation_task_editor` | 2 | M | new |
+| 17 | Event-driven state: idempotency, reconnect | 069 | `live_task_feed` | 2 | H | new |
+| 18 | Reducer state machine with guarded transitions | 034 | `wizard_reducer` | 2 | M | redo |
+| 19 | Normalised store, selectors | 037 | `normalized_store` | 2 | H | redo |
+| 20 | Server pagination, derived request params | 019 | `paginated_table` | 2 | M | new |
+| 21 | Auto-retry with backoff | 021 | `retry_panel` | 2 | M | new |
+| 22 | Data-dense UI: windowing | 045 | `virtualized_list` | 2 | H | new |
+| 23 | Derived data, useMemo, no state duplication | 044 | `derived_data_memo` | 2 | M | redo |
+| 24 | Refs, imperative focus, form a11y | 008 | `focus_shortcuts` | 2 | M | new |
+| 25 | Re-render rules, element identity | 040 | `render_counter_lab` | 3 | E | redo |
+| 26 | React.memo boundaries, referential stability | 041 | `memo_boundaries` | 3 | M | redo |
+| 27 | useCallback / useMemo, over-memoisation | 042 | `callback_stability` | 3 | M | redo |
+| 28 | Keys, reconciliation, DOM state ownership | 043 | `list_key_bugs` | 3 | M | redo |
+| 29 | Code splitting, Suspense, preload, single-flight | 046 | `lazy_admin_panel` | 3 | M | redo |
+| 30 | Compound component, ARIA tabs | 027 | `compound_tabs` | 3 | M | new |
+| 31 | Controlled vs uncontrolled API | 026 | `flexible_input` | 3 | M | new |
+| 32 | Dialog a11y, focus trap, portal | 029 | `modal_portal` | 3 | M | new |
+| 33 | Context performance, state/dispatch split | 039 | `context_splitting` | 3 | H | new |
+| 34 | Reducer with discriminated-union actions | 033 | `filter_reducer` | 3 | E | new |
+| 35 | Infinite scroll, in-flight guards | 020 | `infinite_partner_feed` | 3 | M | new |
 
 ### Topics to discuss — the "general technical questions" half of the screen
 
