@@ -160,17 +160,17 @@ One list, in the order to work through it, including tasks solved before — tre
 | 1 | Fetch states: loading / error / empty / success | 005 | `fetch_on_mount` | 1 | M | redo |
 | 2 | Race conditions, cancellation | 006 | `race_free_search` | 1 | M | redo |
 | 3 | Fetch hook with AbortController and refetch | 012 | `use_fetch` | 1 | M | redo |
-| 4 | Async state machine hook | 014 | `use_async` | 1 | M | redo |
+| 4 | Async state machine hook | 014 | `use_async` | 1 | M | new |
 | 5 | Async states, no impossible states | 018 | `async_states_panel` | 1 | E | new |
 | 6 | Agentic UI: streaming model output | 068 | `streaming_transcript` | 1 | M | new |
 | 7 | Long-running tasks: polling, terminal states | 022 | `polling_status_widget` | 1 | M | new |
 | 8 | Agentic UI capstone: run timeline, cancel, retry | 073 | `agent_run_timeline` | 1 | H | new |
-| 9 | Debounce hook | 010 | `use_debounced_value` | 1 | E | redo |
+| 9 | Debounce hook | 010 | `use_debounced_value` | 1 | E | new |
 | 10 | Debounced autocomplete, combobox a11y | 024 | `partner_autocomplete` | 1 | H | redo |
 | 11 | Review flow: optimistic update, rollback | 023 | `optimistic_toggle` | 2 | H | new |
 | 12 | Review queue: bulk selection across pages | 038 | `row_selection_state` | 2 | M | new |
 | 13 | Annotation: keyboard-first labeling | 070 | `label_hotkeys` | 2 | M | new |
-| 14 | Undo/redo hook | 016 | `use_undo_state` | 2 | H | redo |
+| 14 | Undo/redo hook | 016 | `use_undo_state` | 2 | H | new |
 | 15 | Annotation: span selection, overlap rules | 071 | `span_labeler` | 2 | H | new |
 | 16 | Task editor: schema form, blur validation, autosave | 072 | `annotation_task_editor` | 2 | M | new |
 | 17 | Event-driven state: idempotency, reconnect | 069 | `live_task_feed` | 2 | H | new |
