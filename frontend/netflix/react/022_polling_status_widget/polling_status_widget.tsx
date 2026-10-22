@@ -60,7 +60,6 @@ export function PollingStatusWidget({
       <div role="status">{renderStatus(status)}</div>
       {showAlert && <div role="alert">Connection lost — retrying</div>}
       {pollingFinished && <div>Polling stopped</div>}
-
     </div>
   )
 }
