@@ -30,7 +30,7 @@ export function StreamingTranscript({
   useEffect(() => {
     const controller = new AbortController();
     abortRef.current = controller;
-    const { signal} = controller;
+    const { signal } = controller;
 
     setStatus('streaming');
     setText('');
