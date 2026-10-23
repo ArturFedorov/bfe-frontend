@@ -24,21 +24,19 @@ export function PartnerAutocomplete({
   const id = useId();
   const inputId = `${id}-input`;
   const listBoxId = `${id}-listbox`;
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState<string>('');
   const [results, setResults] = useState<Partner[]>([]);
   const [open, setOpen] = useState(false);
   const [noResults, setNoResults] = useState<boolean>(false);
-  const [activeIndex, setActiveIndex] = useState<number>(-1);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const abortRef = useRef<AbortController | null>(null);
   const requestIdRef = useRef(0);
-  const cacheRef = useRef(new Map<string, Partner[]>());
+  const cacheRef = useRef(new Map<string, Partner[]>);
 
   useEffect(() => {
-    return () => {
-      clearTimeout(timerRef.current);
-      abortRef.current?.abort();
-    }
+    clearTimeout(timerRef.current);
+    abortRef.current?.abort();
   }, []);
 
   const show = (partners: Partner[]) => {
@@ -51,6 +49,7 @@ export function PartnerAutocomplete({
   const runSearch = async (query: string) => {
     abortRef.current?.abort();
     const cached = cacheRef.current.get(query);
+
     if(cached) {
       requestIdRef.current += 1;
       show(cached);
@@ -83,12 +82,14 @@ export function PartnerAutocomplete({
       setActiveIndex(-1);
       return;
     }
+
     timerRef.current = setTimeout(() => runSearch(value), debounceMs);
   }
 
   const select = (partner: Partner) => {
     clearTimeout(timerRef.current);
     abortRef.current?.abort();
+
     requestIdRef.current += 1;
     onSelect(partner);
     setQuery(partner.name);
@@ -96,19 +97,19 @@ export function PartnerAutocomplete({
     setActiveIndex(-1);
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>)=> {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'ArrowDown' && open && results.length > 0) {
       e.preventDefault();
       setActiveIndex((i) => (i + 1) % results.length);
     } else if(e.key === 'ArrowUp' && open && results.length > 0) {
       e.preventDefault();
-      setActiveIndex((i) => (i <= 0 ? results.length - 1 : i -1));
+      setActiveIndex((i) => (i <= 0 ? results.length - 1 : i - 1));
     } else if(e.key === 'Enter') {
       if(open && activeIndex >= 0) {
         e.preventDefault();
         select(results[activeIndex]);
       }
-    } else if(e.key === 'Escape') {
+    } else if (e.key === 'Escape') {
       setOpen(false);
       setActiveIndex(-1);
     }
@@ -117,6 +118,7 @@ export function PartnerAutocomplete({
   const highlight = (name: string): ReactNode => {
     const idx = name.toLowerCase().indexOf(query.toLowerCase());
     if(query === '' || idx === -1) return name;
+
     return (
       <>
         {name.slice(0, idx)}
@@ -145,7 +147,7 @@ export function PartnerAutocomplete({
       />
       {open && (
         <ul role="listbox" id={listBoxId}>
-          {results.map((partner, index) =>
+          {results.map((partner, index)  =>
             <li
               key={partner.id}
               id={`${id}-option-${index}`}
@@ -158,6 +160,7 @@ export function PartnerAutocomplete({
           </li>)}
         </ul>
       )}
+
       {noResults && <div role="status">No partners found</div>}
     </div>
   )
