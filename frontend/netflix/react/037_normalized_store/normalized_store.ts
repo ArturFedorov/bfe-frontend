@@ -33,29 +33,78 @@ export const emptyStoreState: StoreState = {
   integrations: { byId: {}, allIds: [] },
 };
 
+const addId = (allIds: string[], id: string) => {
+  return allIds.includes(id) ? allIds : [...allIds, id];
+};
+
+function upsert<T extends { id: string }>(
+  table: EntityTable<T>,
+  entity: T,
+): EntityTable<T> {
+  return {
+    byId: { ...table.byId, [entity.id]: entity },
+    allIds: addId(table.allIds, entity.id),
+  };
+}
+
 export function storeReducer(
   state: StoreState,
   action: StoreAction,
 ): StoreState {
-  // TODO: implement — untouched tables and entities must keep their references;
-  // unknown-id updates/removes and same-status updates are same-reference no-ops.
-  throw new Error('Not implemented');
+  switch (action.type) {
+    case 'addPartner':
+      return {
+        ...state,
+        partners: upsert(state.partners, action.partner),
+      };
+
+    case 'addIntegration':
+      return {
+        ...state,
+        integrations: upsert(state.integrations, action.integration),
+      };
+
+    case 'updateIntegrationStatus':
+      const current = state.integrations.byId[action.id];
+      if (!current || current.status === action.status) return state;
+      return {
+        ...state,
+        integrations: {
+          ...state.integrations,
+          byId: {
+            ...state.integrations.byId,
+            [action.id]: { ...current, status: action.status },
+          },
+        },
+      };
+
+    case 'removeIntegration':
+      if (!(action.id in state.integrations.byId)) return state;
+
+      const { [action.id]: _removed, ...rest } = state.integrations.byId;
+      return {
+        ...state,
+        integrations: {
+          byId: rest,
+          allIds: state.integrations.allIds.filter((id) => id !== action.id),
+        },
+      };
+  }
 }
 
 export function selectAllPartners(state: StoreState): Partner[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  return Object.values(state.partners.byId);
 }
 
 export function selectAllIntegrations(state: StoreState): Integration[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  return Object.values(state.integrations.byId);
 }
 
 export function selectIntegrationsForPartner(
   state: StoreState,
   partnerId: string,
 ): Integration[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  return selectAllIntegrations(state).filter(
+    (integration) => integration.partnerId === partnerId,
+  );
 }
