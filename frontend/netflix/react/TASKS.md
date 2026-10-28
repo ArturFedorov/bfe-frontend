@@ -193,29 +193,52 @@ One list, in the order to work through it, including tasks solved before — tre
 | 34 | Reducer with discriminated-union actions | 033 | `filter_reducer` | 3 | E | new |
 | 35 | Infinite scroll, in-flight guards | 020 | `infinite_partner_feed` | 3 | M | new |
 
-### Topics to discuss — the "general technical questions" half of the screen
+### Likely CoderPad prompts by folder
 
-Prepare a two-sentence answer plus one concrete example for each. "Evidence" points at tasks in this repo you can cite as something you have actually built.
+Based on the Apple JD and the recruiter's note (CoderPad, frontend coding plus general technical questions, collaborative). Most likely first within each folder.
 
-| Order | Topic | JD line | Be ready to explain | Evidence in repo |
-| ----- | ----- | ------- | ------------------- | ---------------- |
-| 1 | Race conditions and cancellation | Async data patterns | Ignore flag vs AbortController: the flag guarantees stale results never render, abort frees the network; use both. Where the cleanup runs (before every effect re-run, not only unmount). | 006, 012, 014, 024 |
-| 2 | Streaming vs polling vs WebSocket vs SSE | WebSockets / SSE, agentic UI | SSE is one-way, auto-reconnects, works over plain HTTP; WebSocket is bidirectional but needs your own reconnect and heartbeat; polling is fine for low-frequency terminal-state jobs. Idempotency and ordering are the client's problem in all three. | 022, 068, 069, 073 |
-| 3 | Long-running task UX | Agentic UI, long-running async | Explicit state machine (idle / running / succeeded / failed / cancelled), partial output kept on failure, cancel that actually aborts, retry that ignores events from the old run, resume after reload. | 014, 073 |
-| 4 | State modelling | React architecture, state management | Discriminated unions over boolean flags; reducer when transitions have rules; normalised byId/allIds for relational data; derive, do not duplicate. When context is enough and when it is not. | 018, 034, 037, 044 |
-| 5 | Re-render control | Rendering optimization | What triggers a render; React.memo only at a measured boundary; referential stability of callbacks and objects; children-as-prop; cost of over-memoising. | 040, 041, 042, 043 |
-| 6 | Bundle budgets and lazy loading | Bundle optimization, lazy loading | Route and feature-level code splitting; preload on intent (hover, viewport); why lazy caches a rejection; budgets enforced in CI. | 046 |
-| 7 | Core Web Vitals | Performance and observability | What moves LCP (critical path, image priority), INP (long tasks, event handler cost, rendering work), CLS (reserved space). Measuring with field data (web-vitals, RUM) vs lab (Lighthouse). | — |
-| 8 | Profiling and error tracking | Observability end-to-end | React Profiler and the browser Performance panel; what to instrument (TTI per screen, API latency, error rate by component); error boundaries plus a reporting sink. | 031, 046 |
-| 9 | Accessibility as hygiene | WCAG | Roles before test ids; labelled controls; focus management for dialogs and menus; live regions for async status; roving tabindex vs aria-activedescendant; keyboard parity with the mouse. | 002, 024, 027, 029, 070 |
-| 10 | Testing strategy | Unit, integration, e2e | Testing pyramid: RTL for behaviour at the component boundary, mock fetch not hooks, fake timers for polling and debounce, Playwright for a few critical journeys; what you would never unit test. | every task here, 056, 057 |
-| 11 | Frontend security basics | Security best practices | XSS and dangerouslySetInnerHTML discipline, CSP, where tokens live (httpOnly cookies vs storage), CSRF, dependency hygiene. | — |
-| 12 | Backend-for-frontend | BFF layers, REST / GraphQL | When a BFF earns its keep: aggregation, shaping per screen, auth boundary, hiding service churn. REST vs GraphQL trade-offs: over-fetching vs caching complexity and N+1. | `node/` track |
-| 13 | Design systems and component APIs | Design-system contribution | Controlled vs uncontrolled with the same component; compound components over prop explosion; slots; tokens; flagging when product work breaks a pattern. | 025, 026, 027, 028 |
-| 14 | Forms at scale | Task editors | Validate on blur then live after touch; dirty tracking gates submit; autosave debounce; unsaved-changes guard; optimistic concurrency on save conflicts. | 072 |
-| 15 | Data-dense UIs | Annotation and review tools | Windowing and DOM budget; keyboard-first workflows; selection across pages; undo/redo as a first-class feature. | 016, 035, 038, 045, 070, 071 |
-| 16 | AI-assisted coding with judgment | Claude Code, Copilot, Cursor | This repo's workflow: generated tests as the grader, stubs solved by hand, reviewing generated code for dead defensiveness and over-memoising; where you would not trust generated code. | this repo |
-| 17 | Collaborating with design | Design partnership | Engaging at the design stage, pushing back with a reason, pixel-fidelity review habits, when to propose a pattern change instead of a one-off. | — |
+**`frontend/netflix/react/` — the main exercise will almost certainly come from here**
+
+| Likelihood | Tasks | What the prompt looks like |
+| --- | --- | --- |
+| Very high | 005, 006, 012, 014, 018 | Fetch and render with states, then a race twist |
+| Very high | 068, 022, 073 | Streaming output, long-running job status, cancel and retry |
+| High | 010, 024 | Debounced search or autocomplete with cancellation |
+| High | 070, 023, 038 | Review or annotation queue: hotkeys, optimistic toggle, bulk selection |
+| Medium | 072 | Schema-driven task editor form |
+| Medium | 069, 034, 037, 016 | Event-driven reducer, state machine, normalized store, undo history |
+| Lower, likely as talk | 040–044, 027, 029, 045 | Re-render fixes, compound component with ARIA, virtualization |
+
+**`algo/` — pure async utilities, plausible if the interviewer picks the plain TypeScript pad**
+
+| Likelihood | Tasks | Why |
+| --- | --- | --- |
+| Medium | 067, 070, 077, 078 | In-flight dedupe, stale-while-revalidate, retry with backoff, concurrency pool — the react hook problems without the DOM |
+| Medium | 076, 072, 066 | Cancelable promise, cancellable pipeline, timeout wrapper — the cancellation theme |
+| Lower | 004, 059 | Undo history as a data structure, in case 016 comes up without React |
+| Unlikely | 001–065 | Classic data-structure puzzles; nothing in the JD or recruiter note points here |
+
+**`frontend/netflix/typescript/` — not a standalone exercise, but these shapes appear inside whatever you build**
+
+| Likelihood | Tasks | Why |
+| --- | --- | --- |
+| High, embedded | 001, 002, 007 | Discriminated unions and narrowing model every async state |
+| Medium, embedded | 006, 015 | Typed event maps and emitters — the shape of the 069 and 073 event streams |
+| Lower | 011, 014 | Typed API client and paginated wrapper, if the conversation turns to the BFF layer |
+
+**`frontend/netflix/node/` — discussion only, not coding**
+
+| Tasks | Why |
+| --- | --- |
+| 010, 011, 013, 014, 016 | Middleware chain, CRUD, validation, idempotency keys, ETag caching — material for the BFF question |
+| 002 | Event loop ordering, a common general technical question |
+
+**Other tracks**
+
+- `frontend/async_patterns/`, `dom_and_browser/`, `javascript_utilities/`: lower priority, they overlap with algo 066–081 and the react hooks. Event-loop and debounce/throttle items double as warm-ups.
+- `frontend/netflix/css/`: skip for this screen. Pixel fidelity is in the JD, but a CoderPad screen won't grade layout.
+
+**Order across folders:** react Tier 1 async rows → react 068 and 073 → algo 067, 070, 077, 078 as the plain-TypeScript backstop → react Tier 2 review-flow tasks. Everything else is talk preparation.
 
 **CoderPad habits to rehearse:** narrate the state shape first (discriminated union before any JSX), name the race or cleanup hazard before writing the effect, ask one qualifying question about data shape and one about failure handling before coding, and say out loud which test you would write first.
 
