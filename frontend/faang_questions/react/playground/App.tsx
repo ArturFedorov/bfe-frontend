@@ -80,7 +80,7 @@ class TaskBoundary extends Component<BoundaryProps, { error: Error | null }> {
           <p>
             Solve it in <code>{this.props.slug}</code>: implement the stub,
             check the folder&apos;s <code>README.md</code>, and validate with{' '}
-            <code>npx jest frontend/netflix/react/{this.props.slug}</code>.
+            <code>npx jest frontend/faang_questions/react/{this.props.slug}</code>.
             Vite hot-reloads this page as you save.
           </p>
         ) : (

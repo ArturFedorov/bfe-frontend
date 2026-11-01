@@ -5,10 +5,10 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "dev:react": "vite --config frontend/netflix/react/playground/vite.config.ts",
-    "test:react": "jest frontend/netflix/react",
-    "test:ts": "jest frontend/netflix/typescript",
-    "test:node": "jest frontend/netflix/node",
+    "dev:react": "vite --config frontend/faang_questions/react/playground/vite.config.ts",
+    "test:react": "jest frontend/faang_questions/react",
+    "test:ts": "jest frontend/faang_questions/typescript",
+    "test:node": "jest frontend/faang_questions/node",
     "format": "prettier --write \"**/*.ts\"",
     "format:check": "prettier --check \"**/*.ts\""
   },

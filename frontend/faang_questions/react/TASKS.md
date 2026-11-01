@@ -197,7 +197,7 @@ One list, in the order to work through it, including tasks solved before — tre
 
 Based on the Apple JD and the recruiter's note (CoderPad, frontend coding plus general technical questions, collaborative). Most likely first within each folder.
 
-**`frontend/netflix/react/` — the main exercise will almost certainly come from here**
+**`frontend/faang_questions/react/` — the main exercise will almost certainly come from here**
 
 | Likelihood | Tasks | What the prompt looks like |
 | --- | --- | --- |
@@ -218,7 +218,7 @@ Based on the Apple JD and the recruiter's note (CoderPad, frontend coding plus g
 | Lower | 004, 059 | Undo history as a data structure, in case 016 comes up without React |
 | Unlikely | 001–065 | Classic data-structure puzzles; nothing in the JD or recruiter note points here |
 
-**`frontend/netflix/typescript/` — not a standalone exercise, but these shapes appear inside whatever you build**
+**`frontend/faang_questions/typescript/` — not a standalone exercise, but these shapes appear inside whatever you build**
 
 | Likelihood | Tasks | Why |
 | --- | --- | --- |
@@ -226,7 +226,7 @@ Based on the Apple JD and the recruiter's note (CoderPad, frontend coding plus g
 | Medium, embedded | 006, 015 | Typed event maps and emitters — the shape of the 069 and 073 event streams |
 | Lower | 011, 014 | Typed API client and paginated wrapper, if the conversation turns to the BFF layer |
 
-**`frontend/netflix/node/` — discussion only, not coding**
+**`frontend/faang_questions/node/` — discussion only, not coding**
 
 | Tasks | Why |
 | --- | --- |
@@ -236,7 +236,7 @@ Based on the Apple JD and the recruiter's note (CoderPad, frontend coding plus g
 **Other tracks**
 
 - `frontend/async_patterns/`, `dom_and_browser/`, `javascript_utilities/`: lower priority, they overlap with algo 066–081 and the react hooks. Event-loop and debounce/throttle items double as warm-ups.
-- `frontend/netflix/css/`: skip for this screen. Pixel fidelity is in the JD, but a CoderPad screen won't grade layout.
+- `frontend/faang_questions/css/`: skip for this screen. Pixel fidelity is in the JD, but a CoderPad screen won't grade layout.
 
 **Order across folders:** react Tier 1 async rows → react 068 and 073 → algo 067, 070, 077, 078 as the plain-TypeScript backstop → react Tier 2 review-flow tasks. Everything else is talk preparation.
 

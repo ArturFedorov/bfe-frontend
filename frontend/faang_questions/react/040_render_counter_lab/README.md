@@ -11,7 +11,7 @@ This task ships **complete** — you do not write or fix any code. The work is:
 
 1. Read `render_counter_lab.tsx` (do NOT run the tests yet).
 2. Predict every render count asked for below and write your prediction in the blanks.
-3. Run `npx jest frontend/netflix/react/040_render_counter_lab` and compare.
+3. Run `npx jest frontend/faang_questions/react/040_render_counter_lab` and compare.
 4. For every count you got wrong, write the explanation until you can defend it out loud.
 
 The tree:

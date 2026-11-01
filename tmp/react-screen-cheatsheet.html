@@ -1,0 +1,387 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Screen Glance Sheet</title><style>
+:root{--bg:#f3f4f6;--panel:#fff;--ink:#111827;--code-bg:#0f172a;--code-ink:#e5e7eb}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#060a14;--panel:#0f172a;--ink:#e5e7eb;--code-bg:#020617;--code-ink:#e5e7eb}}
+:root[data-theme=dark]{--bg:#060a14;--panel:#0f172a;--ink:#e5e7eb;--code-bg:#020617;--code-ink:#e5e7eb}
+*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(5,1fr);gap:.45vh;height:100vh;padding:.45vh}
+.card{display:flex;flex-direction:column;min-height:0;min-width:0;border:2px solid var(--g);border-left-width:.4vw;border-radius:.5vh;background:var(--code-bg);overflow:hidden}
+.card header{display:flex;align-items:baseline;gap:.5em;padding:.25em .6em;background:var(--g);color:#fff;font-size:min(.6vw,1.1vh);line-height:1.3;white-space:nowrap;overflow:hidden}
+.card header b{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.1em}
+.card header strong{font-weight:700}
+.card header span{opacity:.92;font-weight:400;overflow:hidden;text-overflow:ellipsis}
+.card pre{flex:1;margin:0;padding:.5em .7em;overflow:hidden;color:var(--code-ink);font:min(.40vw,.68vh)/1.15 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;tab-size:2}
+</style></head><body><div class="grid"><article class="card" style="--g:#2563eb"><header><b>005</b><strong>Fetch on mount</strong><span>· loading / error / empty / success + ignore late response</span></header><pre><code>const [s, setS] = useState&lt;State&gt;({ status: 'loading' });   // union first, JSX last
+useEffect(() =&gt; {
+  let ignore = false;                                   // cleanup flips it
+  setS({ status: 'loading' });
+  fetch(endpoint)
+    .then(r =&gt; r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+    .then(rows =&gt; { if (!ignore) setS({ status: 'success', partners: rows }); })
+    .catch(e  =&gt; { if (!ignore) setS({ status: 'error', message: e.message }); });
+  return () =&gt; { ignore = true; };
+}, [endpoint]);
+
+switch (s.status) {
+  case 'loading': return &lt;div role="status"&gt;Loading partners…&lt;/div&gt;;
+  case 'error':   return &lt;div role="alert"&gt;{s.message}&lt;/div&gt;;
+  case 'success': return s.partners.length === 0
+    ? &lt;div&gt;No partners found.&lt;/div&gt;                     // empty DERIVED from success
+    : &lt;ul aria-label="Partners"&gt;
+        {s.partners.map(p =&gt; &lt;li key={p.id}&gt;{p.name}&lt;/li&gt;)}
+      &lt;/ul&gt;;
+}</code></pre></article><article class="card" style="--g:#2563eb"><header><b>006</b><strong>Race-free search</strong><span>· refetch on query change; slow old response must never win</span></header><pre><code>useEffect(() =&gt; {
+  if (!query.trim()) return;                          // idle → "Type to search partners."
+  let ignore = false;
+  const c = new AbortController();
+  setData({ status: 'loading' });
+
+  fetch(`${endpoint}?q=${encodeURIComponent(query)}`, { signal: c.signal })
+    .then(r =&gt; r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+    .then(rows =&gt; { if (!ignore) setData({ status: 'success', results: rows }); })
+    .catch(e =&gt; {
+      if (ignore || e.name === 'AbortError') return;  // abort is NOT an error state
+      setData({ status: 'error', message: e.message });
+    });
+
+  return () =&gt; { ignore = true; c.abort(); };
+  // ignore flag = correctness (works even if fetch ignores the signal)
+  // abort       = frees the connection; cleanup runs before EVERY re-run
+}, [endpoint, query]);</code></pre></article><article class="card" style="--g:#2563eb"><header><b>012</b><strong>useFetch</strong><span>· { data, error, loading, refetch } · abort on url change + unmount</span></header><pre><code>const [tick, setTick] = useState(0);                 // refetch = bump tick
+useEffect(() =&gt; {
+  const c = new AbortController();
+  setState({ loading: true, error: null, data: null });
+  fetch(url, { signal: c.signal })
+    .then(r =&gt; r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+    .then(data =&gt; {
+      if (c.signal.aborted) return;                   // stale → drop
+      setState({ data, error: null, loading: false });
+    })
+    .catch(e =&gt; {
+      if (c.signal.aborted) return;                   // AbortError → drop too
+      setState({ loading: false, data: null, error: e });
+    });
+  return () =&gt; c.abort();                             // re-run AND unmount
+}, [url, tick]);
+
+const refetch = useCallback(() =&gt; setTick(t =&gt; t + 1), []);
+// stable identity · returns VOID (returning a promise makes sync act() async)
+// refetch while pending: cleanup aborts the old request for free</code></pre></article><article class="card" style="--g:#2563eb"><header><b>014</b><strong>useAsync</strong><span>· idle/loading/success/error; only the LATEST run may settle</span></header><pre><code>const fnRef = useRef(fn);                             // latest-callback ref
+useEffect(() =&gt; { fnRef.current = fn; }, [fn]);
+const runId = useRef(0);                              // monotonic run id
+
+const run = useCallback(async (...args: Args): Promise&lt;void&gt; =&gt; {
+  const id = ++runId.current;
+  setState({ status: 'loading', data: null, error: null });
+  try {
+    const data = await fnRef.current(...args);
+    if (id !== runId.current) return;                 // a newer run started: drop
+    setState({ status: 'success', data, error: null });
+  } catch (e) {
+    if (id !== runId.current) return;                 // stale rejection: drop
+    setState({ status: 'error', data: null,
+               error: e instanceof Error ? e : new Error(String(e)) });
+  }
+}, []);                                               // never throws, always resolves
+
+// you cannot cancel an arbitrary promise → let it settle, compare ids, ignore losers</code></pre></article><article class="card" style="--g:#2563eb"><header><b>018</b><strong>Async states panel</strong><span>· render exactly ONE of loading / error+retry / empty / list</span></header><pre><code>export type AsyncResult&lt;T&gt; =
+  | { status: 'loading' }
+  | { status: 'error'; error: Error }
+  | { status: 'success'; data: T[] };               // impossible combos can't compile
+
+switch (result.status) {
+  case 'loading':
+    return &lt;div role="status"&gt;Loading partners…&lt;/div&gt;;
+  case 'error':
+    return &lt;&gt;&lt;div role="alert"&gt;{result.error.message}&lt;/div&gt;
+             &lt;button onClick={onRetry}&gt;Retry&lt;/button&gt;&lt;/&gt;;
+  case 'success':
+    return result.data.length === 0
+      ? &lt;div&gt;No partners found&lt;/div&gt;                 // empty derived, not a 5th flag
+      : &lt;ul aria-label="Partners"&gt;
+          {result.data.map(p =&gt; &lt;li key={p.id}&gt;{p.name}&lt;/li&gt;)}
+        &lt;/ul&gt;;
+  default: { const never: never = result; return never; }   // exhaustive guard
+}
+// follow-up: refreshing = { status: 'refreshing'; data } member — never a boolean</code></pre></article><article class="card" style="--g:#7c3aed"><header><b>068</b><strong>Streaming transcript</strong><span>· append tokens from AsyncIterable · Stop aborts · partial text kept</span></header><pre><code>useEffect(() =&gt; {
+  const c = new AbortController(); abortRef.current = c;
+  setText(''); setStatus('streaming'); setErr('');
+  (async () =&gt; {                                      // inner async → effect stays sync
+    let full = '';                                    // local accumulator, no stale state
+    try {
+      for await (const chunk of source(c.signal)) {   // for-await IS the subscription
+        if (c.signal.aborted) return;
+        full += chunk; setText(full);
+      }
+      if (c.signal.aborted) return;                   // code after loop = stream ended
+      setStatus('done'); onComplete?.(full);
+    } catch (e) {
+      if (c.signal.aborted) return;
+      setStatus('error'); setErr(e instanceof Error ? e.message : String(e));
+    }
+  })();
+  return () =&gt; c.abort();
+}, [source]);
+const stop = () =&gt; { abortRef.current?.abort(); setStatus('stopped'); };
+// render SEPARATE always-on regions: &lt;div role=status&gt;{LABEL[status]}&lt;/div&gt;
+//   {error &amp;&amp; &lt;div role=alert&gt;} · &lt;p data-testid=transcript&gt;{text}&lt;/p&gt; · Stop disabled</code></pre></article><article class="card" style="--g:#7c3aed"><header><b>022</b><strong>Polling status widget</strong><span>· poll every N s, never overlap, back off on error, stop on terminal</span></header><pre><code>useEffect(() =&gt; {
+  let cancelled = false;
+  let timer: ReturnType&lt;typeof setTimeout&gt; | undefined;
+  let delay = intervalMs;                             // bookkeeping = locals, NOT state
+
+  const poll = async () =&gt; {
+    try {
+      const next = await fetchStatus();
+      if (cancelled) return;
+      setStatus(next); setLost(false); delay = intervalMs;   // success resets backoff
+      if (TERMINAL.includes(next)) return;            // terminal: stop for good
+    } catch {
+      if (cancelled) return;
+      setLost(true); delay = Math.min(delay * 2, maxIntervalMs);
+    }
+    timer = setTimeout(poll, delay);                  // settle → schedule (no setInterval)
+  };
+  void poll();
+  return () =&gt; { cancelled = true; clearTimeout(timer); };
+}, [fetchStatus, intervalMs, maxIntervalMs]);
+// status starts null → "Waiting for status…" (a real 'queued' must not look like waiting)</code></pre></article><article class="card" style="--g:#7c3aed"><header><b>073</b><strong>Agent run timeline</strong><span>· steps stream output · elapsed clock · Cancel aborts · Retry = fresh run</span></header><pre><code>const [state, dispatch] = useReducer(reducer, INITIAL);  // steps · status · error · elapsed
+const [attempt, setAttempt] = useState(0);               // bump = new run
+useEffect(() =&gt; {                                        // one effect run == one agent run
+  const c = new AbortController(); abortRef.current = c;
+  (async () =&gt; {
+    try {
+      for await (const ev of run(c.signal)) {
+        if (c.signal.aborted) return;                    // signal = stale-run guard
+        dispatch({ type: 'event', event: ev });          // reducer applies step_* events
+      }
+    } catch (e) {
+      if (!c.signal.aborted) dispatch({ type: 'stream_failed', message: msg(e) });
+    }
+  })();
+  return () =&gt; c.abort();                                // cancel · retry · unmount
+}, [run, attempt]);
+useEffect(() =&gt; {                                        // clock exists only while running
+  if (state.status !== 'running') return;
+  const id = setInterval(() =&gt; dispatch({ type: 'tick' }), 1000);
+  return () =&gt; clearInterval(id);
+}, [state.status, attempt]);
+const cancel = () =&gt; { abortRef.current?.abort(); dispatch({ type: 'cancel' }); };
+const retry  = () =&gt; { dispatch({ type: 'reset' }); setAttempt(n =&gt; n + 1); };</code></pre></article><article class="card" style="--g:#059669"><header><b>010</b><strong>useDebouncedValue</strong><span>· trailing-edge debounce; restart on change; clear on unmount</span></header><pre><code>export function useDebouncedValue&lt;T&gt;(value: T, ms: number): T {
+  const [debounced, setDebounced] = useState(value);   // initial value immediately
+
+  useEffect(() =&gt; {
+    const id = setTimeout(() =&gt; setDebounced(value), ms);
+    return () =&gt; clearTimeout(id);                     // the cleanup IS the debounce
+  }, [value, ms]);                                     // ms belongs in deps
+
+  return debounced;
+}
+
+// every value change: cleanup cancels the pending timer, effect sets a new one
+// React guarantees cleanup-before-rerun ordering → no ref, no manual clear
+// unmount: cleanup runs → no leaked timer, no setState after unmount</code></pre></article><article class="card" style="--g:#059669"><header><b>024</b><strong>Partner autocomplete</strong><span>· debounce + abort + request-id · ↑↓ Enter Esc · combobox a11y</span></header><pre><code>const onChange = (v: string) =&gt; {
+  setQuery(v); clearTimeout(timerRef.current);
+  if (v === '') { abortRef.current?.abort(); reqId.current++; close(); return; }
+  timerRef.current = setTimeout(() =&gt; search(v), debounceMs);     // 1. debounce input
+};
+const search = async (q: string) =&gt; {
+  abortRef.current?.abort();                                       // 2. cancel previous
+  const c = new AbortController(); abortRef.current = c;
+  const id = ++reqId.current;                                      // 3. request-id guard
+  try {
+    const rows = await fetchPartners(q, { signal: c.signal });
+    if (id !== reqId.current) return;                              // stale → drop
+    setResults(rows); setOpen(rows.length &gt; 0); setActive(-1);
+  } catch { /* aborted or failed: keep current UI */ }
+};
+// keys: ArrowDown/Up move active (wrap) · Enter selects active · Escape closes
+// select(p): clear timer, abort, reqId++, onSelect(p), setQuery(p.name), close
+// a11y: &lt;input role=combobox aria-autocomplete=list aria-expanded aria-controls={listId}
+//         aria-activedescendant={active &gt;= 0 ? `${id}-option-${active}` : undefined}&gt;
+//       &lt;ul role=listbox id={listId}&gt; &lt;li role=option id=… aria-selected&gt; &lt;mark&gt;match&lt;/mark&gt;</code></pre></article><article class="card" style="--g:#d97706"><header><b>070</b><strong>Label hotkeys</strong><span>· roving-tabindex listbox · digit labels + advances · hotkeys off in Note</span></header><pre><code>const moveTo = (i: number) =&gt; {                         // clamp, never wrap
+  const k = Math.max(0, Math.min(items.length - 1, i));
+  setActive(k); refs.current[k]?.focus();               // state + DOM focus together
+};
+const onKeyDown = (e: KeyboardEvent) =&gt; {               // ONE handler on the &lt;ul&gt;
+  const item = items[active];
+  switch (e.key) {
+    case 'ArrowDown': case 'j': e.preventDefault(); moveTo(active + 1); return;
+    case 'ArrowUp':   case 'k': e.preventDefault(); moveTo(active - 1); return;
+    case 'Backspace':
+      e.preventDefault(); onChange({ ...value, [item.id]: undefined }); return;
+    default: {
+      const label = labelByKey.get(e.key); if (!label) return;    // unknown digit: no-op
+      e.preventDefault(); onChange({ ...value, [item.id]: label.key }); moveTo(active + 1);
+    }
+  }
+};
+// &lt;ul role=listbox aria-label=Items onKeyDown&gt;  &lt;li role=option aria-selected={i===active}
+//   tabIndex={i===active ? 0 : -1} aria-describedby={label ? descId : undefined}&gt;
+// Note &lt;textarea&gt; lives OUTSIDE the listbox → its keystrokes never reach the handler
+// fully controlled: spread value, call onChange; progress "N of M labeled" derived</code></pre></article><article class="card" style="--g:#d97706"><header><b>023</b><strong>Optimistic toggle</strong><span>· flip now · updateFlag once · roll back + alert · ignore in-flight clicks</span></header><pre><code>const inFlight = useRef(false);            // ref, not state: correct BEFORE the re-render
+
+const toggle = async () =&gt; {
+  if (inFlight.current) return;            // double-click / in-flight guard
+  inFlight.current = true;
+
+  const previous = enabled;                // capture BEFORE the await → right rollback
+  const next = !previous;
+  setEnabled(next); setFailed(false);      // optimistic flip, clears old error
+
+  try { await updateFlag(next); }          // success path touches NO state → no flicker
+  catch { setEnabled(previous); setFailed(true); }   // roll back, hand control back
+  finally { inFlight.current = false; }
+};
+
+&lt;input id={id} type="checkbox" role="switch" checked={enabled}
+       aria-checked={enabled} onChange={toggle} /&gt;
+{failed &amp;&amp; &lt;div role="alert"&gt;Could not update {label}&lt;/div&gt;}
+// NO automatic retry in the catch — that is task 021; user clicks again = "retry"</code></pre></article><article class="card" style="--g:#d97706"><header><b>038</b><strong>Row selection state</strong><span>· Gmail selection: row · page (indeterminate) · all pages · survives paging</span></header><pre><code>case 'toggleRow': { const s = new Set(st.selectedIds);              // always a NEW Set
+  s.has(a.id) ? s.delete(a.id) : s.add(a.id); return { selectedIds: s }; }
+case 'togglePage': { const s = new Set(st.selectedIds);             // pageIds = visible row ids
+  const all = a.pageIds.every(id =&gt; s.has(id));
+  a.pageIds.forEach(id =&gt; (all ? s.delete(id) : s.add(id)));        // deselect only if ALL
+  return { selectedIds: s }; }
+case 'selectAll': return { selectedIds: new Set(a.allIds) };        // every page
+case 'clearAll':  return { selectedIds: new Set() };
+
+getHeaderState = (sel, pageIds) =&gt; {
+  const n = pageIds.filter(id =&gt; sel.has(id)).length;
+  return n === 0 ? 'none' : n === pageIds.length ? 'all' : 'some';
+};
+// component: page in useState; selection in useReducer; paging never touches the Set
+const pageIds = visibleRows.map(r =&gt; r.id);                          // derived per render
+const headerRef = useCallback((el: HTMLInputElement | null) =&gt; {
+  if (el) el.indeterminate = headerState === 'some';                // DOM property!
+}, [headerState]);
+&lt;input ref={headerRef} type="checkbox" aria-label="Select page"
+       checked={headerState === 'all'} onChange={() =&gt; dispatch({ type:'togglePage', pageIds })}/&gt;</code></pre></article><article class="card" style="--g:#dc2626"><header><b>067</b><strong>In-flight dedupe</strong><span>· same key while pending → same promise; forget on settle</span></header><pre><code>export function dedupe&lt;T&gt;(fn: (key: string) =&gt; Promise&lt;T&gt;) {
+  const inFlight = new Map&lt;string, Promise&lt;T&gt;&gt;();
+
+  return (key: string): Promise&lt;T&gt; =&gt; {
+    const existing = inFlight.get(key);
+    if (existing) return existing;                 // SAME promise object, not a wrapper
+
+    const p = fn(key).finally(() =&gt; inFlight.delete(key));   // forget on settle
+    inFlight.set(key, p);                          // (also on rejection → no poison)
+    return p;
+  };
+}
+
+// dedupe ≠ cache: this forgets as soon as the request settles; a cache remembers
+// finally() on reject still deletes → the next call retries instead of re-throwing</code></pre></article><article class="card" style="--g:#dc2626"><header><b>070</b><strong>Stale-while-revalidate</strong><span>· cached value now, refresh in background; first call waits</span></header><pre><code>export function staleWhileRevalidate&lt;T&gt;(fetcher: (key: string) =&gt; Promise&lt;T&gt;) {
+  const cache    = new Map&lt;string, { value: T }&gt;();   // wrapper → undefined is a value
+  const inFlight = new Map&lt;string, Promise&lt;T&gt;&gt;();     // collapse concurrent refreshes
+
+  const refresh = (key: string): Promise&lt;T&gt; =&gt; {
+    const p = fetcher(key)
+      .then(v =&gt; { cache.set(key, { value: v }); return v; })
+      .finally(() =&gt; inFlight.delete(key));
+    inFlight.set(key, p);
+    return p;
+  };
+
+  return (key: string): Promise&lt;T&gt; =&gt; {
+    const hit = cache.get(key);
+    if (hit) {
+      if (!inFlight.has(key)) refresh(key).catch(() =&gt; {});   // bg refresh, error swallowed
+      return Promise.resolve(hit.value);                      // stale NOW
+    }
+    return inFlight.get(key) ?? refresh(key);                 // first call: wait
+  };
+}</code></pre></article><article class="card" style="--g:#dc2626"><header><b>077</b><strong>Retry with backoff</strong><span>· exponential · cap · jitter · retry predicate · injectable sleep</span></header><pre><code>export async function retry&lt;T&gt;(fn: (attempt: number) =&gt; Promise&lt;T&gt;, o: RetryOptions) {
+  const { retries, baseMs, maxMs = Infinity, jitter = false,
+          isRetryable = () =&gt; true, sleep = defaultSleep, random = Math.random } = o;
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt &lt;= retries; attempt++) {     // total = retries + 1
+    try {
+      return await fn(attempt);
+    } catch (error) {
+      lastError = error;
+      if (!isRetryable(error)) throw error;                  // fail fast
+      if (attempt === retries) break;                        // no sleep after last try
+      let delay = Math.min(baseMs * 2 ** attempt, maxMs);    // exponential, capped
+      if (jitter) delay = Math.floor(delay * random());      // spread the herd
+      await sleep(delay);                                    // injectable → fake timers
+    }
+  }
+  throw lastError;
+}</code></pre></article><article class="card" style="--g:#dc2626"><header><b>078</b><strong>Concurrency pool</strong><span>· ≤ k in flight · results in input order · PoolError after ALL settle</span></header><pre><code>export function runPool&lt;T&gt;(tasks: Array&lt;Task&lt;T&gt;&gt;, k: number): Promise&lt;T[]&gt; {
+  if (k &lt; 1) throw new RangeError('k must be at least 1');    // sync throw by contract
+  return run(tasks, k);
+}
+async function run&lt;T&gt;(tasks: Array&lt;Task&lt;T&gt;&gt;, k: number): Promise&lt;T[]&gt; {
+  const results = new Array&lt;T&gt;(tasks.length);               // input order by index
+  const errors: unknown[] = [];
+  const executing = new Set&lt;Promise&lt;void&gt;&gt;();
+  const all: Promise&lt;void&gt;[] = [];
+
+  for (let i = 0; i &lt; tasks.length; i++) {
+    const p = Promise.resolve().then(() =&gt; tasks[i]())       // factories start lazily
+      .then(r =&gt; { results[i] = r; }, e =&gt; { errors[i] = e; });
+    all.push(p); executing.add(p); p.finally(() =&gt; executing.delete(p));
+    if (executing.size &gt;= k) await Promise.race(executing);  // slot refill on settle
+  }
+  await Promise.all(all);                                    // wait for everything
+  if (errors.length) throw new PoolError(errors.filter(Boolean));
+  return results;
+}</code></pre></article><article class="card" style="--g:#dc2626"><header><b>076</b><strong>Cancelable promise</strong><span>· settle like inner promise OR AbortError on abort · cleanup exactly once</span></header><pre><code>export function cancelable&lt;T&gt;(factory: () =&gt; Promise&lt;T&gt;, signal: AbortSignal,
+                              cleanup?: () =&gt; void): Promise&lt;T&gt; {
+  return new Promise&lt;T&gt;((resolve, reject) =&gt; {
+    let settled = false;
+    const settle = (fn: () =&gt; void) =&gt; {        // ONE gate for value / error / abort
+      if (settled) return;                      // first caller wins, rest are no-ops
+      settled = true;
+      signal.removeEventListener('abort', onAbort);   // no leaked listeners
+      cleanup?.();                              // exactly once
+      fn();
+    };
+    const onAbort = () =&gt; settle(() =&gt; reject(new AbortError()));
+
+    if (signal.aborted) { onAbort(); return; }  // already aborted: factory never runs
+    signal.addEventListener('abort', onAbort, { once: true });
+
+    factory().then(
+      value =&gt; settle(() =&gt; resolve(value)),
+      error =&gt; settle(() =&gt; reject(error)),
+    );
+  });
+}</code></pre></article><article class="card" style="--g:#dc2626"><header><b>072</b><strong>Cancellable pipeline</strong><span>· sequential stages · abort between stages · cleanup in reverse</span></header><pre><code>export async function runPipeline&lt;R&gt;(steps: PipelineStep[], input: unknown, signal: AbortSignal) {
+  if (signal.aborted) throw new AbortError();
+  const cleanups: Array&lt;() =&gt; void | Promise&lt;void&gt;&gt; = []; let off = () =&gt; {};
+  const aborted = new Promise&lt;never&gt;((_, reject) =&gt; {        // raced against every step
+    const onAbort = () =&gt; reject(new AbortError());
+    signal.addEventListener('abort', onAbort, { once: true });
+    off = () =&gt; signal.removeEventListener('abort', onAbort);
+  });
+  aborted.catch(() =&gt; {});                                    // no unhandled rejection
+  try {
+    let result: unknown = input;
+    for (const step of steps) {
+      if (signal.aborted) throw new AbortError();             // check BETWEEN stages
+      const p = step.run(result, signal); p.catch(() =&gt; {});  // stage also gets the signal
+      if (step.cleanup) cleanups.push(step.cleanup.bind(step));   // only if it started
+      result = await Promise.race([p, aborted]);
+    }
+    return result as R;
+  } finally {
+    off();
+    for (let i = cleanups.length - 1; i &gt;= 0; i--) await cleanups[i]();   // reverse order
+  }
+}</code></pre></article><article class="card" style="--g:#dc2626"><header><b>066</b><strong>Timeout wrapper</strong><span>· race against a timer · TimeoutError · clear timer on settle</span></header><pre><code>export class TimeoutError extends Error {
+  constructor(msg = 'Operation timed out') { super(msg); this.name = 'TimeoutError'; }
+}
+
+export function withTimeout&lt;T&gt;(promise: Promise&lt;T&gt;, ms: number): Promise&lt;T&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    const timer = setTimeout(() =&gt; reject(new TimeoutError()), ms);
+    promise
+      .then(v =&gt; { resolve(v); clearTimeout(timer); })   // clear → nothing leaks,
+      .catch(e =&gt; { reject(e); clearTimeout(timer); });  //   tests/process can exit
+  });
+}
+
+// a timeout does NOT cancel the inner work — pair with cancelable (076) if it must
+// first settlement wins: a late inner resolve after TimeoutError is a no-op
+// named error class → callers can branch: e instanceof TimeoutError</code></pre></article></div></body></html>

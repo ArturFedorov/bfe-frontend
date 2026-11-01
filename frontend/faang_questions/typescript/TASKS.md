@@ -82,7 +82,7 @@ Patterns that make a partner-tools codebase safer — the "how do you use TS at 
 | 2 | 2 | 15 | 017–031 |
 | **Total** | **4** | **31** | |
 
-Note: overlaps intentionally avoided with existing type tasks in `frontend/netflix/` (deep_readonly, conditional_type_parser) — those stay in rotation.
+Note: overlaps intentionally avoided with existing type tasks in `frontend/faang_questions/` (deep_readonly, conditional_type_parser) — those stay in rotation.
 
 ---
 
