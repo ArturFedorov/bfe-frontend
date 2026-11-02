@@ -121,7 +121,7 @@ Format of every task folder: `README.md` + typed stub + test suite (see prompt a
 
 ## PART 4 — Tier 4 progress table (Apple Loop Deep Tasks)
 
-Task table for this tier (the repo-wide `TASKS.md` was retired; this is the tracking table). Folders live under `frontend/faang_questions/react/<NNN>_<folder>/` with README + typed stub + tests; shared fakes are in `frontend/faang_questions/react/_helpers/`.
+Task table for this tier (the repo-wide `TASKS.md` was retired; this is the tracking table). Folders live under `frontend/faang_questions/react/<NNN>_<folder>/` with README + typed stub + tests + a `demo.tsx` harness for the playground (`npm run dev:react`); shared test fakes are in `frontend/faang_questions/react/_helpers/`.
 
 | #   | Folder | Scenario | Diff | Done |
 | --- | --- | --- | --- | --- |
