@@ -8,16 +8,25 @@ import {
 } from './agent_event_reducer';
 
 /** Distributive Omit: keeps every member of the event union. */
-type Body = AgentEvent extends infer E ? (E extends AgentEvent ? Omit<E, 'eventId' | 'seq'> : never) : never;
+type Body = AgentEvent extends infer E
+  ? E extends AgentEvent
+    ? Omit<E, 'eventId' | 'seq'>
+    : never
+  : never;
 
 /** Build an event; eventId defaults to `e<seq>` so replays of the same seq are real duplicates. */
 function ev(seq: number, body: Body, eventId = `e${seq}`): AgentEvent {
   return { eventId, seq, ...body } as AgentEvent;
 }
 
-const runStarted = (seq: number): AgentEvent => ev(seq, { type: 'run_started' });
-const callStarted = (seq: number, callId: string, parentId: string | null, tool: string): AgentEvent =>
-  ev(seq, { type: 'call_started', callId, parentId, tool });
+const runStarted = (seq: number): AgentEvent =>
+  ev(seq, { type: 'run_started' });
+const callStarted = (
+  seq: number,
+  callId: string,
+  parentId: string | null,
+  tool: string,
+): AgentEvent => ev(seq, { type: 'call_started', callId, parentId, tool });
 const callOutput = (seq: number, callId: string, chunk: string): AgentEvent =>
   ev(seq, { type: 'call_output', callId, chunk });
 const callFinished = (
@@ -26,10 +35,15 @@ const callFinished = (
   status: 'succeeded' | 'failed' | 'cancelled',
   message?: string,
 ): AgentEvent => ev(seq, { type: 'call_finished', callId, status, message });
-const runFinished = (seq: number, status: 'succeeded' | 'failed' | 'cancelled'): AgentEvent =>
-  ev(seq, { type: 'run_finished', status });
+const runFinished = (
+  seq: number,
+  status: 'succeeded' | 'failed' | 'cancelled',
+): AgentEvent => ev(seq, { type: 'run_finished', status });
 
-function applyAll(events: AgentEvent[], state: RunState = initialRunState): RunState {
+function applyAll(
+  events: AgentEvent[],
+  state: RunState = initialRunState,
+): RunState {
   return events.reduce(agentRunReducer, state);
 }
 
@@ -76,14 +90,21 @@ describe('initial state and run lifecycle', () => {
   });
 
   it('run_finished sets the terminal status', () => {
-    expect(applyAll([runStarted(1), runFinished(2, 'succeeded')]).status).toBe('succeeded');
-    expect(applyAll([runStarted(1), runFinished(2, 'failed')]).status).toBe('failed');
+    expect(applyAll([runStarted(1), runFinished(2, 'succeeded')]).status).toBe(
+      'succeeded',
+    );
+    expect(applyAll([runStarted(1), runFinished(2, 'failed')]).status).toBe(
+      'failed',
+    );
   });
 });
 
 describe('tool-call tree', () => {
   it('call_started creates a running root call with empty output', () => {
-    const state = applyAll([runStarted(1), callStarted(2, 'c1', null, 'fetch_items')]);
+    const state = applyAll([
+      runStarted(1),
+      callStarted(2, 'c1', null, 'fetch_items'),
+    ]);
     expect(state.rootIds).toEqual(['c1']);
     expect(state.calls.c1).toEqual({
       id: 'c1',
@@ -107,7 +128,10 @@ describe('tool-call tree', () => {
   });
 
   it('call_started with an unknown parent is treated as a root', () => {
-    const state = applyAll([runStarted(1), callStarted(2, 'c9', 'ghost', 'validate')]);
+    const state = applyAll([
+      runStarted(1),
+      callStarted(2, 'c9', 'ghost', 'validate'),
+    ]);
     expect(state.rootIds).toEqual(['c9']);
     expect(state.calls.c9.parentId).toBe('ghost');
   });
@@ -123,7 +147,10 @@ describe('tool-call tree', () => {
   });
 
   it('call_output for an unknown callId is ignored but still advances lastSeq', () => {
-    const before = applyAll([runStarted(1), callStarted(2, 'c1', null, 'fetch_items')]);
+    const before = applyAll([
+      runStarted(1),
+      callStarted(2, 'c1', null, 'fetch_items'),
+    ]);
     const after = agentRunReducer(before, callOutput(3, 'nope', 'lost chunk'));
 
     expect(after.lastSeq).toBe(3);
@@ -171,7 +198,11 @@ describe('run_finished cancelled', () => {
   });
 
   it('run_finished succeeded does not touch calls at all', () => {
-    const before = applyAll([runStarted(1), callStarted(2, 'c1', null, 'fetch_items'), callFinished(3, 'c1', 'succeeded')]);
+    const before = applyAll([
+      runStarted(1),
+      callStarted(2, 'c1', null, 'fetch_items'),
+      callFinished(3, 'c1', 'succeeded'),
+    ]);
     const after = agentRunReducer(before, runFinished(4, 'succeeded'));
     expect(after.calls).toBe(before.calls);
   });
@@ -179,8 +210,14 @@ describe('run_finished cancelled', () => {
 
 describe('idempotency by eventId', () => {
   it('applying the same event twice returns the same state reference', () => {
-    const once = applyAll([runStarted(1), callStarted(2, 'c1', null, 'fetch_items')]);
-    const twice = agentRunReducer(once, callStarted(2, 'c1', null, 'fetch_items'));
+    const once = applyAll([
+      runStarted(1),
+      callStarted(2, 'c1', null, 'fetch_items'),
+    ]);
+    const twice = agentRunReducer(
+      once,
+      callStarted(2, 'c1', null, 'fetch_items'),
+    );
     expect(twice).toBe(once);
   });
 
@@ -196,7 +233,11 @@ describe('idempotency by eventId', () => {
 
   it('a stale seq with an unseen eventId is ignored by reference', () => {
     const state = applyAll(script.slice(0, 4));
-    const stale = ev(2, { type: 'call_started', callId: 'zombie', parentId: null, tool: 'ghost' }, 'other-id');
+    const stale = ev(
+      2,
+      { type: 'call_started', callId: 'zombie', parentId: null, tool: 'ghost' },
+      'other-id',
+    );
     expect(agentRunReducer(state, stale)).toBe(state);
     expect(state.calls.zombie).toBeUndefined();
   });
@@ -204,7 +245,10 @@ describe('idempotency by eventId', () => {
 
 describe('ordering by seq', () => {
   it('an event ahead of lastSeq + 1 is buffered, not applied', () => {
-    const state = applyAll([runStarted(1), callStarted(3, 'c1', null, 'fetch_items')]);
+    const state = applyAll([
+      runStarted(1),
+      callStarted(3, 'c1', null, 'fetch_items'),
+    ]);
     expect(state.lastSeq).toBe(1);
     expect(state.calls).toEqual({});
     expect(state.buffered).toHaveLength(1);
@@ -267,7 +311,11 @@ describe('reconnect replay', () => {
   });
 
   it('replay followed by genuinely new events continues from the gap', () => {
-    const state = applyAll([...script.slice(0, 3), ...script.slice(0, 3), ...script.slice(3, 6)]);
+    const state = applyAll([
+      ...script.slice(0, 3),
+      ...script.slice(0, 3),
+      ...script.slice(3, 6),
+    ]);
     expect(state.lastSeq).toBe(6);
     expect(state.calls.c2.status).toBe('succeeded');
     expect(state.calls.c2.output).toBe('batch 1/4\n');
@@ -334,12 +382,18 @@ describe('selectors', () => {
   });
 
   it('selectRunning returns running calls in depth-first tree order, not insertion order', () => {
-    expect(selectRunning(treeState()).map((c) => c.id)).toEqual(['c1', 'c2', 'c3']);
+    expect(selectRunning(treeState()).map((c) => c.id)).toEqual([
+      'c1',
+      'c2',
+      'c3',
+    ]);
   });
 
   it('selectRunning is empty after the run is cancelled', () => {
     const cancelled = agentRunReducer(treeState(), runFinished(7, 'cancelled'));
     expect(selectRunning(cancelled)).toEqual([]);
-    expect(selectTree(cancelled)[0].children[0].children[0].status).toBe('succeeded');
+    expect(selectTree(cancelled)[0].children[0].children[0].status).toBe(
+      'succeeded',
+    );
   });
 });

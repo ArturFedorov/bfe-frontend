@@ -14,15 +14,24 @@ export type SetUrlStateOptions = {
   replace?: boolean;
 };
 
-export type SetUrlState<T> = (partial: Partial<T>, options?: SetUrlStateOptions) => void;
+export type SetUrlState<T> = (
+  partial: Partial<T>,
+  options?: SetUrlStateOptions,
+) => void;
 
 /** Pure: `?page=2&status=approved` → typed state; missing/invalid keys fall back to defaults. */
-export function parseUrlState<T extends object>(_schema: UrlSchema<T>, _search: string): T {
+export function parseUrlState<T extends object>(
+  _schema: UrlSchema<T>,
+  _search: string,
+): T {
   throw new Error('Not implemented');
 }
 
 /** Pure: typed state → `?a=b` string (or `''`); keys equal to their default are omitted. */
-export function serializeUrlState<T extends object>(_schema: UrlSchema<T>, _state: T): string {
+export function serializeUrlState<T extends object>(
+  _schema: UrlSchema<T>,
+  _state: T,
+): string {
   throw new Error('Not implemented');
 }
 
@@ -30,6 +39,8 @@ export function serializeUrlState<T extends object>(_schema: UrlSchema<T>, _stat
  * Typed state mirrored into `window.location.search` via the History API.
  * Reads the URL on mount, writes on `setState`, and follows Back/Forward via `popstate`.
  */
-export function useUrlState<T extends object>(_schema: UrlSchema<T>): [T, SetUrlState<T>] {
+export function useUrlState<T extends object>(
+  _schema: UrlSchema<T>,
+): [T, SetUrlState<T>] {
   throw new Error('Not implemented');
 }

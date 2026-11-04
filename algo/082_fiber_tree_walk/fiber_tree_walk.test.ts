@@ -1,4 +1,10 @@
-import { createFiberTree, walkFiber, findFiber, ElementSpec, Fiber } from './fiber_tree_walk';
+import {
+  createFiberTree,
+  walkFiber,
+  findFiber,
+  ElementSpec,
+  Fiber,
+} from './fiber_tree_walk';
 
 const appSpec: ElementSpec = {
   type: 'App',
@@ -12,24 +18,32 @@ const appSpec: ElementSpec = {
 /** A chain `c0 -> c1 -> ... -> c{n-1}`, each node the only child of the previous. */
 function buildChainSpec(length: number): ElementSpec {
   let spec: ElementSpec = { type: `c${length - 1}` };
-  for (let i = length - 2; i >= 0; i--) spec = { type: `c${i}`, children: [spec] };
+  for (let i = length - 2; i >= 0; i--)
+    spec = { type: `c${i}`, children: [spec] };
   return spec;
 }
 
 /** A root with `width` leaf children `s0 ... s{width-1}`. */
 function buildWideSpec(width: number): ElementSpec {
-  return { type: 'row', children: Array.from({ length: width }, (_, i) => ({ type: `s${i}` })) };
+  return {
+    type: 'row',
+    children: Array.from({ length: width }, (_, i) => ({ type: `s${i}` })),
+  };
 }
 
 function beginOrder(root: Fiber | null): string[] {
   const out: string[] = [];
-  walkFiber(root, { beginWork: (f, depth) => void out.push(`${depth}:${f.type}`) });
+  walkFiber(root, {
+    beginWork: (f, depth) => void out.push(`${depth}:${f.type}`),
+  });
   return out;
 }
 
 function completeOrder(root: Fiber | null): string[] {
   const out: string[] = [];
-  walkFiber(root, { completeWork: (f, depth) => void out.push(`${depth}:${f.type}`) });
+  walkFiber(root, {
+    completeWork: (f, depth) => void out.push(`${depth}:${f.type}`),
+  });
   return out;
 }
 
@@ -44,9 +58,17 @@ describe('createFiberTree', () => {
     const header = root.child!;
     const main = header.sibling!;
     const footer = main.sibling!;
-    expect([header.type, main.type, footer.type]).toEqual(['header', 'main', 'footer']);
+    expect([header.type, main.type, footer.type]).toEqual([
+      'header',
+      'main',
+      'footer',
+    ]);
     expect(footer.sibling).toBeNull();
-    expect([header.return, main.return, footer.return]).toEqual([root, root, root]);
+    expect([header.return, main.return, footer.return]).toEqual([
+      root,
+      root,
+      root,
+    ]);
 
     const h1 = header.child!;
     expect(h1.type).toBe('h1');
@@ -61,7 +83,13 @@ describe('createFiberTree', () => {
 
   it('builds a single leaf', () => {
     const leaf = createFiberTree({ type: 'span' });
-    expect(leaf).toEqual({ type: 'span', key: null, child: null, sibling: null, return: null });
+    expect(leaf).toEqual({
+      type: 'span',
+      key: null,
+      child: null,
+      sibling: null,
+      return: null,
+    });
   });
 
   it('treats an empty children array like a leaf', () => {
@@ -182,12 +210,16 @@ describe('walkFiber — boundaries and scale', () => {
 describe('findFiber', () => {
   it('returns the first match in beginWork order', () => {
     const root = createFiberTree(appSpec);
-    expect(findFiber(root, (f) => f.type === 'p')).toBe(root.child!.sibling!.child);
+    expect(findFiber(root, (f) => f.type === 'p')).toBe(
+      root.child!.sibling!.child,
+    );
     expect(findFiber(root, (f) => f.key === 'intro')?.type).toBe('p');
   });
 
   it('returns null when nothing matches or the root is null', () => {
-    expect(findFiber(createFiberTree(appSpec), (f) => f.type === 'nav')).toBeNull();
+    expect(
+      findFiber(createFiberTree(appSpec), (f) => f.type === 'nav'),
+    ).toBeNull();
     expect(findFiber(null, () => true)).toBeNull();
   });
 

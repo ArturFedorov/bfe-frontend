@@ -4,11 +4,15 @@
  * TextDecoder as globals, so we pull them from Node and install them.
  */
 import { ReadableStream as NodeReadableStream } from 'node:stream/web';
-import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'node:util';
+import {
+  TextDecoder as NodeTextDecoder,
+  TextEncoder as NodeTextEncoder,
+} from 'node:util';
 
 export function installStreamGlobals(): void {
   const g = globalThis as Record<string, unknown>;
-  if (typeof g.ReadableStream === 'undefined') g.ReadableStream = NodeReadableStream;
+  if (typeof g.ReadableStream === 'undefined')
+    g.ReadableStream = NodeReadableStream;
   if (typeof g.TextEncoder === 'undefined') g.TextEncoder = NodeTextEncoder;
   if (typeof g.TextDecoder === 'undefined') g.TextDecoder = NodeTextDecoder;
 }
@@ -22,7 +26,9 @@ export function encode(text: string): Uint8Array {
 }
 
 /** A finished stream that yields the given chunks (strings are UTF-8 encoded) in order. */
-export function streamFromChunks(chunks: Array<string | Uint8Array>): ReadableStream<Uint8Array> {
+export function streamFromChunks(
+  chunks: Array<string | Uint8Array>,
+): ReadableStream<Uint8Array> {
   let i = 0;
   return new (globalThis as any).ReadableStream({
     pull(controller: ReadableStreamDefaultController<Uint8Array>) {
@@ -56,14 +62,18 @@ export function controllableStream(): ControllableStream {
   }) as ReadableStream<Uint8Array>;
   return {
     stream,
-    push: (chunk) => controller.enqueue(typeof chunk === 'string' ? encode(chunk) : chunk),
+    push: (chunk) =>
+      controller.enqueue(typeof chunk === 'string' ? encode(chunk) : chunk),
     end: () => controller.close(),
     fail: (error) => controller.error(error),
   };
 }
 
 /** Split a UTF-8 byte array at arbitrary byte offsets (to simulate mid-character chunking). */
-export function splitBytes(bytes: Uint8Array, ...offsets: number[]): Uint8Array[] {
+export function splitBytes(
+  bytes: Uint8Array,
+  ...offsets: number[]
+): Uint8Array[] {
   const out: Uint8Array[] = [];
   let start = 0;
   for (const off of [...offsets, bytes.length]) {

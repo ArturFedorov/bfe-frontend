@@ -27,6 +27,9 @@ export interface CommandHistory<T> {
   endBatch: () => void;
 }
 
-export function useCommandHistory<T>(_initial: T, _options?: CommandHistoryOptions): CommandHistory<T> {
+export function useCommandHistory<T>(
+  _initial: T,
+  _options?: CommandHistoryOptions,
+): CommandHistory<T> {
   throw new Error('Not implemented');
 }

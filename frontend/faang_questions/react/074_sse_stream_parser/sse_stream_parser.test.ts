@@ -1,4 +1,9 @@
-import { controllableStream, encode, splitBytes, streamFromChunks } from '../_helpers/fake_readable_stream';
+import {
+  controllableStream,
+  encode,
+  splitBytes,
+  streamFromChunks,
+} from '../_helpers/fake_readable_stream';
 import { parseSSE, type SSEMessage } from './sse_stream_parser';
 
 async function collect(
@@ -6,7 +11,8 @@ async function collect(
   options?: { signal?: AbortSignal },
 ): Promise<SSEMessage[]> {
   const out: SSEMessage[] = [];
-  for await (const m of parseSSE(streamFromChunks(chunks), options)) out.push(m);
+  for await (const m of parseSSE(streamFromChunks(chunks), options))
+    out.push(m);
   return out;
 }
 
@@ -33,7 +39,9 @@ describe('parseSSE', () => {
     });
 
     it('uses the event field as the type and falls back to message for the next block', async () => {
-      const out = await collect(['event: suggestion\ndata: {"label":"DRUG"}\n\ndata: plain\n\n']);
+      const out = await collect([
+        'event: suggestion\ndata: {"label":"DRUG"}\n\ndata: plain\n\n',
+      ]);
       expect(out).toEqual([
         msg('{"label":"DRUG"}', { event: 'suggestion' }),
         msg('plain'),
@@ -41,23 +49,31 @@ describe('parseSSE', () => {
     });
 
     it('strips exactly one leading space after the colon and treats a bare field name as empty', async () => {
-      const out = await collect(['data:  two spaces\n\ndata:nospace\n\ndata\n\n']);
+      const out = await collect([
+        'data:  two spaces\n\ndata:nospace\n\ndata\n\n',
+      ]);
       expect(out.map((m) => m.data)).toEqual([' two spaces', 'nospace', '']);
     });
 
     it('ignores comment lines and unknown fields without dispatching', async () => {
-      const out = await collect([': keep-alive\n\n: another comment\nfoo: bar\ndata: real\nbogus\n\n']);
+      const out = await collect([
+        ': keep-alive\n\n: another comment\nfoo: bar\ndata: real\nbogus\n\n',
+      ]);
       expect(out).toEqual([msg('real')]);
     });
   });
 
   describe('multi-line data', () => {
     it('joins consecutive data lines with a newline', async () => {
-      expect(await collect(['data: line one\ndata: line two\n\n'])).toEqual([msg('line one\nline two')]);
+      expect(await collect(['data: line one\ndata: line two\n\n'])).toEqual([
+        msg('line one\nline two'),
+      ]);
     });
 
     it('keeps an empty data line as an empty segment in the join', async () => {
-      expect(await collect(['data: a\ndata\ndata: b\n\n'])).toEqual([msg('a\n\nb')]);
+      expect(await collect(['data: a\ndata\ndata: b\n\n'])).toEqual([
+        msg('a\n\nb'),
+      ]);
     });
   });
 
@@ -72,13 +88,17 @@ describe('parseSSE', () => {
     });
 
     it('discards an incomplete block at end of stream', async () => {
-      expect(await collect(['data: complete\n\ndata: partial'])).toEqual([msg('complete')]);
+      expect(await collect(['data: complete\n\ndata: partial'])).toEqual([
+        msg('complete'),
+      ]);
     });
   });
 
   describe('id tracking', () => {
     it('persists the last event id across later messages until changed', async () => {
-      const out = await collect(['id: 7\ndata: a\n\ndata: b\n\nid: 9\ndata: c\n\n']);
+      const out = await collect([
+        'id: 7\ndata: a\n\ndata: b\n\nid: 9\ndata: c\n\n',
+      ]);
       expect(out.map((m) => m.id)).toEqual(['7', '7', '9']);
     });
 
@@ -95,14 +115,18 @@ describe('parseSSE', () => {
     });
 
     it('ignores a non-integer retry value', async () => {
-      const out = await collect(['retry: soon\ndata: a\n\nretry: 12x\ndata: b\n\n']);
+      const out = await collect([
+        'retry: soon\ndata: a\n\nretry: 12x\ndata: b\n\n',
+      ]);
       expect(out.map((m) => m.retry)).toEqual([null, null]);
     });
   });
 
   describe('chunk boundaries', () => {
     it('reassembles a frame split mid-line across three chunks', async () => {
-      expect(await collect(['dat', 'a: hel', 'lo\n', '\n'])).toEqual([msg('hello')]);
+      expect(await collect(['dat', 'a: hel', 'lo\n', '\n'])).toEqual([
+        msg('hello'),
+      ]);
     });
 
     it('decodes a multibyte character split across two chunks', async () => {
@@ -118,7 +142,9 @@ describe('parseSSE', () => {
     });
 
     it('treats CR at the end of one chunk and LF at the start of the next as one terminator', async () => {
-      expect(await collect(['data: a\r', '\ndata: b\r\n\r\n'])).toEqual([msg('a\nb')]);
+      expect(await collect(['data: a\r', '\ndata: b\r\n\r\n'])).toEqual([
+        msg('a\nb'),
+      ]);
     });
 
     it('accepts a lone CR as a line terminator', async () => {
@@ -126,10 +152,9 @@ describe('parseSSE', () => {
     });
 
     it('accepts CRLF terminators within a single chunk', async () => {
-      expect(await collect(['event: x\r\ndata: a\r\n\r\ndata: b\r\n\r\n'])).toEqual([
-        msg('a', { event: 'x' }),
-        msg('b'),
-      ]);
+      expect(
+        await collect(['event: x\r\ndata: a\r\n\r\ndata: b\r\n\r\n']),
+      ).toEqual([msg('a', { event: 'x' }), msg('b')]);
     });
   });
 
@@ -153,7 +178,9 @@ describe('parseSSE', () => {
     it('abort mid-stream ends the iteration, yields nothing more and releases the reader lock', async () => {
       const s = controllableStream();
       const ac = new AbortController();
-      const it = parseSSE(s.stream, { signal: ac.signal })[Symbol.asyncIterator]();
+      const it = parseSSE(s.stream, { signal: ac.signal })[
+        Symbol.asyncIterator
+      ]();
 
       const first = it.next();
       s.push('data: one\n\n');
@@ -174,7 +201,8 @@ describe('parseSSE', () => {
 
       const out = await (async () => {
         const acc: SSEMessage[] = [];
-        for await (const m of parseSSE(s.stream, { signal: ac.signal })) acc.push(m);
+        for await (const m of parseSSE(s.stream, { signal: ac.signal }))
+          acc.push(m);
         return acc;
       })();
 

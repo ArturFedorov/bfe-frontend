@@ -22,7 +22,7 @@ export function parseSSE(
 
   return {
     async *[Symbol.asyncIterator]() {
-      if(signal?.aborted) return;
+      if (signal?.aborted) return;
 
       const reader = stream.getReader();
       const decoder = new TextDecoder();
@@ -35,7 +35,7 @@ export function parseSSE(
 
       const onAbort = () => {
         void reader.cancel().catch(() => undefined);
-      }
+      };
       signal?.addEventListener('abort', onAbort, { once: true });
 
       function resetBlock() {
@@ -45,8 +45,8 @@ export function parseSSE(
       }
 
       function precessLine(line: string): SSEMessage | null {
-        if(line === '') {
-          if(data.length === 0) {
+        if (line === '') {
+          if (data.length === 0) {
             resetBlock();
             return null;
           }
@@ -62,14 +62,14 @@ export function parseSSE(
           return message;
         }
 
-        if(line.startsWith(':')) return null;
+        if (line.startsWith(':')) return null;
 
         const colon = line.indexOf(':');
         const field = colon === -1 ? line : line.slice(0, colon);
         let value = colon === -1 ? '' : line.slice(colon + 1);
-        if(value.startsWith(' ')) value = value.slice(1);
+        if (value.startsWith(' ')) value = value.slice(1);
 
-        switch(field) {
+        switch (field) {
           case 'data':
             data.push(value);
             break;
@@ -80,7 +80,7 @@ export function parseSSE(
             lastId = value === '' ? null : value;
             break;
           case 'retry':
-            if(/\d+$/.test(value)) retry = Number(value);
+            if (/\d+$/.test(value)) retry = Number(value);
             break;
           default:
             break;
@@ -91,15 +91,15 @@ export function parseSSE(
 
       function* drainLines(final: boolean): Generator<string> {
         let start = 0;
-        for(let i = 0; i < buffer.length; i++) {
+        for (let i = 0; i < buffer.length; i++) {
           const ch = buffer[i];
-          if(ch === '\n') {
+          if (ch === '\n') {
             yield buffer.slice(start, i);
             start = i + 1;
-          } else if(ch === '\r') {
-            if(i + 1 === buffer.length && !final) break;
+          } else if (ch === '\r') {
+            if (i + 1 === buffer.length && !final) break;
             yield buffer.slice(start, i);
-            if(buffer[i + 1] === '\n') i++;
+            if (buffer[i + 1] === '\n') i++;
             start = i + 1;
           }
         }
@@ -108,25 +108,25 @@ export function parseSSE(
       }
 
       try {
-        for(;;) {
+        for (;;) {
           const { value, done } = await reader.read();
-          if(done) break;
+          if (done) break;
           buffer += decoder.decode(value, { stream: true });
-          for(const line of drainLines(false)) {
+          for (const line of drainLines(false)) {
             const message = precessLine(line);
-            if(message) yield message;
+            if (message) yield message;
           }
         }
 
         buffer += decoder.decode();
-        for(const line of drainLines(true)) {
+        for (const line of drainLines(true)) {
           const message = precessLine(line);
-          if(message) yield message;
+          if (message) yield message;
         }
       } finally {
         signal?.removeEventListener('abort', onAbort);
         reader.releaseLock();
       }
-    }
-  }
+    },
+  };
 }

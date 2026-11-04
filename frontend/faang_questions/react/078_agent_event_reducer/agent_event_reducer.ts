@@ -1,5 +1,15 @@
-export type CallStatus = 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled';
-export type RunStatus = 'idle' | 'running' | 'succeeded' | 'failed' | 'cancelled';
+export type CallStatus =
+  | 'queued'
+  | 'running'
+  | 'succeeded'
+  | 'failed'
+  | 'cancelled';
+export type RunStatus =
+  | 'idle'
+  | 'running'
+  | 'succeeded'
+  | 'failed'
+  | 'cancelled';
 export type FinishStatus = 'succeeded' | 'failed' | 'cancelled';
 
 interface EventBase {
@@ -9,9 +19,19 @@ interface EventBase {
 
 export type AgentEvent =
   | (EventBase & { type: 'run_started' })
-  | (EventBase & { type: 'call_started'; callId: string; parentId: string | null; tool: string })
+  | (EventBase & {
+      type: 'call_started';
+      callId: string;
+      parentId: string | null;
+      tool: string;
+    })
   | (EventBase & { type: 'call_output'; callId: string; chunk: string })
-  | (EventBase & { type: 'call_finished'; callId: string; status: FinishStatus; message?: string })
+  | (EventBase & {
+      type: 'call_finished';
+      callId: string;
+      status: FinishStatus;
+      message?: string;
+    })
   | (EventBase & { type: 'run_finished'; status: FinishStatus });
 
 export interface ToolCall {
@@ -46,7 +66,10 @@ export const initialRunState: RunState = {
   buffered: [],
 };
 
-export function agentRunReducer(_state: RunState, _event: AgentEvent): RunState {
+export function agentRunReducer(
+  _state: RunState,
+  _event: AgentEvent,
+): RunState {
   throw new Error('Not implemented');
 }
 

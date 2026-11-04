@@ -1,0 +1,101 @@
+/**
+ * Reference solution for 077 — keep stick_to_bottom_log.tsx blank for redo
+ * practice; this file is for comparison after your own attempt.
+ */
+import { useEffect, useRef, useState, type ReactElement } from 'react';
+
+export interface StickToBottomLogProps {
+  lines: string[];
+  streaming: boolean;
+  threshold?: number;
+  onFollowChange?: (following: boolean) => void;
+}
+
+export function StickToBottomLog({
+  lines,
+  streaming,
+  threshold = 16,
+  onFollowChange,
+}: StickToBottomLogProps): ReactElement {
+  // Rendered state …
+  const [following, setFollowing] = useState(true);
+  const [unread, setUnread] = useState(0);
+  // … mirrored in refs so the scroll handler and ResizeObserver callback
+  // (which React does not re-create per render) always read the latest value.
+  const followingRef = useRef(true);
+  const onFollowChangeRef = useRef(onFollowChange);
+  onFollowChangeRef.current = onFollowChange;
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const prevCountRef = useRef(lines.length);
+
+  const pinToBottom = () => {
+    const el = containerRef.current;
+    if (el) el.scrollTop = el.scrollHeight - el.clientHeight;
+  };
+
+  // One place flips the mode, so onFollowChange fires exactly once per transition.
+  const setMode = (next: boolean) => {
+    if (followingRef.current === next) return;
+    followingRef.current = next;
+    setFollowing(next);
+    if (next) setUnread(0);
+    onFollowChangeRef.current?.(next);
+  };
+
+  // Content growth (new lines, re-wrapped text, images loading) re-pins while following.
+  // Observe the inner wrapper: the scroll container itself does not change size.
+  useEffect(() => {
+    const target = contentRef.current;
+    if (!target) return;
+    const observer = new ResizeObserver(() => {
+      if (followingRef.current) pinToBottom();
+    });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  // Lines appended while the reader is scrolled away are counted, not scrolled to.
+  useEffect(() => {
+    const added = lines.length - prevCountRef.current;
+    prevCountRef.current = lines.length;
+    if (added > 0 && !followingRef.current) setUnread((n) => n + added);
+  }, [lines.length]);
+
+  const handleScroll = () => {
+    const el = containerRef.current;
+    if (!el) return;
+    const distance = el.scrollHeight - el.clientHeight - el.scrollTop;
+    setMode(distance <= threshold);
+  };
+
+  const jumpToLatest = () => {
+    pinToBottom();
+    setMode(true);
+  };
+
+  return (
+    <div style={{ position: 'relative', height: '100%', minHeight: 0 }}>
+      <div
+        ref={containerRef}
+        role="log"
+        aria-live="polite"
+        aria-busy={streaming || undefined}
+        onScroll={handleScroll}
+        style={{ overflowY: 'auto', height: '100%', minHeight: 0 }}
+      >
+        <div ref={contentRef}>
+          {lines.map((line, i) => (
+            <div key={i}>{line}</div>
+          ))}
+        </div>
+      </div>
+      {!following && (
+        <button type="button" onClick={jumpToLatest} style={{ position: 'absolute', right: 12, bottom: 12 }}>
+          Jump to latest ({unread} new)
+        </button>
+      )}
+    </div>
+  );
+}

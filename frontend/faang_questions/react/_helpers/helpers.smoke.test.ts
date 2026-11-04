@@ -1,7 +1,20 @@
 /** @jest-environment jsdom */
-import { streamFromChunks, controllableStream, encode, splitBytes } from './fake_readable_stream';
-import { FakeEventSource, installFakeEventSource, restoreEventSource } from './fake_event_source';
-import { FakeResizeObserver, installFakeObservers, restoreObservers } from './fake_observers';
+import {
+  streamFromChunks,
+  controllableStream,
+  encode,
+  splitBytes,
+} from './fake_readable_stream';
+import {
+  FakeEventSource,
+  installFakeEventSource,
+  restoreEventSource,
+} from './fake_event_source';
+import {
+  FakeResizeObserver,
+  installFakeObservers,
+  restoreObservers,
+} from './fake_observers';
 import { deferred } from './deferred';
 
 async function readAll(stream: ReadableStream<Uint8Array>): Promise<string> {

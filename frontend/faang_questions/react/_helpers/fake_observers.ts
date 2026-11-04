@@ -9,7 +9,10 @@ export class FakeIntersectionObserver implements IntersectionObserver {
   readonly thresholds: ReadonlyArray<number> = [0];
   private targets = new Set<Element>();
 
-  constructor(private callback: IntersectionObserverCallback, _init?: IntersectionObserverInit) {
+  constructor(
+    private callback: IntersectionObserverCallback,
+    _init?: IntersectionObserverInit,
+  ) {
     FakeIntersectionObserver.instances.push(this);
   }
 
@@ -78,10 +81,21 @@ export class FakeResizeObserver implements ResizeObserver {
     setElementSize(target, width, size.height);
     const entry = {
       target,
-      contentRect: { x: 0, y: 0, top: 0, left: 0, width, height: size.height, bottom: size.height, right: width },
+      contentRect: {
+        x: 0,
+        y: 0,
+        top: 0,
+        left: 0,
+        width,
+        height: size.height,
+        bottom: size.height,
+        right: width,
+      },
       borderBoxSize: [{ inlineSize: width, blockSize: size.height }],
       contentBoxSize: [{ inlineSize: width, blockSize: size.height }],
-      devicePixelContentBoxSize: [{ inlineSize: width, blockSize: size.height }],
+      devicePixelContentBoxSize: [
+        { inlineSize: width, blockSize: size.height },
+      ],
     } as unknown as ResizeObserverEntry;
     this.callback([entry], this);
   }
@@ -92,13 +106,39 @@ export class FakeResizeObserver implements ResizeObserver {
 }
 
 /** jsdom has no layout: fake an element's measured size. */
-export function setElementSize(el: Element, width: number, height: number): void {
-  Object.defineProperty(el, 'offsetHeight', { configurable: true, value: height });
-  Object.defineProperty(el, 'offsetWidth', { configurable: true, value: width });
-  Object.defineProperty(el, 'clientHeight', { configurable: true, value: height });
-  Object.defineProperty(el, 'clientWidth', { configurable: true, value: width });
+export function setElementSize(
+  el: Element,
+  width: number,
+  height: number,
+): void {
+  Object.defineProperty(el, 'offsetHeight', {
+    configurable: true,
+    value: height,
+  });
+  Object.defineProperty(el, 'offsetWidth', {
+    configurable: true,
+    value: width,
+  });
+  Object.defineProperty(el, 'clientHeight', {
+    configurable: true,
+    value: height,
+  });
+  Object.defineProperty(el, 'clientWidth', {
+    configurable: true,
+    value: width,
+  });
   (el as HTMLElement).getBoundingClientRect = () =>
-    ({ x: 0, y: 0, top: 0, left: 0, width, height, bottom: height, right: width, toJSON: () => ({}) }) as DOMRect;
+    ({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      width,
+      height,
+      bottom: height,
+      right: width,
+      toJSON: () => ({}),
+    }) as DOMRect;
 }
 
 const originals: Record<string, unknown> = {};

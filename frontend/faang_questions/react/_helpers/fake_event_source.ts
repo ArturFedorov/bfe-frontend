@@ -26,7 +26,8 @@ export class FakeEventSource {
   }
 
   static get latest(): FakeEventSource {
-    const last = FakeEventSource.instances[FakeEventSource.instances.length - 1];
+    const last =
+      FakeEventSource.instances[FakeEventSource.instances.length - 1];
     if (!last) throw new Error('No FakeEventSource has been constructed');
     return last;
   }
@@ -57,7 +58,10 @@ export class FakeEventSource {
   /** Server sent an event. `type` defaults to 'message'. */
   emit(data: string, opts: { type?: string; lastEventId?: string } = {}): void {
     const type = opts.type ?? 'message';
-    const event = new MessageEvent(type, { data, lastEventId: opts.lastEventId ?? '' });
+    const event = new MessageEvent(type, {
+      data,
+      lastEventId: opts.lastEventId ?? '',
+    });
     this.dispatch(type, event);
   }
 
@@ -70,7 +74,9 @@ export class FakeEventSource {
 
   private dispatch(type: string, event: MessageEvent | Event): void {
     if (this.readyState === FakeEventSource.CLOSED && type !== 'error') return;
-    const handler = (this as unknown as Record<string, Listener | null>)[`on${type}`];
+    const handler = (this as unknown as Record<string, Listener | null>)[
+      `on${type}`
+    ];
     handler?.(event);
     this.listeners.get(type)?.forEach((l) => l(event));
   }

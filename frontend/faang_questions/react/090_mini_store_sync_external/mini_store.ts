@@ -33,7 +33,7 @@ export function createStore<S extends object>(_initial: S): Store<S> {
 export function useStore<S extends object, T>(
   _store: Store<S>,
   _selector: (state: S) => T,
-  _equalityFn?: EqualityFn<T>
+  _equalityFn?: EqualityFn<T>,
 ): T {
   throw new Error('Not implemented');
 }
