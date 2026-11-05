@@ -2,7 +2,7 @@
  * Reference solution for 077 — keep stick_to_bottom_log.tsx blank for redo
  * practice; this file is for comparison after your own attempt.
  */
-import { useEffect, useRef, useState, type ReactElement } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactElement } from 'react';
 
 export interface StickToBottomLogProps {
   lines: string[];
@@ -56,11 +56,14 @@ export function StickToBottomLog({
     return () => observer.disconnect();
   }, []);
 
-  // Lines appended while the reader is scrolled away are counted, not scrolled to.
-  useEffect(() => {
+  // New lines: pin BEFORE the browser paints so the reader never sees a frame
+  // with the old scroll position. ResizeObserver still covers growth React did
+  // not cause (text re-wrapping, images loading); this covers growth it did.
+  useLayoutEffect(() => {
     const added = lines.length - prevCountRef.current;
     prevCountRef.current = lines.length;
-    if (added > 0 && !followingRef.current) setUnread((n) => n + added);
+    if (followingRef.current) pinToBottom();
+    else if (added > 0) setUnread((n) => n + added); // scrolled away: count, don't move
   }, [lines.length]);
 
   const handleScroll = () => {
