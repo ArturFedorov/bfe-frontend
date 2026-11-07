@@ -1,0 +1,502 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Approval Gate Explained</title><style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#111827;--muted:#5b6472;--line:#e3e6ea;--accent:#2563eb;--ok:#059669;--warn:#d97706;--bad:#dc2626;--code-bg:#0f172a;--code-ink:#e5e7eb;--hl:#1d4ed8}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1020;--panel:#111827;--ink:#e5e7eb;--muted:#9ca3af;--line:#2b3444;--accent:#60a5fa;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--code-bg:#020617;--code-ink:#e5e7eb;--hl:#60a5fa}}
+:root[data-theme=dark]{--bg:#0b1020;--panel:#111827;--ink:#e5e7eb;--muted:#9ca3af;--line:#2b3444;--accent:#60a5fa;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--code-bg:#020617;--code-ink:#e5e7eb;--hl:#60a5fa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:21px;margin:40px 0 10px;padding-top:24px;border-top:1px solid var(--line)}h3{font-size:16px;margin:0 0 6px}
+.lead{color:var(--muted);margin:0 0 20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+pre{margin:10px 0 0;padding:12px 14px;background:var(--code-bg);color:var(--code-ink);border-radius:8px;overflow:auto;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;tab-size:2}
+code.inline{font:.92em ui-monospace,Menlo,monospace;background:color-mix(in srgb,var(--line) 60%,transparent);padding:1px 5px;border-radius:4px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;color:#fff;background:var(--accent);margin-right:6px}
+.tag.ok{background:var(--ok)}.tag.warn{background:var(--warn)}.tag.bad{background:var(--bad)}
+.why{border-left:4px solid var(--warn);padding:6px 12px;margin:8px 0;background:color-mix(in srgb,var(--warn) 10%,transparent);border-radius:0 8px 8px 0}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0}
+.box{border:2px solid var(--accent);border-radius:10px;padding:8px 12px;background:var(--panel);min-width:120px;text-align:center}
+.arrow{color:var(--muted);font-size:20px}
+svg{max-width:100%;height:auto;display:block;margin:8px auto}
+.sim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:14px}@media(max-width:860px){.sim{grid-template-columns:1fr}}
+.dialog{border:2px solid var(--line);border-radius:12px;padding:14px;background:var(--panel)}
+.dialog[data-busy=true]{border-color:var(--warn)}
+.dialog .status{font-size:14px;color:var(--muted);margin:6px 0}
+.dialog .alert{color:var(--bad);font-weight:600;margin:6px 0}
+.dialog button{font:inherit;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;margin:4px 6px 0 0}
+.dialog button:disabled{opacity:.45;cursor:not-allowed}
+.controls button{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;margin:4px 6px 0 0}
+.log{font:12.5px/1.45 ui-monospace,Menlo,monospace;background:var(--code-bg);color:var(--code-ink);border-radius:8px;padding:10px;max-height:260px;overflow:auto;margin-top:10px}
+.log .path{color:#93c5fd}.log .state{color:#86efac}.log .skip{color:#fca5a5}
+.machine rect{fill:var(--panel);stroke:var(--line);stroke-width:2}
+.machine text{fill:var(--ink);font:600 14px -apple-system,Segoe UI,Roboto,sans-serif}
+.machine .edge{stroke:var(--muted);stroke-width:2;fill:none;marker-end:url(#arr)}
+.machine .lbl{fill:var(--muted);font:12px -apple-system,Segoe UI,Roboto,sans-serif}
+.machine .on rect{stroke:var(--accent);stroke-width:3;fill:color-mix(in srgb,var(--accent) 14%,var(--panel))}
+.diff li{list-style:none;font:13px ui-monospace,Menlo,monospace;padding:2px 8px;border-radius:4px;margin:2px 0}
+.diff li[data-change=removed]{background:color-mix(in srgb,var(--bad) 18%,transparent);text-decoration:line-through}
+.diff li[data-change=added]{background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.diff{padding:0;margin:8px 0}
+details summary{cursor:pointer;color:var(--accent);font-weight:600}
+</style></head><body><main>
+<h1>079 · Agent Approval Gate, explained</h1>
+<p class="lead">A "please confirm" popup for an AI agent. The hard part is not the popup, it is sending the answer exactly once while the clock runs and the connection flickers. Each section below says what the problem is in plain words, then shows the exact lines of <code class="inline">solution.tsx</code> that handle it.</p>
+
+<h2>1. The situation</h2>
+<div class="card">
+  <div class="flow">
+    <div class="box">Agent run<br><small>wants to relabel 340 items</small></div><span class="arrow">→</span>
+    <div class="box">Server pauses<br><small>sends an ApprovalRequest</small></div><span class="arrow">→</span>
+    <div class="box" style="border-color:var(--warn)">Your dialog<br><small>diff · Approve / Reject / Edit · countdown</small></div><span class="arrow">→</span>
+    <div class="box">onDecide(…)<br><small>one promise to the server</small></div>
+  </div>
+  <p>The request object looks like this: an <code class="inline">id</code>, a one-line <code class="inline">action</code>, the <code class="inline">current</code> text, the <code class="inline">proposed</code> text, and <code class="inline">expiresAt</code> in epoch milliseconds. Your component gets it as a prop, or <code class="inline">null</code> when there is nothing to approve.</p>
+</div>
+
+<h2>2. The state machine</h2>
+<div class="card">
+  <p>Only three phases exist, plus "expired", which is not a phase but a condition: idle <em>and</em> the clock reached zero. That distinction matters for requirement 7 below.</p>
+  
+<svg class="machine" id="machine" viewBox="0 0 760 250" role="img" aria-label="State machine: idle, pending, sent, expired">
+  <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor" style="color:var(--muted)"/></marker></defs>
+  <g id="st-idle" class="on"><rect x="40" y="90" width="150" height="60" rx="12"/><text x="115" y="126" text-anchor="middle">idle</text></g>
+  <g id="st-pending"><rect x="305" y="90" width="150" height="60" rx="12"/><text x="380" y="126" text-anchor="middle">pending</text></g>
+  <g id="st-sent"><rect x="570" y="90" width="150" height="60" rx="12"/><text x="645" y="126" text-anchor="middle">sent</text></g>
+  <g id="st-expired"><rect x="40" y="190" width="150" height="48" rx="12"/><text x="115" y="220" text-anchor="middle">expired (idle + 0s)</text></g>
+  <path class="edge" d="M190 112 L305 112"/><text class="lbl" x="247" y="104" text-anchor="middle">click Approve / Reject</text>
+  <path class="edge" d="M455 112 L570 112"/><text class="lbl" x="512" y="104" text-anchor="middle">promise resolves</text>
+  <path class="edge" d="M380 150 C 380 200, 200 200, 192 140"/><text class="lbl" x="300" y="195" text-anchor="middle">promise rejects → alert, retry</text>
+  <path class="edge" d="M115 150 L115 190"/><text class="lbl" x="150" y="175" text-anchor="start">clock hits 0</text>
+  <path class="edge" d="M645 90 C 645 30, 115 30, 115 90" stroke-dasharray="6 6"/><text class="lbl" x="380" y="40" text-anchor="middle">different request id → React remounts → fresh idle</text>
+</svg>
+
+  <pre><code>type Phase = 'idle' | 'pending' | 'sent';
+
+function Gate({ request, onDecide }: { request: ApprovalRequest; onDecide: ApprovalGateProps['onDecide'] }): ReactElement {</code></pre>
+</div>
+
+<h2>3. Try it</h2>
+<div class="card sim">
+  <div>
+    <div class="dialog" id="dlg" data-busy="false">
+      <div><b>Approval required</b> <small style="color:var(--muted)">request <span id="d-id"></span></small></div>
+      <div>Relabel 340 items</div>
+      <ul class="diff"><li data-change="removed">label: car</li><li data-change="added">label: vehicle</li><li data-change="same">confidence: 0.62</li></ul>
+      <button id="b-approve">Approve</button><button id="b-reject">Reject</button><button id="b-edit">Edit</button>
+      <div class="status" id="d-status"></div>
+      <div class="alert" id="d-alert"></div>
+    </div>
+    <div class="controls">
+      <p style="margin:12px 0 4px;color:var(--muted);font-size:14px">Simulate the outside world:</p>
+      <button id="c-dbl">Double-click Approve</button>
+      <button id="c-ok">Server: resolve</button>
+      <button id="c-fail">Server: reject</button>
+      <button id="c-expire">Jump clock to 0</button>
+      <button id="c-same">Replay same id</button>
+      <button id="c-new">New request (new id)</button>
+      <button id="c-reset">Reset</button>
+    </div>
+  </div>
+  <div>
+    <p style="margin:0 0 6px;color:var(--muted);font-size:14px">What the code did (blue = code path, green = state, red = guarded/ignored):</p>
+    <div class="log" id="log"></div>
+    <p style="font-size:14px;color:var(--muted);margin-top:10px">Try: double-click, then "Server: resolve". Then "Replay same id" and notice nothing changes. Then "New request" and notice the whole dialog resets. Then click Approve, "Jump clock to 0", and "Server: resolve": no Expired, because the decision was already in flight.</p>
+  </div>
+</div>
+
+<h2>4. The requirements, one by one, with the code that satisfies them</h2>
+
+<section class="card"><span class="tag ">Display</span><h3 style="display:inline">Show the request as a readable diff</h3><p>Split both texts on newlines. A line only in the current text is removed, only in the proposed text is added, in both is the same. No clever diff algorithm, set membership is enough.</p><div class="why"><b>Without it:</b> the reviewer reads two walls of text and misses the one changed line.</div><pre><code>/** Set-membership diff: current lines in order, then lines only in proposed. */
+export function computeDiff(current: string, proposed: string): DiffLine[] {
+  const before = current.split('\n');
+  const after = proposed.split('\n');
+  const afterSet = new Set(after);
+  const beforeSet = new Set(before);
+  return [
+    ...before.map&lt;DiffLine&gt;((text) =&gt; ({ text, change: afterSet.has(text) ? 'same' : 'removed' })),
+    ...after.filter((text) =&gt; !beforeSet.has(text)).map&lt;DiffLine&gt;((text) =&gt; ({ text, change: 'added' })),
+  ];
+}</code></pre></section>
+
+<section class="card"><span class="tag ok">Reconnect</span><h3 style="display:inline">Reset on a new request, keep state on a replay</h3><p>The stream can drop and replay the same request. Your component then receives a new object with the same id. The solution does not track that with effects at all: it gives the inner dialog a React key equal to the request id. Same id, same key, React keeps the component and its pending or sent state. Different id, different key, React throws the old one away and mounts a fresh one.</p><div class="why"><b>Without it:</b> after a reconnect the buttons come back to life and the user approves a second time.</div><p>This is the single most important line in the file. Everything about "did the id change" is handled by React, and the old instance's late promise lands in a component that no longer exists.</p><pre><code>/**
+ * The outer component only picks the identity: a different request id mounts
+ * a fresh Gate (full reset), the same id keeps the existing one (pending/sent
+ * state survives a replayed event), null renders nothing.
+ */
+export function ApprovalGate({ request, onDecide }: ApprovalGateProps): ReactElement | null {
+  if (!request) return null;
+  return &lt;Gate key={request.id} request={request} onDecide={onDecide} /&gt;;
+}</code></pre></section>
+
+<section class="card"><span class="tag ">State</span><h3 style="display:inline">Track four things, no more</h3><p>The phase (idle, pending, sent), an error message, whether the user opened the editor and what they typed, and the current time for the countdown. The time is state so the component re-renders every second.</p><div class="why"><b>Without it:</b> you end up with booleans like isLoading and isSent that can both be true.</div><pre><code>  const [phase, setPhase] = useState&lt;Phase&gt;('idle');
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(request.proposed);
+  const [now, setNow] = useState(() =&gt; Date.now());</code></pre></section>
+
+<section class="card"><span class="tag bad">Exactly once</span><h3 style="display:inline">Send exactly once</h3><p>When the user clicks, React will disable the buttons, but only after it re-renders. A double-click's second event can arrive before that. So the first check is a ref, which flips synchronously, and then the state follows. The alive ref stops a late server response from touching a component that was unmounted or replaced.</p><div class="why"><b>Without it:</b> two approvals reach the server from one double-click.</div><pre><code>  // Synchronous guard: state lags a tick, a ref does not. Double-clicks hit this.
+  const inFlightRef = useRef(false);
+  // Unmount (or a different-id remount) must make a late settlement a no-op.
+  const aliveRef = useRef(true);
+  useEffect(() =&gt; {
+    aliveRef.current = true;
+    return () =&gt; {
+      aliveRef.current = false;
+    };
+  }, []);</code></pre></section>
+
+<section class="card"><span class="tag warn">Clock</span><h3 style="display:inline">Count down, but only while idle</h3><p>A one-second interval updates the time. Remaining seconds are computed from expiresAt, never stored. "Expired" is true only when the clock is at zero and nothing was sent. If a decision is in flight when the deadline passes, the server is the one deciding now, so the dialog waits for the answer instead of showing Expired.</p><div class="why"><b>Without it:</b> a user who clicked at 4.9 seconds sees Expired while their approval is actually being processed.</div><pre><code>  useEffect(() =&gt; {
+    const id = setInterval(() =&gt; setNow(Date.now()), 1000);
+    return () =&gt; clearInterval(id);
+  }, []);
+
+  const remaining = Math.max(0, Math.ceil((request.expiresAt - now) / 1000));
+  // Expiry only matters while a decision has not been started: a decision in
+  // flight across the deadline is the server's to accept or refuse.
+  const expired = remaining === 0 &amp;&amp; phase === 'idle';
+  const locked = phase !== 'idle' || expired;</code></pre></section>
+
+<section class="card"><span class="tag ">Core</span><h3 style="display:inline">The decision function</h3><p>One function for all three outcomes. Guard first, mark in flight, flip to pending, call onDecide. On resolve, mark sent. On reject, clear the in-flight ref, go back to idle, show the error, and let the user retry. Approve picks between plain approve and approve_edited based on whether the editor is open.</p><div class="why"><b>Without it:</b> the three buttons each grow their own copy of the guard logic and drift apart.</div><pre><code>  const decide = (decision: ApprovalDecision) =&gt; {
+    if (inFlightRef.current || locked) return;
+    inFlightRef.current = true;
+    setPhase('pending');
+    setError(null);
+    onDecide(decision).then(
+      () =&gt; {
+        if (aliveRef.current) setPhase('sent');
+      },
+      (err: unknown) =&gt; {
+        inFlightRef.current = false;
+        if (!aliveRef.current) return;
+        setPhase('idle');
+        setError(err instanceof Error ? err.message : String(err));
+      },
+    );
+  };</code></pre></section>
+
+<section class="card"><span class="tag ">Handlers</span><h3 style="display:inline">Wire the buttons</h3><p>Approve and Reject are thin wrappers around decide. Edit only opens the textarea; Approve afterwards sends the edited text. Reject while editing still sends a plain reject, because rejecting an edited proposal makes no sense.</p><pre><code>  const approve = () =&gt;
+    decide(
+      editing
+        ? { requestId: request.id, kind: 'approve_edited', proposed: draft }
+        : { requestId: request.id, kind: 'approve' },
+    );
+  const reject = () =&gt; decide({ requestId: request.id, kind: 'reject' });</code></pre></section>
+
+<section class="card"><span class="tag ">Render</span><h3 style="display:inline">Render from derived values</h3><p>Everything on screen is computed from the four pieces of state. Locked disables all buttons when the phase is not idle or the request expired. The status line shows one of three strings, and the alert shows Expired or the error. Nothing is stored twice.</p><pre><code>  return () =&gt; {
+      aliveRef.current = false;
+    };
+  }, []);
+
+  useEffect(() =&gt; {
+    const id = setInterval(() =&gt; setNow(Date.now()), 1000);
+    return () =&gt; clearInterval(id);
+  }, []);
+
+  const remaining = Math.max(0, Math.ceil((request.expiresAt - now) / 1000));
+  // Expiry only matters while a decision has not been started: a decision in
+  // flight across the deadline is the server's to accept or refuse.
+  const expired = remaining === 0 &amp;&amp; phase === 'idle';
+  const locked = phase !== 'idle' || expired;
+
+  const decide = (decision: ApprovalDecision) =&gt; {
+    if (inFlightRef.current || locked) return;
+    inFlightRef.current = true;
+    setPhase('pending');
+    setError(null);
+    onDecide(decision).then(
+      () =&gt; {
+        if (aliveRef.current) setPhase('sent');
+      },
+      (err: unknown) =&gt; {
+        inFlightRef.current = false;
+        if (!aliveRef.current) return;
+        setPhase('idle');
+        setError(err instanceof Error ? err.message : String(err));
+      },
+    );
+  };
+
+  const approve = () =&gt;
+    decide(
+      editing
+        ? { requestId: request.id, kind: 'approve_edited', proposed: draft }
+        : { requestId: request.id, kind: 'approve' },
+    );
+  const reject = () =&gt; decide({ requestId: request.id, kind: 'reject' });
+
+  return (
+    &lt;div role="dialog" aria-labelledby={titleId} aria-busy={phase === 'pending' || undefined}&gt;
+      &lt;h2 id={titleId}&gt;Approval required&lt;/h2&gt;
+      &lt;p&gt;{request.action}&lt;/p&gt;
+
+      &lt;ul aria-label="Diff"&gt;
+        {computeDiff(request.current, request.proposed).map((line, i) =&gt; (
+          &lt;li key={i} data-change={line.change}&gt;
+            {line.text}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+
+      {editing &amp;&amp; (
+        &lt;div&gt;
+          &lt;label htmlFor={editorId}&gt;Proposed action&lt;/label&gt;
+          &lt;textarea id={editorId} value={draft} onChange={(e) =&gt; setDraft(e.target.value)} disabled={locked} /&gt;
+        &lt;/div&gt;
+      )}
+
+      &lt;div&gt;
+        &lt;button type="button" onClick={approve} disabled={locked}&gt;
+          Approve
+        &lt;/button&gt;
+        &lt;button type="button" onClick={reject} disabled={locked}&gt;
+          Reject
+        &lt;/button&gt;
+        &lt;button type="button" onClick={() =&gt; setEditing(true)} disabled={locked}&gt;
+          Edit
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div role="status"&gt;
+        {phase === 'sent' ? 'Decision sent' : phase === 'pending' ? 'Sending…' : expired ? '' : `Expires in ${remaining}s`}
+      &lt;/div&gt;
+      {expired &amp;&amp; &lt;div role="alert"&gt;Expired&lt;/div&gt;}
+      {error !== null &amp;&amp; &lt;div role="alert"&gt;{error}&lt;/div&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre></section>
+
+<h2>5. How a click flows through the code</h2>
+<div class="card">
+  <div class="flow"><div class="box">click Approve</div><span class="arrow">→</span><div class="box">approve()<br><small>editing? approve_edited : approve</small></div><span class="arrow">→</span><div class="box">decide()<br><small>inFlightRef? locked? → return</small></div><span class="arrow">→</span><div class="box">inFlightRef = true<br>setPhase('pending')</div><span class="arrow">→</span><div class="box">onDecide(decision)</div></div>
+  <div class="flow" style="margin-left:40px"><span class="arrow">↳ resolve →</span><div class="box" style="border-color:var(--ok)">aliveRef? setPhase('sent')</div><span class="arrow">· reject →</span><div class="box" style="border-color:var(--bad)">inFlightRef = false, setPhase('idle'), setError(msg)</div></div>
+  <p>Meanwhile the interval keeps updating <code class="inline">now</code>. Because <code class="inline">expired</code> requires <code class="inline">phase === 'idle'</code>, the clock reaching zero during pending changes nothing on screen.</p>
+</div>
+
+<h2>6. What to say in the interview</h2>
+<div class="card">
+  <ul>
+    <li><b>State shape first:</b> "a three-value phase plus an error string, with editor state and the clock kept separate."</li>
+    <li><b>Name the hazard:</b> "double submission and reconnect replay are the two races; a ref guards the first, a React key handles the second."</li>
+    <li><b>Qualifying question:</b> "when the deadline passes with a decision in flight, who wins, client or server?" Then state the assumption: the server.</li>
+    <li><b>First test:</b> "double-click Approve calls onDecide exactly once."</li>
+    <li><b>Trade-off to volunteer:</b> keying by id resets everything on a new request, including an unsent edit. For an approval dialog that is correct; for a long form it would not be.</li>
+  </ul>
+</div>
+
+<details class="card"><summary>Full solution.tsx</summary><pre><code>import { useEffect, useId, useRef, useState, type ReactElement } from 'react';
+
+export interface ApprovalRequest {
+  id: string;
+  action: string;
+  proposed: string;
+  current: string;
+  expiresAt: number;
+}
+
+export type ApprovalDecision =
+  | { requestId: string; kind: 'approve' | 'reject' }
+  | { requestId: string; kind: 'approve_edited'; proposed: string };
+
+export type DiffChange = 'added' | 'removed' | 'same';
+
+export interface DiffLine {
+  text: string;
+  change: DiffChange;
+}
+
+export interface ApprovalGateProps {
+  request: ApprovalRequest | null;
+  onDecide: (decision: ApprovalDecision) =&gt; Promise&lt;void&gt;;
+}
+
+/** Set-membership diff: current lines in order, then lines only in proposed. */
+export function computeDiff(current: string, proposed: string): DiffLine[] {
+  const before = current.split('\n');
+  const after = proposed.split('\n');
+  const afterSet = new Set(after);
+  const beforeSet = new Set(before);
+  return [
+    ...before.map&lt;DiffLine&gt;((text) =&gt; ({ text, change: afterSet.has(text) ? 'same' : 'removed' })),
+    ...after.filter((text) =&gt; !beforeSet.has(text)).map&lt;DiffLine&gt;((text) =&gt; ({ text, change: 'added' })),
+  ];
+}
+
+/**
+ * The outer component only picks the identity: a different request id mounts
+ * a fresh Gate (full reset), the same id keeps the existing one (pending/sent
+ * state survives a replayed event), null renders nothing.
+ */
+export function ApprovalGate({ request, onDecide }: ApprovalGateProps): ReactElement | null {
+  if (!request) return null;
+  return &lt;Gate key={request.id} request={request} onDecide={onDecide} /&gt;;
+}
+
+type Phase = 'idle' | 'pending' | 'sent';
+
+function Gate({ request, onDecide }: { request: ApprovalRequest; onDecide: ApprovalGateProps['onDecide'] }): ReactElement {
+  const titleId = useId();
+  const editorId = useId();
+
+  const [phase, setPhase] = useState&lt;Phase&gt;('idle');
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(request.proposed);
+  const [now, setNow] = useState(() =&gt; Date.now());
+
+  // Synchronous guard: state lags a tick, a ref does not. Double-clicks hit this.
+  const inFlightRef = useRef(false);
+  // Unmount (or a different-id remount) must make a late settlement a no-op.
+  const aliveRef = useRef(true);
+  useEffect(() =&gt; {
+    aliveRef.current = true;
+    return () =&gt; {
+      aliveRef.current = false;
+    };
+  }, []);
+
+  useEffect(() =&gt; {
+    const id = setInterval(() =&gt; setNow(Date.now()), 1000);
+    return () =&gt; clearInterval(id);
+  }, []);
+
+  const remaining = Math.max(0, Math.ceil((request.expiresAt - now) / 1000));
+  // Expiry only matters while a decision has not been started: a decision in
+  // flight across the deadline is the server's to accept or refuse.
+  const expired = remaining === 0 &amp;&amp; phase === 'idle';
+  const locked = phase !== 'idle' || expired;
+
+  const decide = (decision: ApprovalDecision) =&gt; {
+    if (inFlightRef.current || locked) return;
+    inFlightRef.current = true;
+    setPhase('pending');
+    setError(null);
+    onDecide(decision).then(
+      () =&gt; {
+        if (aliveRef.current) setPhase('sent');
+      },
+      (err: unknown) =&gt; {
+        inFlightRef.current = false;
+        if (!aliveRef.current) return;
+        setPhase('idle');
+        setError(err instanceof Error ? err.message : String(err));
+      },
+    );
+  };
+
+  const approve = () =&gt;
+    decide(
+      editing
+        ? { requestId: request.id, kind: 'approve_edited', proposed: draft }
+        : { requestId: request.id, kind: 'approve' },
+    );
+  const reject = () =&gt; decide({ requestId: request.id, kind: 'reject' });
+
+  return (
+    &lt;div role="dialog" aria-labelledby={titleId} aria-busy={phase === 'pending' || undefined}&gt;
+      &lt;h2 id={titleId}&gt;Approval required&lt;/h2&gt;
+      &lt;p&gt;{request.action}&lt;/p&gt;
+
+      &lt;ul aria-label="Diff"&gt;
+        {computeDiff(request.current, request.proposed).map((line, i) =&gt; (
+          &lt;li key={i} data-change={line.change}&gt;
+            {line.text}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+
+      {editing &amp;&amp; (
+        &lt;div&gt;
+          &lt;label htmlFor={editorId}&gt;Proposed action&lt;/label&gt;
+          &lt;textarea id={editorId} value={draft} onChange={(e) =&gt; setDraft(e.target.value)} disabled={locked} /&gt;
+        &lt;/div&gt;
+      )}
+
+      &lt;div&gt;
+        &lt;button type="button" onClick={approve} disabled={locked}&gt;
+          Approve
+        &lt;/button&gt;
+        &lt;button type="button" onClick={reject} disabled={locked}&gt;
+          Reject
+        &lt;/button&gt;
+        &lt;button type="button" onClick={() =&gt; setEditing(true)} disabled={locked}&gt;
+          Edit
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div role="status"&gt;
+        {phase === 'sent' ? 'Decision sent' : phase === 'pending' ? 'Sending…' : expired ? '' : `Expires in ${remaining}s`}
+      &lt;/div&gt;
+      {expired &amp;&amp; &lt;div role="alert"&gt;Expired&lt;/div&gt;}
+      {error !== null &amp;&amp; &lt;div role="alert"&gt;{error}&lt;/div&gt;}
+    &lt;/div&gt;
+  );
+}
+</code></pre></details>
+</main>
+<script>
+// A tiny model of the Gate's logic (no React) so you can watch the transitions.
+const log = document.getElementById('log');
+const dlg = document.getElementById('dlg');
+const statusEl = document.getElementById('d-status');
+const alertEl = document.getElementById('d-alert');
+const btns = { approve: document.getElementById('b-approve'), reject: document.getElementById('b-reject'), edit: document.getElementById('b-edit') };
+const machineStates = ['idle','pending','sent','expired'];
+
+let gate; // the current Gate instance (recreated on a different id)
+function newGate(id, seconds){
+  return { id, phase:'idle', error:null, inFlight:false, alive:true, remaining:seconds, timer:null, editing:false };
+}
+function say(kind, text){ const d=document.createElement('div'); d.className=kind; d.textContent=text; log.appendChild(d); log.scrollTop=log.scrollHeight; }
+function render(){
+  const g = gate;
+  const expired = g.remaining <= 0 && g.phase === 'idle';
+  const locked = g.phase !== 'idle' || expired;
+  dlg.dataset.busy = g.phase === 'pending';
+  statusEl.textContent = g.phase === 'sent' ? 'Decision sent' : g.phase === 'pending' ? 'Sending…' : expired ? '' : `Expires in ${g.remaining}s`;
+  alertEl.textContent = expired ? 'Expired' : (g.error ?? '');
+  Object.values(btns).forEach(b => b.disabled = locked);
+  document.getElementById('d-id').textContent = g.id;
+  machineStates.forEach(s => document.getElementById('st-'+s).classList.toggle('on', s === (expired ? 'expired' : g.phase)));
+}
+function tick(){
+  if (gate.remaining > 0) { gate.remaining -= 1; render(); }
+  if (gate.remaining === 0 && gate.phase === 'idle') say('state', `clock → 0 while idle → expired: buttons locked, alert "Expired"`);
+}
+function mount(id, seconds){
+  if (gate) { clearInterval(gate.timer); gate.alive = false; }
+  gate = newGate(id, seconds);
+  gate.timer = setInterval(tick, 1000);
+  say('state', `mount Gate key="${id}"  (phase idle, ${seconds}s left)`);
+  render();
+}
+let pendingResolve = null, pendingReject = null, pendingGate = null;
+function decide(kind){
+  const g = gate;
+  const expired = g.remaining <= 0 && g.phase === 'idle';
+  if (g.inFlight || g.phase !== 'idle' || expired) { say('skip', `decide(${kind}) ignored — guard: inFlight=${g.inFlight} phase=${g.phase} expired=${expired}`); return; }
+  g.inFlight = true; g.phase = 'pending'; g.error = null;
+  say('path', `decide(${kind}) → inFlightRef=true, setPhase('pending'), onDecide({ requestId:"${g.id}", kind:"${kind}" })`);
+  pendingGate = g;
+  render();
+}
+function settle(ok){
+  if (!pendingGate) { say('skip','no decision in flight'); return; }
+  const g = pendingGate; pendingGate = null;
+  if (!g.alive) { say('skip', `promise settled for OLD gate "${g.id}" → aliveRef=false → ignored`); return; }
+  if (ok) { g.phase = 'sent'; say('path', `promise resolved → setPhase('sent') → "Decision sent"`); }
+  else { g.inFlight = false; g.phase = 'idle'; g.error = 'Gateway timeout'; say('path', `promise rejected → inFlightRef=false, setPhase('idle'), setError("Gateway timeout") → retry allowed`); }
+  render();
+}
+document.getElementById('b-approve').onclick = () => decide(gate.editing ? 'approve_edited' : 'approve');
+document.getElementById('b-reject').onclick = () => decide('reject');
+document.getElementById('b-edit').onclick = () => { gate.editing = true; say('path','Edit → setEditing(true): Approve now sends approve_edited with the textarea text'); };
+document.getElementById('c-dbl').onclick = () => { decide('approve'); decide('approve'); };
+document.getElementById('c-ok').onclick = () => settle(true);
+document.getElementById('c-fail').onclick = () => settle(false);
+document.getElementById('c-same').onclick = () => { say('path', `props: new request object, SAME id "${gate.id}" → same key → React keeps this Gate → nothing resets`); render(); };
+document.getElementById('c-new').onclick = () => { const n = 'req-' + (Number(gate.id.split('-')[1]) + 1); say('path', `props: request id "${n}" → key changes → React unmounts old Gate (aliveRef=false) and mounts a new one`); mount(n, 20); };
+document.getElementById('c-expire').onclick = () => { gate.remaining = 0; render(); if (gate.phase==='idle') say('state','clock forced to 0 while idle → expired'); else say('state','clock at 0 but a decision is in flight → NOT expired (server decides)'); };
+document.getElementById('c-reset').onclick = () => { log.innerHTML=''; mount('req-1', 8); };
+mount('req-1', 8);
+</script>
+</body></html>
