@@ -27,6 +27,27 @@ export interface CommandHistory<T> {
   endBatch: () => void;
 }
 
+interface Entry<T> {
+  do: (state: T) => T,
+  undo: (state: T) => T,
+  mergeKey?: string;
+}
+
+interface History<T> {
+  present: T;
+  past: Entry<T>[];
+  future: Entry<T>[];
+  mergeOpen: boolean;
+}
+
+function compose<T>(first: Entry<T>, second: Entry<T>, mergeKey?: string): Entry<T> {
+  return {
+    do: (s: T) => second.do(first.do(s)),
+    undo: (s: T) => first.undo(second.undo(s)),
+    mergeKey,
+  }
+}
+
 export function useCommandHistory<T>(
   _initial: T,
   _options?: CommandHistoryOptions,

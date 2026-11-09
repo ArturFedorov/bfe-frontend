@@ -152,7 +152,8 @@ Re-solve rule: anything solved with hints goes back in the queue for a blank-fil
 
 The deep tasks above are the 60-minute builds. Loop rounds also open with, or fill the
 second half with, 15–30 minute pure JavaScript / TypeScript exercises. Those already exist in
-the older tracks. State as of 2026-11-09; "done" means solved earlier → blank-file redo material.
+the older tracks. State verified by running each suite on 2026-11-09 ("done" = tests pass;
+earlier "done" marks for these tracks were wrong — their stubs return a never-settling promise).
 
 ### A. Promises and async utilities (most likely for this team)
 
@@ -161,7 +162,11 @@ the older tracks. State as of 2026-11-09; "done" means solved earlier → blank-
 | `frontend/javascript_utilities/010–013` — Promise.all / race / allSettled / any | E–M | done |
 | `frontend/javascript_utilities/014_custom_promise` | H | done |
 | `frontend/async_patterns/003_cancelable_promise`, `006_lazy_promise`, `010_promisify` | E–M | done |
-| `frontend/async_patterns/001_concurrency_limiter`, `002_retry_with_backoff`, `009_batch_requests` | M | done |
+| `frontend/async_patterns/001_concurrency_limiter` | M | done |
+| `frontend/async_patterns/002_retry_with_backoff` (reference in `solution.ts`) | M | **todo** |
+| `frontend/async_patterns/004_sleep`, `005_sequential_parallel` | E | **todo** |
+| `frontend/async_patterns/009_batch_requests`, `011_paginated_data_fetcher` | M | **todo** |
+| `frontend/async_patterns/007_async_generator`, `008_rate_limiter` | H | **todo** |
 | `algo/066_timeout_wrapper`, `067_in_flight_dedupe`, `070_stale_while_revalidate` | E–M | done |
 | `algo/068_async_queue`, `069_circuit_breaker`, `077_retry_backoff`, `078_concurrency_pool` | M | done |
 | `algo/074_sequential_vs_parallel`, `075_lazy_promise` | E | **todo** |
@@ -172,12 +177,15 @@ the older tracks. State as of 2026-11-09; "done" means solved earlier → blank-
 
 | Track / task | Diff | State |
 | --- | --- | --- |
-| `frontend/javascript_utilities/001_debounce`, `015_throttle` | M | done |
-| `frontend/dom_and_browser/009_raf_throttle` | M | done |
-| `frontend/javascript_utilities/028_set_interval_with_set_timeout`, `029_clear_all_timers` | M | done |
-| `frontend/javascript_utilities/016_once`, `017_memoize`, `018_curry` | E–M | done |
-| `frontend/javascript_utilities/026_event_emitter` | M | done |
-| `frontend/javascript_utilities/019_deep_clone`, `020_deep_equal` | M | done |
+| `frontend/javascript_utilities/001_debounce` | M | done |
+| `frontend/javascript_utilities/015_throttle` | M | **todo** |
+| `frontend/dom_and_browser/009_raf_throttle` | M | **todo** |
+| `frontend/javascript_utilities/028_set_interval_with_set_timeout`, `029_clear_all_timers` | M | **todo** |
+| `frontend/javascript_utilities/017_memoize`, `026_event_emitter`, `008_function_bind` | M | done |
+| `frontend/javascript_utilities/016_once`, `018_curry`, `009_function_call_apply` | E–M | **todo** |
+| `frontend/javascript_utilities/019_deep_clone`, `020_deep_equal` | M | **todo** |
+| `frontend/javascript_utilities/002–007` array methods, `023–025` object methods, `027_string_trim` | E–M | **todo** |
+| `frontend/javascript_utilities/021_json_stringify`, `022_json_parse`, `030_array_flat_iterative` | M–H | **todo** |
 
 ### C. TypeScript (embedded in every React task rather than set standalone)
 
@@ -190,7 +198,8 @@ the older tracks. State as of 2026-11-09; "done" means solved earlier → blank-
 
 | Track / task | Diff | State |
 | --- | --- | --- |
-| `frontend/dom_and_browser/004_event_delegation`, `008_mutation_observer`, `010_dom_tree_builder` | M | done |
+| `frontend/dom_and_browser/004_event_delegation`, `008_mutation_observer`, `010_dom_tree_builder` | M | **todo** |
+| `frontend/dom_and_browser/001–003`, `005`, `006` — selectors, flatten, serialize | E–M | **todo** |
 
 ### E. React internals talking point
 
@@ -198,8 +207,9 @@ the older tracks. State as of 2026-11-09; "done" means solved earlier → blank-
 | --- | --- | --- |
 | `algo/082_fiber_tree_walk` — fiber tree + beginWork/completeWork loop | E | **todo** |
 
-**Short redo list** (five shapes interviewers reach for most): debounce, event emitter, Promise.any,
-cancelable promise, concurrency pool. **Gaps to close:** algo 074–076, 081, 082; TS 001, 002, 007.
+**Short list for the loop:** throttle, once, deep equal, event emitter (redo), Promise.any (redo),
+cancelable promise (redo), concurrency pool (redo), retry with backoff, async_patterns 005 and 009,
+algo 074–076, 081, 082, TS 001, 002, 007.
 
 ---
 
