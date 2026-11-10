@@ -42,7 +42,11 @@ interface History<T> {
 }
 
 /** Compose two entries: do in order, undo in reverse. */
-function compose<T>(first: Entry<T>, second: Entry<T>, mergeKey?: string): Entry<T> {
+function compose<T>(
+  first: Entry<T>,
+  second: Entry<T>,
+  mergeKey?: string,
+): Entry<T> {
   return {
     do: (s) => second.do(first.do(s)),
     undo: (s) => first.undo(second.undo(s)),
@@ -51,18 +55,31 @@ function compose<T>(first: Entry<T>, second: Entry<T>, mergeKey?: string): Entry
 }
 
 function trim<T>(past: Entry<T>[], limit: number | undefined): Entry<T>[] {
-  return limit !== undefined && past.length > limit ? past.slice(past.length - limit) : past;
+  return limit !== undefined && past.length > limit
+    ? past.slice(past.length - limit)
+    : past;
 }
 
-export function useCommandHistory<T>(initial: T, options: CommandHistoryOptions = {}): CommandHistory<T> {
-  const [history, setHistory] = useState<History<T>>({ present: initial, past: [], future: [], mergeOpen: false });
+export function useCommandHistory<T>(
+  initial: T,
+  options: CommandHistoryOptions = {},
+): CommandHistory<T> {
+  const [history, setHistory] = useState<History<T>>({
+    present: initial,
+    past: [],
+    future: [],
+    mergeOpen: false,
+  });
 
   // Read through refs so every callback can have an empty dependency list.
   const limitRef = useRef(options.limit);
   limitRef.current = options.limit;
   // Batching is synchronous bookkeeping across several execute() calls in one
   // tick, so it lives in a ref, not in state.
-  const batchRef = useRef<{ depth: number; commands: Command<T>[] }>({ depth: 0, commands: [] });
+  const batchRef = useRef<{ depth: number; commands: Command<T>[] }>({
+    depth: 0,
+    commands: [],
+  });
 
   const execute = useCallback((command: Command<T>) => {
     if (batchRef.current.depth > 0) {
@@ -75,8 +92,15 @@ export function useCommandHistory<T>(initial: T, options: CommandHistoryOptions 
       const present = command.do(h.present);
       const top = h.past[h.past.length - 1];
       const canMerge =
-        command.mergeKey !== undefined && h.mergeOpen && top !== undefined && top.mergeKey === command.mergeKey;
-      const entry: Entry<T> = { do: command.do, undo: command.undo, mergeKey: command.mergeKey };
+        command.mergeKey !== undefined &&
+        h.mergeOpen &&
+        top !== undefined &&
+        top.mergeKey === command.mergeKey;
+      const entry: Entry<T> = {
+        do: command.do,
+        undo: command.undo,
+        mergeKey: command.mergeKey,
+      };
       const past = canMerge
         ? [...h.past.slice(0, -1), compose(top, entry, command.mergeKey)]
         : trim([...h.past, entry], limitRef.current);
@@ -88,7 +112,12 @@ export function useCommandHistory<T>(initial: T, options: CommandHistoryOptions 
     setHistory((h) => {
       const top = h.past[h.past.length - 1];
       if (!top) return h; // no-op keeps identity
-      return { present: top.undo(h.present), past: h.past.slice(0, -1), future: [top, ...h.future], mergeOpen: false };
+      return {
+        present: top.undo(h.present),
+        past: h.past.slice(0, -1),
+        future: [top, ...h.future],
+        mergeOpen: false,
+      };
     });
   }, []);
 
@@ -96,7 +125,12 @@ export function useCommandHistory<T>(initial: T, options: CommandHistoryOptions 
     setHistory((h) => {
       const [next, ...rest] = h.future;
       if (!next) return h;
-      return { present: next.do(h.present), past: [...h.past, next], future: rest, mergeOpen: false };
+      return {
+        present: next.do(h.present),
+        past: [...h.past, next],
+        future: rest,
+        mergeOpen: false,
+      };
     });
   }, []);
 
@@ -116,7 +150,12 @@ export function useCommandHistory<T>(initial: T, options: CommandHistoryOptions 
     const entry = commands
       .map<Entry<T>>((c) => ({ do: c.do, undo: c.undo }))
       .reduce((acc, e) => compose(acc, e));
-    setHistory((h) => ({ ...h, past: trim([...h.past, entry], limitRef.current), future: [], mergeOpen: false }));
+    setHistory((h) => ({
+      ...h,
+      past: trim([...h.past, entry], limitRef.current),
+      future: [],
+      mergeOpen: false,
+    }));
   }, []);
 
   return {
