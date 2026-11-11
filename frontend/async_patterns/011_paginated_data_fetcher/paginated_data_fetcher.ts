@@ -28,11 +28,11 @@ export async function* take<T>(
   n: number,
   asyncIterable: AsyncIterable<T>,
 ): AsyncGenerator<T> {
+  if (n <= 0) return;
   let count = 0;
 
   for await (const item of asyncIterable) {
-    if (count >= n) return;
     yield item;
-    count++;
+    if (++count >= n) return;
   }
 }

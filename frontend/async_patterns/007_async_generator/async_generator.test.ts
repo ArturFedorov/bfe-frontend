@@ -26,7 +26,7 @@ describe('streamData', () => {
 
     const results: number[] = [];
     for await (const item of streamData(fetcher)) {
-      results.push(item);
+      results.push(item as number);
     }
 
     expect(results).toEqual([1, 2]);
@@ -43,7 +43,7 @@ describe('streamData', () => {
 
     await expect(async () => {
       for await (const item of streamData(fetcher)) {
-        results.push(item);
+        results.push(item as number);
       }
     }).rejects.toThrow('network error');
 
@@ -58,7 +58,7 @@ describe('streamData', () => {
 
     const results: number[] = [];
     for await (const item of streamData(fetcher)) {
-      results.push(item);
+      results.push(item as number);
     }
 
     expect(results).toEqual([1, 2]);
