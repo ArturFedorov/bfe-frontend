@@ -20,6 +20,7 @@
     "node_modules",
     "dist",
     "frontend/faang_questions/react/playground",
-    "frontend/ui_components"
+    "frontend/ui_components",
+    "frontend/react_apps/campaign_studio/vite.config.ts"
   ]
 }

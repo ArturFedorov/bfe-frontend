@@ -10,7 +10,9 @@
     "test:ts": "jest frontend/faang_questions/typescript",
     "test:node": "jest frontend/faang_questions/node",
     "format": "prettier --write \"**/*.ts\"",
-    "format:check": "prettier --check \"**/*.ts\""
+    "format:check": "prettier --check \"**/*.ts\"",
+    "dev:campaign": "vite --config frontend/react_apps/campaign_studio/vite.config.ts",
+    "test:campaign": "jest frontend/react_apps/campaign_studio"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",

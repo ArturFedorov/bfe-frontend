@@ -183,249 +183,264 @@
 | 080 | `request_batcher`        | Collect calls for t ms (or n max) into one batched request, fan results back out to each caller (A10 redo)                      | M    |      |
 | 081 | `paginated_fetcher`      | Async generator over a cursor-paginated API with `take(n)` and next-page prefetch (A11 redo)                                    | M    |      |
 
+## Topic 10: Marketing Automation Utilities — _ASE Customer Engagement (added Nov 2026)_
+
+**Probability: High for the Apple Services Engineering loop.** Pure TypeScript shapes behind a campaign tool: rule trees, audience set algebra, template parsing, schedules, journey graphs, caches, event logs. Each pairs with a react Tier 5 task and a `frontend/react_apps/campaign_studio` milestone.
+
+| #   | Folder                    | Scenario                                                                                                   | Diff | Done |
+| --- | ------------------------- | ---------------------------------------------------------------------------------------------------------- | ---- | ---- |
+| 083 | `rule_tree_evaluate`      | Evaluate an AND/OR rule tree against a customer record; `simplify` flattens and keeps identity when unchanged | E    |      |
+| 084 | `audience_set_ops`        | Linear-time union / intersect / difference of sorted id lists; `intersectMany` smallest-first               | E    |      |
+| 085 | `template_tokenizer`      | Tokenize `{{name \| fallback}}` with escapes and error tokens; render with unknown-placeholder report       | M    |      |
+| 086 | `cron_next_run`           | Simplified 5-field cron: parse, match, next N runs with day skipping and Vixie dom/dow semantics            | M    |      |
+| 087 | `quiet_hours_merge`       | Minutes-of-week quiet windows: normalize wrapping/overlapping, `isQuiet` by binary search, `nextAllowed`    | M    |      |
+| 088 | `journey_cycle_check`     | Step graph: Kahn topo order, DFS cycle path, BFS unreachable, dangling edges                                 | M    |      |
+| 089 | `lru_query_cache`         | LRU with TTL and `getOrLoad` in-flight dedupe on a Map                                                      | M    |      |
+| 090 | `event_sourced_campaign`  | Fold a campaign event log: idempotent by eventId, stale replay ignored, snapshot + rebuild equivalence       | M    |      |
+
 ---
 
 # Tier 2 — High Probability
 
-## Topic 10: Binary Search — _pattern_
+## Topic 11: Binary Search — _pattern_
 
 **Probability: High.** Boundary search and search-on-answer are standard mediums/hards.
 
 | #   | Folder               | Scenario                                                                                                        | Diff | Done |
 | --- | -------------------- | ------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 083 | `find_build`         | Locate a build id in a sorted release list (the classic, done cleanly: no overflow, correct bounds)                   | VE   |      |
-| 084 | `first_bad_commit`   | CI bisect: first commit where tests fail, minimizing `isBad()` calls (boundary search on a monotonic predicate)       | E    |      |
-| 085 | `nearest_snapshot`   | Backup browser: find the snapshot closest to a requested timestamp (floor/ceiling search)                             | E    |      |
-| 086 | `log_time_bounds`    | First and last log index for a timestamp (lower/upper bound — the two off-by-one traps)                               | M    |      |
-| 087 | `rotated_log_search` | The log file rotated at midnight so it's sorted-but-rotated — find an entry without re-sorting                        | M    |      |
-| 088 | `batch_capacity`     | Min server capacity to process all daily batches within D days, batches in order (binary search on the answer)        | H    |      |
-| 089 | `polling_rate`       | Slowest polling rate that still drains every queue before its deadline (search on answer + feasibility check)         | H    |      |
+| 091 | `find_build`         | Locate a build id in a sorted release list (the classic, done cleanly: no overflow, correct bounds)                   | VE   |      |
+| 092 | `first_bad_commit`   | CI bisect: first commit where tests fail, minimizing `isBad()` calls (boundary search on a monotonic predicate)       | E    |      |
+| 093 | `nearest_snapshot`   | Backup browser: find the snapshot closest to a requested timestamp (floor/ceiling search)                             | E    |      |
+| 094 | `log_time_bounds`    | First and last log index for a timestamp (lower/upper bound — the two off-by-one traps)                               | M    |      |
+| 095 | `rotated_log_search` | The log file rotated at midnight so it's sorted-but-rotated — find an entry without re-sorting                        | M    |      |
+| 096 | `batch_capacity`     | Min server capacity to process all daily batches within D days, batches in order (binary search on the answer)        | H    |      |
+| 097 | `polling_rate`       | Slowest polling rate that still drains every queue before its deadline (search on answer + feasibility check)         | H    |      |
 
-## Topic 11: Heaps & Top-K — _Lessons 12–13_
+## Topic 12: Heaps & Top-K — _Lessons 12–13_
 
 **Probability: High.** Top-k and k-way merge are among the most-reported mediums; Netflix loves stream-shaped versions.
 
 | #   | Folder                   | Scenario                                                                                                     | Diff | Done |
 | --- | ------------------------ | ---------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 090 | `job_min_heap`           | Job scheduler core: min-heap class with `insert` / `peek` / `extractMin` (sift-up / sift-down)                     | E    |      |
-| 091 | `bulk_heapify`           | Load 10k pending jobs at once: bottom-up heapify in O(n) — tests verify sift call counts stay linear-ish           | M    |      |
-| 092 | `top_k_errors`           | From an error-log stream, keep the k most frequent error codes using a size-k heap (not full sort)                 | M    |      |
-| 093 | `k_closest_drivers`      | Dispatch: the k drivers nearest to a pickup point from a live stream of positions (bounded max-heap)               | M    |      |
-| 094 | `merge_k_feeds`          | Merge k timestamp-sorted activity feeds into one timeline (heap of cursors)                                        | M    |      |
-| 095 | `download_manager`       | Indexed priority queue: reprioritize a queued download by id in O(log n) (decrease-key with position map)          | H    |      |
-| 096 | `job_cooldown_scheduler` | Rate-limited worker: same-type jobs need a cooldown of n ticks between runs — minimize total ticks (greedy + heap) | H    |      |
-| 097 | `running_median`         | Live p50: report the median response time after every request (two-heap balance)                                   | H    |      |
+| 098 | `job_min_heap`           | Job scheduler core: min-heap class with `insert` / `peek` / `extractMin` (sift-up / sift-down)                     | E    |      |
+| 099 | `bulk_heapify`           | Load 10k pending jobs at once: bottom-up heapify in O(n) — tests verify sift call counts stay linear-ish           | M    |      |
+| 100 | `top_k_errors`           | From an error-log stream, keep the k most frequent error codes using a size-k heap (not full sort)                 | M    |      |
+| 101 | `k_closest_drivers`      | Dispatch: the k drivers nearest to a pickup point from a live stream of positions (bounded max-heap)               | M    |      |
+| 102 | `merge_k_feeds`          | Merge k timestamp-sorted activity feeds into one timeline (heap of cursors)                                        | M    |      |
+| 103 | `download_manager`       | Indexed priority queue: reprioritize a queued download by id in O(log n) (decrease-key with position map)          | H    |      |
+| 104 | `job_cooldown_scheduler` | Rate-limited worker: same-type jobs need a cooldown of n ticks between runs — minimize total ticks (greedy + heap) | H    |      |
+| 105 | `running_median`         | Live p50: report the median response time after every request (two-heap balance)                                   | H    |      |
 
-## Topic 12: Linked Lists — _Lesson 2_
+## Topic 13: Linked Lists — _Lesson 2_
 
 **Probability: High.** Reversal, merging, and cycle detection are staple screening questions at Meta and Amazon — and the doubly linked list you hand-roll here is the engine inside the LRU/LFU caches in the next topic.
 
 | #   | Folder                | Scenario                                                                                                    | Diff | Done |
 | --- | --------------------- | ----------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 098 | `playlist`            | Singly linked playlist: `append`, `prepend`, `find`, `toArray`                                                      | VE   |      |
-| 099 | `playlist_remove`     | Remove a track by id — handle head, tail, middle, missing, single-element list                                      | E    |      |
-| 100 | `reverse_chain`       | Reverse a migration chain in place (iterative pointer flip — the must-know)                                         | E    |      |
-| 101 | `merge_event_streams` | Merge two timestamp-sorted event streams (linked lists) into one sorted stream                                      | E    |      |
-| 102 | `browser_history`     | Doubly linked back/forward navigation: `visit` truncates the forward chain                                          | M    |      |
-| 103 | `round_robin_workers` | Circular list dispatching jobs across workers; removing a dead worker keeps the rotation intact                     | M    |      |
-| 104 | `job_chain_cycle`     | Each job names a `next` job — split a chain at its midpoint (fast/slow), and detect if a chain loops forever        | M    |      |
+| 106 | `playlist`            | Singly linked playlist: `append`, `prepend`, `find`, `toArray`                                                      | VE   |      |
+| 107 | `playlist_remove`     | Remove a track by id — handle head, tail, middle, missing, single-element list                                      | E    |      |
+| 108 | `reverse_chain`       | Reverse a migration chain in place (iterative pointer flip — the must-know)                                         | E    |      |
+| 109 | `merge_event_streams` | Merge two timestamp-sorted event streams (linked lists) into one sorted stream                                      | E    |      |
+| 110 | `browser_history`     | Doubly linked back/forward navigation: `visit` truncates the forward chain                                          | M    |      |
+| 111 | `round_robin_workers` | Circular list dispatching jobs across workers; removing a dead worker keeps the rotation intact                     | M    |      |
+| 112 | `job_chain_cycle`     | Each job names a `next` job — split a chain at its midpoint (fast/slow), and detect if a chain loops forever        | M    |      |
 
-## Topic 13: Caches & Eviction — _Lessons 21–22_
+## Topic 14: Caches & Eviction — _Lessons 21–22_
 
 **Probability: High.** LRU is the most famous design-a-data-structure question in existence; caching questions fit Netflix's practical style perfectly.
 
 | #   | Folder                 | Scenario                                                                                                   | Diff | Done |
 | --- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 105 | `fifo_cache`           | Simplest eviction: fixed-capacity cache that evicts the oldest inserted key (establishes the cache API contract)   | VE   |      |
-| 106 | `cache_stats`          | Wrap any cache and report hit/miss counts and hit ratio (decorator over the shared interface)                      | E    |      |
-| 107 | `ttl_cache`            | Config cache with per-key expiry — injectable clock, lazy eviction on read                                         | E    |      |
-| 108 | `lru_cache`            | API response cache: O(1) `get`/`put` with capacity eviction (map + doubly linked list, no arrays)                  | M    |      |
-| 109 | `multi_tier_cache`     | Two-tier lookup: small fast L1 over a large L2, with promotion on hit and write-through (CDN edge/origin shape)    | M    |      |
-| 110 | `lfu_cache`            | O(1) LFU: frequency buckets of doubly linked lists, LRU tie-break within a frequency                               | H    |      |
-| 111 | `consistent_hash_ring` | Shard router: hash ring with virtual nodes; tests verify only ~1/n keys remap when a node joins or leaves          | H    |      |
+| 113 | `fifo_cache`           | Simplest eviction: fixed-capacity cache that evicts the oldest inserted key (establishes the cache API contract)   | VE   |      |
+| 114 | `cache_stats`          | Wrap any cache and report hit/miss counts and hit ratio (decorator over the shared interface)                      | E    |      |
+| 115 | `ttl_cache`            | Config cache with per-key expiry — injectable clock, lazy eviction on read                                         | E    |      |
+| 116 | `lru_cache`            | API response cache: O(1) `get`/`put` with capacity eviction (map + doubly linked list, no arrays)                  | M    |      |
+| 117 | `multi_tier_cache`     | Two-tier lookup: small fast L1 over a large L2, with promotion on hit and write-through (CDN edge/origin shape)    | M    |      |
+| 118 | `lfu_cache`            | O(1) LFU: frequency buckets of doubly linked lists, LRU tie-break within a frequency                               | H    |      |
+| 119 | `consistent_hash_ring` | Shard router: hash ring with virtual nodes; tests verify only ~1/n keys remap when a node joins or leaves          | H    |      |
 
-## Topic 14: Tries & Prefix Structures — _Lesson 9_
+## Topic 15: Tries & Prefix Structures — _Lesson 9_
 
 **Probability: High.** Autocomplete is the single most-asked UI-adjacent algorithm; routers and redaction are its production faces.
 
 | #   | Folder                | Scenario                                                                                                     | Diff | Done |
 | --- | --------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- | ---- |
-| 112 | `contact_prefix`      | Contacts app: insert names, count how many start with a prefix                                                       | E    |      |
-| 113 | `command_shortcuts`   | CLI ergonomics: shortest unique prefix for every command (`checkout` → `che` if `cherry-pick` exists)                | M    |      |
-| 114 | `autocomplete_top_k`  | Search box suggestions: all completions of a prefix, then top-k by usage frequency                                   | M    |      |
-| 115 | `wildcard_search`     | Search supporting `?` as a single-character wildcard (`c?t` matches `cat`, `cut`)                                    | M    |      |
-| 116 | `ip_prefix_match`     | Router table: longest-prefix match of an IP against CIDR-style binary prefixes (binary trie)                         | M    |      |
-| 117 | `transcript_redactor` | Redact any of n banned words from a transcript in a single pass (trie-guided scan, longest match wins)               | M    |      |
-| 118 | `radix_compress`      | Build a compressed radix tree from a word list — collapse single-child chains, report node savings vs plain trie     | H    |      |
-| 119 | `url_router`          | Express-style router on a radix tree: match `/users/:id/posts` patterns, extract params, static beats param          | H    |      |
+| 120 | `contact_prefix`      | Contacts app: insert names, count how many start with a prefix                                                       | E    |      |
+| 121 | `command_shortcuts`   | CLI ergonomics: shortest unique prefix for every command (`checkout` → `che` if `cherry-pick` exists)                | M    |      |
+| 122 | `autocomplete_top_k`  | Search box suggestions: all completions of a prefix, then top-k by usage frequency                                   | M    |      |
+| 123 | `wildcard_search`     | Search supporting `?` as a single-character wildcard (`c?t` matches `cat`, `cut`)                                    | M    |      |
+| 124 | `ip_prefix_match`     | Router table: longest-prefix match of an IP against CIDR-style binary prefixes (binary trie)                         | M    |      |
+| 125 | `transcript_redactor` | Redact any of n banned words from a transcript in a single pass (trie-guided scan, longest match wins)               | M    |      |
+| 126 | `radix_compress`      | Build a compressed radix tree from a word list — collapse single-child chains, report node savings vs plain trie     | H    |      |
+| 127 | `url_router`          | Express-style router on a radix tree: match `/users/:id/posts` patterns, extract params, static beats param          | H    |      |
 
-## Topic 15: Prefix Sums & Difference Arrays — _pattern_
+## Topic 16: Prefix Sums & Difference Arrays — _pattern_
 
 **Probability: High.** The precompute-once idea behind countless analytics questions.
 
 | #   | Folder                 | Scenario                                                                                                     | Diff | Done |
 | --- | ---------------------- | -------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 120 | `revenue_ranges`       | Daily revenue array + many `[from, to]` queries — O(1) per query after O(n) prep                                       | VE   |      |
-| 121 | `pivot_day`            | Find the day where revenue-before equals revenue-after (equilibrium index)                                             | E    |      |
-| 122 | `room_occupancy`       | Apply 10k bookings `[start, end, +people]` then report occupancy per hour — difference array, one pass                 | E    |      |
-| 123 | `quota_periods`        | Count billing periods whose total usage hits the quota exactly (prefix sum + hashmap of seen sums)                     | M    |      |
-| 124 | `pack_aligned_periods` | Count periods whose total usage is an exact multiple of the pack size (prefix sums mod k)                              | M    |      |
-| 125 | `heatmap_region`       | Click-tracking heatmap: sum of any rectangular region in O(1) (2D prefix sums)                                         | M    |      |
-| 126 | `balanced_growth`      | Longest period where signups and cancellations were equal (transform to ±1, prefix + first-seen index map)             | H    |      |
+| 128 | `revenue_ranges`       | Daily revenue array + many `[from, to]` queries — O(1) per query after O(n) prep                                       | VE   |      |
+| 129 | `pivot_day`            | Find the day where revenue-before equals revenue-after (equilibrium index)                                             | E    |      |
+| 130 | `room_occupancy`       | Apply 10k bookings `[start, end, +people]` then report occupancy per hour — difference array, one pass                 | E    |      |
+| 131 | `quota_periods`        | Count billing periods whose total usage hits the quota exactly (prefix sum + hashmap of seen sums)                     | M    |      |
+| 132 | `pack_aligned_periods` | Count periods whose total usage is an exact multiple of the pack size (prefix sums mod k)                              | M    |      |
+| 133 | `heatmap_region`       | Click-tracking heatmap: sum of any rectangular region in O(1) (2D prefix sums)                                         | M    |      |
+| 134 | `balanced_growth`      | Longest period where signups and cancellations were equal (transform to ±1, prefix + first-seen index map)             | H    |      |
 
-## Topic 16: Greedy — _pattern (new)_
+## Topic 17: Greedy — _pattern (new)_
 
 **Probability: High.** The skill being tested is *proving* the local choice is safe — say the invariant out loud.
 
 | #   | Folder                | Scenario                                                                                                      | Diff | Done |
 | --- | --------------------- | --------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 127 | `coupon_assignment`   | Match coupons to orders (each coupon covers orders up to its value) to maximize coupons used (sort both + greedy walk)  | E    |      |
-| 128 | `room_schedule_max`   | One room, many meeting requests — schedule the maximum number of non-overlapping meetings (earliest-end-first, with proof sketch in README) | E | |
-| 129 | `buffered_playback`   | Segment i lets the player skip ahead up to `buffer[i]` seconds — can playback reach the end without stalling? (reachability greedy) | M | |
-| 130 | `min_rebuffers`       | Same setup — minimum number of buffer refills to finish playback (fewest jumps)                                         | M    |      |
-| 131 | `fuel_stops`          | Circular delivery route with charge stations: find the starting station that completes the loop, or report impossible   | M    |      |
-| 132 | `release_chunking`    | Split a release manifest into the most chunks such that each file type lives in exactly one chunk (last-occurrence partitioning) | M | |
-| 133 | `raise_distribution`  | Every employee with a higher rating than a desk neighbor must earn strictly more — minimize total raises (two-pass greedy) | H  |      |
+| 135 | `coupon_assignment`   | Match coupons to orders (each coupon covers orders up to its value) to maximize coupons used (sort both + greedy walk)  | E    |      |
+| 136 | `room_schedule_max`   | One room, many meeting requests — schedule the maximum number of non-overlapping meetings (earliest-end-first, with proof sketch in README) | E | |
+| 137 | `buffered_playback`   | Segment i lets the player skip ahead up to `buffer[i]` seconds — can playback reach the end without stalling? (reachability greedy) | M | |
+| 138 | `min_rebuffers`       | Same setup — minimum number of buffer refills to finish playback (fewest jumps)                                         | M    |      |
+| 139 | `fuel_stops`          | Circular delivery route with charge stations: find the starting station that completes the loop, or report impossible   | M    |      |
+| 140 | `release_chunking`    | Split a release manifest into the most chunks such that each file type lives in exactly one chunk (last-occurrence partitioning) | M | |
+| 141 | `raise_distribution`  | Every employee with a higher rating than a desk neighbor must earn strictly more — minimize total raises (two-pass greedy) | H  |      |
 
-## Topic 17: String Algorithms & Parsing — _pattern (new)_
+## Topic 18: String Algorithms & Parsing — _pattern (new)_
 
 **Probability: High** for Netflix's practical style (their whole question bank is parsers); Medium elsewhere.
 
 | #   | Folder                 | Scenario                                                                                                        | Diff | Done |
 | --- | ---------------------- | ------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 134 | `template_interpolate` | Replace `{{name}}` placeholders from a values map in one pass; unknown keys stay literal                              | E    |      |
-| 135 | `csv_field_splitter`   | Split a CSV line respecting quoted fields and escaped quotes — no regex                                               | E    |      |
-| 136 | `run_length_encode`    | Compress sparse bitmap rows: `aaabb` ⇄ `a3b2`, exact round-trip, digits-in-input edge cases                           | E    |      |
-| 137 | `log_rotation_check`   | Did the log rotate or get corrupted? Check if file B is a rotation of file A in O(n) (concatenation trick)            | M    |      |
-| 138 | `substring_search`     | Implement `indexOf` from scratch; tests include the pathological repeated-prefix worst case — document the complexity | M    |      |
-| 139 | `plagiarism_hash`      | Does an article contain any sentence from a known-plagiarized set? Rolling hash (Rabin-Karp) with collision handling  | M    |      |
-| 140 | `text_diff`            | Minimal line-level diff between two file versions: output kept/added/removed lines (LCS-based — pairs with Topic 20)  | H    |      |
+| 142 | `template_interpolate` | Replace `{{name}}` placeholders from a values map in one pass; unknown keys stay literal                              | E    |      |
+| 143 | `csv_field_splitter`   | Split a CSV line respecting quoted fields and escaped quotes — no regex                                               | E    |      |
+| 144 | `run_length_encode`    | Compress sparse bitmap rows: `aaabb` ⇄ `a3b2`, exact round-trip, digits-in-input edge cases                           | E    |      |
+| 145 | `log_rotation_check`   | Did the log rotate or get corrupted? Check if file B is a rotation of file A in O(n) (concatenation trick)            | M    |      |
+| 146 | `substring_search`     | Implement `indexOf` from scratch; tests include the pathological repeated-prefix worst case — document the complexity | M    |      |
+| 147 | `plagiarism_hash`      | Does an article contain any sentence from a known-plagiarized set? Rolling hash (Rabin-Karp) with collision handling  | M    |      |
+| 148 | `text_diff`            | Minimal line-level diff between two file versions: output kept/added/removed lines (LCS-based — pairs with Topic 20)  | H    |      |
 
 ---
 
 # Tier 3 — Medium Probability
 
-## Topic 18: Binary Search Trees — _Lesson 5_
+## Topic 19: Binary Search Trees — _Lesson 5_
 
 **Probability: Medium overall — but High at Meta/Amazon** (validate-BST, k-th smallest, and closest-value are screen regulars there). It sits below the Tier 2 line only because Netflix and Google frontend tracks rarely ask BST-specific questions; pull this topic forward if a Meta or Amazon loop lands.
 
 | #   | Folder             | Scenario                                                                                                          | Diff | Done |
 | --- | ------------------ | ------------------------------------------------------------------------------------------------------------------------ | ---- | ---- |
-| 141 | `sku_index`        | Product index as a BST: `insert`, `has`, `size` keyed by SKU number                                                        | E    |      |
-| 142 | `index_validator`  | An index file was imported from another system — verify it's a valid BST (min/max bounds, not just parent-child)           | M    |      |
-| 143 | `kth_cheapest`     | The k-th cheapest item via in-order traversal with early stop (no full flatten)                                            | M    |      |
-| 144 | `rebuild_balanced` | The index degenerated into a linked list — rebuild a balanced BST from its sorted values                                   | M    |      |
-| 145 | `index_delete`     | Delete a key: leaf, one-child, and two-children (in-order successor) cases                                                 | H    |      |
+| 149 | `sku_index`        | Product index as a BST: `insert`, `has`, `size` keyed by SKU number                                                        | E    |      |
+| 150 | `index_validator`  | An index file was imported from another system — verify it's a valid BST (min/max bounds, not just parent-child)           | M    |      |
+| 151 | `kth_cheapest`     | The k-th cheapest item via in-order traversal with early stop (no full flatten)                                            | M    |      |
+| 152 | `rebuild_balanced` | The index degenerated into a linked list — rebuild a balanced BST from its sorted values                                   | M    |      |
+| 153 | `index_delete`     | Delete a key: leaf, one-child, and two-children (in-order successor) cases                                                 | H    |      |
 
-## Topic 19: Backtracking — _pattern_
+## Topic 20: Backtracking — _pattern_
 
 **Probability: Medium.** Choose → explore → un-choose, with pruning.
 
 | #   | Folder              | Scenario                                                                                                          | Diff | Done |
 | --- | ------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---- | ---- |
-| 146 | `flag_combinations` | QA matrix: every on/off combination of n feature flags (subsets)                                                           | E    |      |
-| 147 | `test_orderings`    | Every possible execution order of n test scenarios (permutations, no duplicates in output)                                 | E    |      |
-| 148 | `budget_bundles`    | All service bundles that hit a budget exactly; each service reusable (combination sum + pruning on sorted input)           | M    |      |
-| 149 | `glob_matcher`      | Implement glob matching with `*` and `?` for file paths (the engine behind `.gitignore`-style patterns)                    | H    |      |
-| 150 | `oncall_assignment` | Assign n engineers to n on-call slots under constraints (unavailability, no two adjacent slots same team) — pruned search | H    |      |
+| 154 | `flag_combinations` | QA matrix: every on/off combination of n feature flags (subsets)                                                           | E    |      |
+| 155 | `test_orderings`    | Every possible execution order of n test scenarios (permutations, no duplicates in output)                                 | E    |      |
+| 156 | `budget_bundles`    | All service bundles that hit a budget exactly; each service reusable (combination sum + pruning on sorted input)           | M    |      |
+| 157 | `glob_matcher`      | Implement glob matching with `*` and `?` for file paths (the engine behind `.gitignore`-style patterns)                    | H    |      |
+| 158 | `oncall_assignment` | Assign n engineers to n on-call slots under constraints (unavailability, no two adjacent slots same team) — pruned search | H    |      |
 
-## Topic 20: Dynamic Programming — _pattern_
+## Topic 21: Dynamic Programming — _pattern_
 
 **Probability: Medium.** Google leans on it more than Netflix; the five tasks cover every major DP family (1D counting, coin change, LCS, edit distance, 0/1 knapsack).
 
 | #   | Folder                  | Scenario                                                                                                       | Diff | Done |
 | --- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 151 | `toolbar_layouts`       | How many ways to fill a toolbar of width n with 1-unit and 2-unit buttons? (recursion → memo → table)                     | E    |      |
-| 152 | `api_credit_change`     | Fewest credit packs (sizes given) that sum to exactly n API credits, or report impossible (coin change)                   | M    |      |
-| 153 | `watch_history_overlap` | Longest common ordered subsequence of two users' watch histories (recommendation similarity — LCS)                        | M    |      |
-| 154 | `cli_did_you_mean`      | `git comit` → "did you mean commit?" — edit distance, then suggest closest command under a threshold                      | H    |      |
-| 155 | `perf_budget_features`  | Pick features maximizing user value within a fixed JS bundle-size budget (0/1 knapsack + which features chosen)           | H    |      |
+| 159 | `toolbar_layouts`       | How many ways to fill a toolbar of width n with 1-unit and 2-unit buttons? (recursion → memo → table)                     | E    |      |
+| 160 | `api_credit_change`     | Fewest credit packs (sizes given) that sum to exactly n API credits, or report impossible (coin change)                   | M    |      |
+| 161 | `watch_history_overlap` | Longest common ordered subsequence of two users' watch histories (recommendation similarity — LCS)                        | M    |      |
+| 162 | `cli_did_you_mean`      | `git comit` → "did you mean commit?" — edit distance, then suggest closest command under a threshold                      | H    |      |
+| 163 | `perf_budget_features`  | Pick features maximizing user value within a fixed JS bundle-size budget (0/1 knapsack + which features chosen)           | H    |      |
 
-## Topic 21: Union-Find — _Lesson 15_
+## Topic 22: Union-Find — _Lesson 15_
 
 **Probability: Medium.** One structure, many disguises — accounts, networks, aliases.
 
 | #   | Folder              | Scenario                                                                                                  | Diff | Done |
 | --- | ------------------- | ----------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 156 | `network_merge`     | Basic DSU: merge networks, answer "same network?" — no optimizations yet                                            | E    |      |
-| 157 | `dsu_optimized`     | Add path compression + union by size; expose component count and size of any component                              | M    |      |
-| 158 | `rollout_clusters`  | Servers come online one by one with links — report cluster count after every event (online connectivity)            | M    |      |
-| 159 | `redundant_cable`   | Network cabling audit: find the first cable that closes a loop (cycle detection via DSU)                            | M    |      |
-| 160 | `account_merge`     | Merge duplicate user accounts that share any email address; output canonical merged accounts                        | H    |      |
+| 164 | `network_merge`     | Basic DSU: merge networks, answer "same network?" — no optimizations yet                                            | E    |      |
+| 165 | `dsu_optimized`     | Add path compression + union by size; expose component count and size of any component                              | M    |      |
+| 166 | `rollout_clusters`  | Servers come online one by one with links — report cluster count after every event (online connectivity)            | M    |      |
+| 167 | `redundant_cable`   | Network cabling audit: find the first cable that closes a loop (cycle detection via DSU)                            | M    |      |
+| 168 | `account_merge`     | Merge duplicate user accounts that share any email address; output canonical merged accounts                        | H    |      |
 
-## Topic 22: Weighted Graphs — MST & Shortest Paths — _Lessons 16–17_
+## Topic 23: Weighted Graphs — MST & Shortest Paths — _Lessons 16–17_
 
 **Probability: Medium.** Dijkstra is the one you must have cold; Kruskal and Bellman-Ford are differentiators (do Prim's and Floyd-Warshall as theory).
 
 | #   | Folder               | Scenario                                                                                                          | Diff | Done |
 | --- | -------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---- | ---- |
-| 161 | `route_cost`         | Given a weighted service map and a proposed route, compute its total cost (or report where it breaks)                      | VE   |      |
-| 162 | `office_cabling`     | Cheapest way to wire all offices into one network — Kruskal with your DSU from Topic 21                                    | M    |      |
-| 163 | `cdn_fastest_route`  | Lowest-latency path between two CDN nodes, with path reconstruction — Dijkstra (+ why negative weights break it)           | M    |      |
-| 164 | `currency_arbitrage` | Exchange-rate table: detect a profitable conversion loop — Bellman-Ford negative-cycle detection                           | H    |      |
-| 165 | `flight_within_hops` | Cheapest route with at most k hops (why plain Dijkstra fails; bounded relaxation)                                          | H    |      |
+| 169 | `route_cost`         | Given a weighted service map and a proposed route, compute its total cost (or report where it breaks)                      | VE   |      |
+| 170 | `office_cabling`     | Cheapest way to wire all offices into one network — Kruskal with your DSU from Topic 21                                    | M    |      |
+| 171 | `cdn_fastest_route`  | Lowest-latency path between two CDN nodes, with path reconstruction — Dijkstra (+ why negative weights break it)           | M    |      |
+| 172 | `currency_arbitrage` | Exchange-rate table: detect a profitable conversion loop — Bellman-Ford negative-cycle detection                           | H    |      |
+| 173 | `flight_within_hops` | Cheapest route with at most k hops (why plain Dijkstra fails; bounded relaxation)                                          | H    |      |
 
 ---
 
 # Tier 4 — Low Probability (internals depth — pair with CURRICULUM.md theory)
 
-## Topic 23: Self-Balancing Trees — _Lessons 6–7_
+## Topic 24: Self-Balancing Trees — _Lessons 6–7_
 
 **Probability: Low** as a live-coding ask; **High** as a "why does TreeMap exist" discussion. Implement once for understanding.
 
 | #   | Folder                   | Scenario                                                                                                  | Diff | Done |
 | --- | ------------------------ | ------------------------------------------------------------------------------------------------------------ | ---- | ---- |
-| 166 | `degeneration_detector`  | Given an index tree, report height, whether it's height-balanced, and the deepest unbalanced node              | E    |      |
-| 167 | `tree_rotations`         | Implement `rotateLeft` / `rotateRight` as pure pointer surgery; in-order sequence must be preserved            | M    |      |
-| 168 | `rb_invariant_checker`   | Validate the five red-black invariants on a colored tree (the discussion question, made concrete)              | M    |      |
-| 169 | `avl_insert`             | AVL insert with all four cases (LL, RR, LR, RL) and balance-factor tracking                                    | H    |      |
-| 170 | `leaderboard_rank`       | Augmented BST (subtree sizes): "how many players score below X?" and "who is rank k?" in O(log n)              | H    |      |
+| 174 | `degeneration_detector`  | Given an index tree, report height, whether it's height-balanced, and the deepest unbalanced node              | E    |      |
+| 175 | `tree_rotations`         | Implement `rotateLeft` / `rotateRight` as pure pointer surgery; in-order sequence must be preserved            | M    |      |
+| 176 | `rb_invariant_checker`   | Validate the five red-black invariants on a colored tree (the discussion question, made concrete)              | M    |      |
+| 177 | `avl_insert`             | AVL insert with all four cases (LL, RR, LR, RL) and balance-factor tracking                                    | H    |      |
+| 178 | `leaderboard_rank`       | Augmented BST (subtree sizes): "how many players score below X?" and "who is rank k?" in O(log n)              | H    |      |
 
-## Topic 24: Range Query Structures — _Lessons 10–11_
+## Topic 25: Range Query Structures — _Lessons 10–11_
 
 **Probability: Low.** Segment trees/BITs almost never appear in frontend-track FAANG rounds — but they cement the recursion + array-tree mental model.
 
 | #   | Folder               | Scenario                                                                                                             | Diff | Done |
 | --- | -------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 171 | `naive_range_engine` | Analytics baseline: array class with `rangeSum(i, j)` and `update(i, v)` done naively — establishes the API contract        | VE   |      |
-| 172 | `fenwick_counter`    | Live vote tallies: same API but point update + prefix sum in O(log n) via BIT (`i & -i`)                                    | M    |      |
-| 173 | `segment_tree_min`   | Uptime dashboard: min latency over any time range, with point updates (array-backed segment tree)                           | M    |      |
-| 174 | `segment_tree_lazy`  | Apply a discount to a whole product range (range update) with lazy propagation, plus range-sum queries                      | H    |      |
+| 179 | `naive_range_engine` | Analytics baseline: array class with `rangeSum(i, j)` and `update(i, v)` done naively — establishes the API contract        | VE   |      |
+| 180 | `fenwick_counter`    | Live vote tallies: same API but point update + prefix sum in O(log n) via BIT (`i & -i`)                                    | M    |      |
+| 181 | `segment_tree_min`   | Uptime dashboard: min latency over any time range, with point updates (array-backed segment tree)                           | M    |      |
+| 182 | `segment_tree_lazy`  | Apply a discount to a whole product range (range update) with lazy propagation, plus range-sum queries                      | H    |      |
 
-## Topic 25: B-Trees & B+ Trees — _Lesson 8_
+## Topic 26: B-Trees & B+ Trees — _Lesson 8_
 
 **Probability: Low** for coding; **High** in system-design discussions about database indexes.
 
 | #   | Folder               | Scenario                                                                                                       | Diff | Done |
 | --- | -------------------- | -------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 175 | `index_page_math`    | Capacity planner: given page size and key/pointer sizes, compute branching factor and tree height for n keys           | E    |      |
-| 176 | `btree_search`       | Full search over a B-tree given as nested nodes; count nodes visited ("disk reads")                                    | M    |      |
-| 177 | `bplus_range_scan`   | B+ tree range query: descend to the first leaf, then walk the leaf linked list — return all keys in `[from, to]`       | M    |      |
-| 178 | `btree_insert_split` | Insert into a B-tree of order m with leaf split and median promotion (root split included)                             | H    |      |
+| 183 | `index_page_math`    | Capacity planner: given page size and key/pointer sizes, compute branching factor and tree height for n keys           | E    |      |
+| 184 | `btree_search`       | Full search over a B-tree given as nested nodes; count nodes visited ("disk reads")                                    | M    |      |
+| 185 | `bplus_range_scan`   | B+ tree range query: descend to the first leaf, then walk the leaf linked list — return all keys in `[from, to]`       | M    |      |
+| 186 | `btree_insert_split` | Insert into a B-tree of order m with leaf split and median promotion (root split included)                             | H    |      |
 
-## Topic 26: Strongly Connected Components & Bridges — _Lesson 18_
+## Topic 27: Strongly Connected Components & Bridges — _Lesson 18_
 
 **Probability: Low.** Senior-level differentiator material; built up in steps.
 
 | #   | Folder                | Scenario                                                                                                      | Diff | Done |
 | --- | --------------------- | -------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 179 | `reverse_graph`       | Build the transpose of a directed service map (warm-up building block for Kosaraju)                                    | VE   |      |
-| 180 | `mesh_check`          | Is every page reachable from every page via links? (DFS from one node + DFS on the reverse graph)                      | E    |      |
-| 181 | `kosaraju_groups`     | Email forwarding rules: find groups where a message can loop back to its sender (Kosaraju, two passes)                 | H    |      |
-| 182 | `critical_cables`     | Which network cables, if cut, split the network? (bridges via discovery time vs low-link)                              | H    |      |
-| 183 | `deploy_condensation` | Collapse mutually-dependent service groups into units, then produce a safe deploy order (SCC condensation → topo)      | H    |      |
+| 187 | `reverse_graph`       | Build the transpose of a directed service map (warm-up building block for Kosaraju)                                    | VE   |      |
+| 188 | `mesh_check`          | Is every page reachable from every page via links? (DFS from one node + DFS on the reverse graph)                      | E    |      |
+| 189 | `kosaraju_groups`     | Email forwarding rules: find groups where a message can loop back to its sender (Kosaraju, two passes)                 | H    |      |
+| 190 | `critical_cables`     | Which network cables, if cut, split the network? (bridges via discovery time vs low-link)                              | H    |      |
+| 191 | `deploy_condensation` | Collapse mutually-dependent service groups into units, then produce a safe deploy order (SCC condensation → topo)      | H    |      |
 
-## Topic 27: Probabilistic & Randomized Structures — _Lessons 19–20_
+## Topic 28: Probabilistic & Randomized Structures — _Lessons 19–20_
 
 **Probability: Low** for coding, but reservoir sampling and fair shuffles do get asked — and bloom filters star in system design.
 
 | #   | Folder                 | Scenario                                                                                                             | Diff | Done |
 | --- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---- | ---- |
-| 184 | `bloom_sizing`         | Given n expected URLs and a target false-positive rate, compute optimal bit-array size m and hash count k                    | E    |      |
-| 185 | `shuffle_playlist`     | Fair playlist shuffle — Fisher-Yates with injectable RNG; tests detect the classic biased-shuffle bug                        | M    |      |
-| 186 | `random_sampler`       | Pick k fair samples from a log stream of unknown length in one pass (reservoir sampling, injectable RNG)                     | M    |      |
-| 187 | `crawler_bloom`        | "Probably seen this URL?" — bloom filter with k hash functions; tests verify no false negatives ever                         | M    |      |
-| 188 | `leaderboard_skiplist` | Sorted leaderboard with O(log n) expected insert/search/delete — skip list with injectable RNG (deterministic tests)         | H    |      |
+| 192 | `bloom_sizing`         | Given n expected URLs and a target false-positive rate, compute optimal bit-array size m and hash count k                    | E    |      |
+| 193 | `shuffle_playlist`     | Fair playlist shuffle — Fisher-Yates with injectable RNG; tests detect the classic biased-shuffle bug                        | M    |      |
+| 194 | `random_sampler`       | Pick k fair samples from a log stream of unknown length in one pass (reservoir sampling, injectable RNG)                     | M    |      |
+| 195 | `crawler_bloom`        | "Probably seen this URL?" — bloom filter with k hash functions; tests verify no false negatives ever                         | M    |      |
+| 196 | `leaderboard_skiplist` | Sorted leaderboard with O(log n) expected insert/search/delete — skip list with injectable RNG (deterministic tests)         | H    |      |
 
 ---
 
@@ -433,11 +448,11 @@
 
 | Tier | Probability | Topics | Tasks | Range |
 | ---- | ----------- | ------ | ----- | ------- |
-| 1 | Very High | 9 | 82 | 001–082 |
-| 2 | High | 8 | 58 | 083–140 |
-| 3 | Medium | 5 | 25 | 141–165 |
-| 4 | Low | 5 | 23 | 166–188 |
-| **Total** | | **27** | **188** | |
+| 1 | Very High | 10 | 90 | 001–090 |
+| 2 | High | 8 | 58 | 091–148 |
+| 3 | Medium | 5 | 25 | 149–173 |
+| 4 | Low | 5 | 23 | 174–196 |
+| **Total** | | **28** | **196** | |
 
 ### How to use the tiers
 

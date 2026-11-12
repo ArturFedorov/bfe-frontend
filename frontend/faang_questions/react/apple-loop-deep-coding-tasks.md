@@ -1,65 +1,13 @@
-# Apple Loop — Deeper Coding Tasks (074–091) + Prompt for Claude
+# Apple Prep — Deep Coding Task Catalog (074–101)
 
-Continues the numbering of `React Practice Tasks — Netflix POSA Prep · Apple AIML Tier 3` (last task: 073).
-Purpose: harder, longer, follow-up-heavy tasks for the **full Apple loop** coding rounds (60 min builds, not the 30 min CoderPad screen).
-
----
-
-## PART 1 — PROMPT TO GIVE CLAUDE (copy this block into the other repo)
-
-```
-You are helping me build a practice repo of frontend coding tasks for an Apple interview loop
-(AIML Annotation Platform & Agentic UI, React + TypeScript).
-
-I will give you a task list (the "TASK LIST" section below). For EACH task, create a folder under
-`frontend/faang_questions/react/<NNN>_<folder>/` containing exactly:
-
-1. `README.md`
-   - Title, difficulty, estimated time
-   - Scenario (2-4 sentences, ML data-annotation platform domain: annotators, QA analysts,
-     model-assisted suggestions, agent runs)
-   - Requirements (numbered, testable)
-   - Acceptance criteria (checklist, each one maps to at least one test)
-   - Baseline a11y requirements (roles, labels, keyboard) — graded inline
-   - Constraints (no third-party libraries unless the task says so)
-   - Interviewer follow-ups (3-4 bullets, NOT implemented, for talk-through)
-   - "Say out loud" checklist: state shape first, name the race/cleanup hazard, ask one data-shape
-     question, ask one failure-handling question, name the first test you'd write
-2. `<Component or hook name>.tsx` (or `.ts` for non-UI tasks) — a STUB ONLY:
-   - Fully typed props / function signatures / exported types (discriminated unions where relevant)
-   - Body is `throw new Error('Not implemented')` or returns null
-   - Do NOT include any solution logic, hints in comments, or partial implementations
-3. `<name>.test.tsx` (or `.test.ts`)
-   - First line: `/** @jest-environment jsdom */` for UI tasks
-   - React Testing Library + @testing-library/user-event, jest fake timers where timing matters
-   - Query by role/label, never test ids
-   - Mock at the boundary only (fetch, EventSource, IntersectionObserver, ResizeObserver, timers)
-   - Tests are the grader: cover happy path, races/out-of-order, cancellation/unmount, error paths,
-     keyboard interaction, and accessibility roles
-   - Group with `describe` blocks matching the README requirements; test names read as requirements
-   - Include at least 2 tests that only a correct, robust implementation passes (the "senior" tests)
-4. Do NOT create a solution file. Do NOT implement the stubs.
-
-Also:
-- Add each task as a row in the repo's task table (columns: #, Folder, Scenario, Diff, Done) and in a
-  new "Tier 4 — Apple Loop Deep Tasks" section. Leave Done empty.
-- If test helpers are shared (fake EventSource, fake ReadableStream, fake IntersectionObserver),
-  put them in `frontend/faang_questions/react/_helpers/` once and import them.
-- Verify every test file at least type-checks (`tsc --noEmit`) and that tests FAIL against the stubs
-  (not error on import). Report any task where tests pass against a stub — that test is too weak.
-- Work through all tasks; do not stop to ask about each one. At the end, give me a short table:
-  task, number of tests, helpers used, anything ambiguous you decided.
-
-TASK LIST: (paste the TASK LIST section from this file below this prompt)
-```
+Task catalog for the 60-minute builds. The learning plan (order, mixing with algo and the project, talk topics)
+lives in [`../APPLE_PLAN.md`](../APPLE_PLAN.md). Every folder under `frontend/faang_questions/react/<NNN>_<folder>/`
+holds `README.md` + typed stub + tests (the grader) + `demo.tsx` for the playground (`npm run dev:react`).
+Shared test fakes: `_helpers/`. Difficulty **M** Medium · **H** Hard · **VH** Very Hard. Priority **P1** most likely · **P2** likely · **P3** stretch.
 
 ---
 
-## PART 2 — TASK LIST
-
-Difficulty: **M** Medium · **H** Hard · **VH** Very Hard (60 min, many follow-ups).
-Priority: **P1** most likely in the loop · **P2** likely · **P3** stretch.
-Format of every task folder: `README.md` + typed stub + test suite (see prompt above).
+## Tier 4 — Annotation Platform & Agentic UI (074–091)
 
 ### Block A — Streaming & Agentic (P1)
 
@@ -101,27 +49,29 @@ Format of every task folder: `README.md` + typed stub + test suite (see prompt a
 
 ---
 
-## PART 3 — RECOMMENDED ORDER
+---
 
-| Order | Tasks | Why |
-|---|---|---|
-| 1 | 074 → 075 → 076 → 077 | Streaming chain: parse → reconnect → render → scroll. Matches your Duo experience. |
-| 2 | 078 → 079 → 080 | Agent run state and control flow. Highest-probability loop prompts. |
-| 3 | 081 → 082 | Annotation core: spans and undo. Most unique to this team. |
-| 4 | 084 → 086 → 085 | Review queue, suggestions, autosave/conflict. |
-| 5 | 087 → 088 → 089 | Data-dense UI. |
-| 6 | 083 | Bounding boxes (if time; depends on whether images are in scope). |
-| 7 | 090 → 091 | Architecture primitives and concurrent rendering. |
+## Tier 5 — Customer Engagement Tooling (092–101, ASE, added Nov 2026)
 
-**Timed run:** every task in Blocks A–B should be done once in 60 minutes with only the README open and tests as the grader, then once more from a blank file a week later (re-solve rule).
+Role: Apple Services Engineering, Customer Engagement platform (London). Themes: React Query, React Router,
+design systems / Tailwind-style utilities, micro-frontends, REST/GraphQL, event-driven architecture, CMS, TDD.
 
-**Interview habits for every task:** narrate state shape first (discriminated union), name the race/cleanup hazard before writing the effect, ask one question about data shape and one about failure handling, name the first test you'd write, and mention accessibility and privacy unprompted.
+| # | Folder | Scenario | Diff | Prio |
+|---|---|---|---|---|
+| 092 | `mini_react_query` | Hand-rolled `useQuery` / `useMutation`: cache keys, stale-while-revalidate, in-flight dedupe, invalidation, optimistic mutation with rollback. | H | P1 |
+| 093 | `mini_router` | `Router`/`Routes`/`Route`/`Link`/`Outlet`, params, ranking, `useSearchParams`, `RequireAuth` redirect preserving `from`. | H | P1 |
+| 094 | `audience_segment_builder` | Nested AND/OR rule tree editor with live match count; pure `evaluate` / `countMatches`; structural sharing. | H | P1 |
+| 095 | `message_template_editor` | `{{placeholder \| fallback}}` + `{{block:id}}` tokenizer, live preview, problems alert, caret insertion, sms counter. | M | P1 |
+| 096 | `send_schedule_picker` | Timezone-aware next sends via Intl, quiet hours shifting, daily/weekly recurrence that survives DST. | M | P2 |
+| 097 | `journey_builder` | Steps + edges graph editor: validation (cycle, unreachable, dangling branch), simulate a customer path. | VH | P2 |
+| 098 | `channel_preview_tabs` | Compound ARIA tabs with design tokens and a `cx` utility; controlled/uncontrolled; per-channel preview frame. | M | P2 |
+| 099 | `micro_frontend_shell` | Shell lazy-loading remotes from a manifest: Suspense, per-remote error boundary + Retry, shared event bus, single-flight loads. | H | P1 |
+| 100 | `feature_flag_context` | Flags via Context on `useSyncExternalStore`: selector isolation, persisted overrides, `<Feature>`, no-provider warning. | M | P2 |
+| 101 | `campaign_approval_grid` | URL-synced paginated grid with React-Query-style fetching, cross-page selection, optimistic bulk approve with rollback. | H | P1 |
 
 ---
 
-## PART 4 — Tier 4 progress table (Apple Loop Deep Tasks)
-
-Task table for this tier (the repo-wide `TASKS.md` was retired; this is the tracking table). Folders live under `frontend/faang_questions/react/<NNN>_<folder>/` with README + typed stub + tests + a `demo.tsx` harness for the playground (`npm run dev:react`); shared test fakes are in `frontend/faang_questions/react/_helpers/`.
+## Progress
 
 | #   | Folder | Scenario | Diff | Done |
 | --- | --- | --- | --- | --- |
@@ -144,116 +94,19 @@ Task table for this tier (the repo-wide `TASKS.md` was retired; this is the trac
 | 090 | `mini_store_sync_external` | createStore + useStore on useSyncExternalStore: selector subscriptions, batching, no tearing, render counts | H |      |
 | 091 | `transition_filter_lab` | 10k-row filter with useDeferredValue/useTransition: urgent input, lagging list, stale renders discarded | M |      |
 
+| 092 | `mini_react_query` | useQuery/useMutation with SWR, dedupe, invalidation, optimistic rollback | H |      |
+| 093 | `mini_router` | History-API router with nested routes, params, search params, auth redirect | H |      |
+| 094 | `audience_segment_builder` | AND/OR rule tree editor with live match count | H |      |
+| 095 | `message_template_editor` | Placeholder tokenizer, preview, problems, caret insert, sms counter | M |      |
+| 096 | `send_schedule_picker` | Intl-based next sends, quiet hours, DST-safe recurrence | M |      |
+| 097 | `journey_builder` | Journey graph editor with validation and simulation | VH |      |
+| 098 | `channel_preview_tabs` | Compound ARIA tabs + design tokens + cx | M |      |
+| 099 | `micro_frontend_shell` | Remote loading shell: Suspense, boundaries, event bus | H |      |
+| 100 | `feature_flag_context` | Flag store on useSyncExternalStore with overrides | M |      |
+| 101 | `campaign_approval_grid` | URL-synced grid, selection across pages, optimistic bulk approve | H |      |
+
 Re-solve rule: anything solved with hints goes back in the queue for a blank-file redo a week later.
 
 ---
 
-## PART 5 — Easier existing tasks that still show up in a loop
-
-The deep tasks above are the 60-minute builds. Loop rounds also open with, or fill the
-second half with, 15–30 minute pure JavaScript / TypeScript exercises. Those already exist in
-the older tracks. State verified by running each suite on 2026-11-09 ("done" = tests pass;
-earlier "done" marks for these tracks were wrong — their stubs return a never-settling promise).
-
-### A. Promises and async utilities (most likely for this team)
-
-| Track / task | Diff | State |
-| --- | --- | --- |
-| `frontend/javascript_utilities/010–013` — Promise.all / race / allSettled / any | E–M | done |
-| `frontend/javascript_utilities/014_custom_promise` | H | done |
-| `frontend/async_patterns/003_cancelable_promise`, `006_lazy_promise`, `010_promisify` | E–M | done |
-| `frontend/async_patterns/001_concurrency_limiter` | M | done |
-| `frontend/async_patterns/002_retry_with_backoff` (reference in `solution.ts`) | M | **todo** |
-| `frontend/async_patterns/004_sleep`, `005_sequential_parallel` | E | **todo** |
-| `frontend/async_patterns/009_batch_requests`, `011_paginated_data_fetcher` | M | **todo** |
-| `frontend/async_patterns/007_async_generator`, `008_rate_limiter` | H | **todo** |
-| `algo/066_timeout_wrapper`, `067_in_flight_dedupe`, `070_stale_while_revalidate` | E–M | done |
-| `algo/068_async_queue`, `069_circuit_breaker`, `077_retry_backoff`, `078_concurrency_pool` | M | done |
-| `algo/074_sequential_vs_parallel`, `075_lazy_promise` | E | **todo** |
-| `algo/076_cancelable_promise`, `079_token_bucket`, `080_request_batcher` | M | **todo** |
-| `algo/081_paginated_fetcher` — async generator over a cursor API | M | **todo** — pure form of 074/068 streaming |
-
-### B. Timing and function utilities (15-minute openers)
-
-| Track / task | Diff | State |
-| --- | --- | --- |
-| `frontend/javascript_utilities/001_debounce` | M | done |
-| `frontend/javascript_utilities/015_throttle` | M | **todo** |
-| `frontend/dom_and_browser/009_raf_throttle` | M | **todo** |
-| `frontend/javascript_utilities/028_set_interval_with_set_timeout`, `029_clear_all_timers` | M | **todo** |
-| `frontend/javascript_utilities/017_memoize`, `026_event_emitter`, `008_function_bind` | M | done |
-| `frontend/javascript_utilities/016_once`, `018_curry`, `009_function_call_apply` | E–M | **todo** |
-| `frontend/javascript_utilities/019_deep_clone`, `020_deep_equal` | M | **todo** |
-| `frontend/javascript_utilities/002–007` array methods, `023–025` object methods, `027_string_trim` | E–M | **todo** |
-| `frontend/javascript_utilities/021_json_stringify`, `022_json_parse`, `030_array_flat_iterative` | M–H | **todo** |
-
-### C. TypeScript (embedded in every React task rather than set standalone)
-
-| Track / task | Diff | State |
-| --- | --- | --- |
-| `frontend/faang_questions/typescript/001_api_response_union`, `002_type_predicates`, `009_typed_pick`, `010_constrained_getters` | E | **todo** |
-| `frontend/faang_questions/typescript/003–008`, `011–014` | M | **todo** |
-
-### D. DOM utilities (lower priority for an annotation-platform team)
-
-| Track / task | Diff | State |
-| --- | --- | --- |
-| `frontend/dom_and_browser/004_event_delegation`, `008_mutation_observer`, `010_dom_tree_builder` | M | **todo** |
-| `frontend/dom_and_browser/001–003`, `005`, `006` — selectors, flatten, serialize | E–M | **todo** |
-
-### E. React internals talking point
-
-| Track / task | Diff | State |
-| --- | --- | --- |
-| `algo/082_fiber_tree_walk` — fiber tree + beginWork/completeWork loop | E | **todo** |
-
-**Short list for the loop:** throttle, once, deep equal, event emitter (redo), Promise.any (redo),
-cancelable promise (redo), concurrency pool (redo), retry with backoff, async_patterns 005 and 009,
-algo 074–076, 081, 082, TS 001, 002, 007.
-
----
-
-## PART 6 — React tasks 001–073 most likely in the loop
-
-Ranked for this team (annotation platform + agentic UI), not for a generic React screen.
-
-### Tier 1 — expect at least one as a main prompt
-
-| # | Folder | Why |
-| --- | --- | --- |
-| 006 | `race_free_search` | The canonical "stale response must lose" exercise; every frontend loop has a version. |
-| 012 / 014 | `use_fetch` / `use_async` | Same race as a hook — probes stale closures and stable identities. |
-| 022 | `polling_status_widget` | Long-running job status is in the JD; settle-then-schedule with backoff is a classic 30-min build. |
-| 068 | `streaming_transcript` | Streaming model output token by token is named explicitly in the posting. |
-| 073 | `agent_run_timeline` | Multi-step agent run with cancel and retry — the most on-brand prompt in the repo. |
-| 018 / 005 | `async_states_panel` / `fetch_on_mount` | The warm-up version of the above; often the first ten minutes before the twist. |
-
-### Tier 2 — likely as the second half or the twist
-
-| # | Folder | Why |
-| --- | --- | --- |
-| 024 | `partner_autocomplete` | Debounce + abort + combobox ARIA — the most common frontend interview component overall. |
-| 023 | `optimistic_toggle` | Review flows approve/reject; optimistic update with rollback is how that works. |
-| 070 / 071 | `label_hotkeys` / `span_labeler` | Annotation-specific; a real possibility if the interviewer is from this team. |
-| 038 | `row_selection_state` | Bulk selection across pages for a review queue. |
-| 069 | `live_task_feed` | Event-driven state with idempotency; shows up as a reducer question. |
-| 072 | `annotation_task_editor` | Task editors are named in the JD; schema-driven form with dirty tracking. |
-| 034 / 037 | `wizard_reducer` / `normalized_store` | Pure reducer and state-modelling questions, often on the plain TypeScript pad. |
-
-### Tier 3 — more likely as conversation than as code
-
-| # | Folder | Why |
-| --- | --- | --- |
-| 040–044 | render counter, memo boundaries, callback stability, keys, derived memo | "Why does this re-render" fix-the-code, usually ten minutes. |
-| 027 / 029 | `compound_tabs` / `modal_portal` | Design-system and a11y questions; more likely verbal than built. |
-| 046 | `lazy_admin_panel` | Code splitting as a performance talking point. |
-| 045 | `virtualized_list` | Plausible build, but 087 (variable heights) is the version they'd pick for a full round. |
-| 010 / 013 / 016 | debounce, interval, undo hooks | Short hook exercises, sometimes as warm-ups. |
-
-**Unlikely for this loop:** 001–004, 009, 025, 026, 031, 032, 036, 039 — good practice, too generic or too small for a senior annotation-platform round.
-
-**If you redo only five from this range before the loop:** 006, 022, 068, 073, 024 — the race, the long-running job, streaming, the agent run, and the autocomplete.
-
----
-
-*Apple Loop Deep Tasks · Artur Fedorov · Generated by Claude*
+*Apple Prep Task Catalog · Artur Fedorov · Generated by Claude*
