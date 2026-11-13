@@ -14,13 +14,19 @@ export function union(a: readonly string[], b: readonly string[]): string[] {
 }
 
 /** Ids in both `a` and `b`. Throws TypeError if either input is not sorted/unique. */
-export function intersect(a: readonly string[], b: readonly string[]): string[] {
+export function intersect(
+  a: readonly string[],
+  b: readonly string[],
+): string[] {
   // TODO: implement
   throw new Error('Not implemented');
 }
 
 /** Ids in `a` that are not in `b`. Throws TypeError if either input is not sorted/unique. */
-export function difference(a: readonly string[], b: readonly string[]): string[] {
+export function difference(
+  a: readonly string[],
+  b: readonly string[],
+): string[] {
   // TODO: implement
   throw new Error('Not implemented');
 }

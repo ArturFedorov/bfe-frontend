@@ -1,5 +1,5 @@
-import { gt } from '../002_semver_comparator/semver_comparator';
-import { satisfies } from '../003_semver_range_matcher/semver_range_matcher';
+import { gt } from '../002_semver_comparator/solution';
+import { satisfies } from '../003_semver_range_matcher/solution';
 
 /**
  * A registry maps a package name to the concrete versions it publishes.

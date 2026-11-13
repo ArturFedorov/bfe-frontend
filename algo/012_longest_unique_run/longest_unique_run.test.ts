@@ -33,7 +33,7 @@ describe('longestUniqueRun', () => {
   });
 
   it('handles adjacent duplicates surrounded by unique runs', () => {
-    expect(longestUniqueRun(['a', 'b', 'c', 'c', 'd', 'e', 'f', 'g'])).toBe(6);
+    expect(longestUniqueRun(['a', 'b', 'c', 'c', 'd', 'e', 'f', 'g'])).toBe(5);
   });
 
   it('handles 100_000 requests in time', () => {

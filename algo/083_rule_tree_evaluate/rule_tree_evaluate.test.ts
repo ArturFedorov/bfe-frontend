@@ -1,4 +1,11 @@
-import { evaluate, simplify, Node, Rule, Group, Record } from './rule_tree_evaluate';
+import {
+  evaluate,
+  simplify,
+  Node,
+  Rule,
+  Group,
+  Record,
+} from './rule_tree_evaluate';
 
 const rule = (
   field: string,
@@ -66,16 +73,26 @@ describe('evaluate — operators', () => {
   it('a missing field is false for every operator, including neq', () => {
     const ops: Rule['operator'][] = ['eq', 'neq', 'gt', 'lt', 'contains', 'in'];
     for (const op of ops) {
-      expect(evaluate(rule('missing', op, op === 'in' ? ['x'] : 'x'), contact)).toBe(false);
+      expect(
+        evaluate(rule('missing', op, op === 'in' ? ['x'] : 'x'), contact),
+      ).toBe(false);
     }
-    expect(evaluate(rule('explicit', 'neq', 'x'), { explicit: undefined })).toBe(false);
+    expect(
+      evaluate(rule('explicit', 'neq', 'x'), { explicit: undefined }),
+    ).toBe(false);
   });
 });
 
 describe('evaluate — groups', () => {
   it('AND requires every child, OR requires some child', () => {
-    const and = group('AND', [rule('country', 'eq', 'US'), rule('spend', 'gt', 500)]);
-    const or = group('OR', [rule('country', 'eq', 'CA'), rule('spend', 'gt', 500)]);
+    const and = group('AND', [
+      rule('country', 'eq', 'US'),
+      rule('spend', 'gt', 500),
+    ]);
+    const or = group('OR', [
+      rule('country', 'eq', 'CA'),
+      rule('spend', 'gt', 500),
+    ]);
     expect(evaluate(and, contact)).toBe(true);
     expect(evaluate(or, contact)).toBe(true);
     expect(evaluate(and, { ...contact, spend: 10 })).toBe(false);
@@ -109,11 +126,15 @@ describe('evaluate — groups', () => {
         },
       });
     }
-    expect(evaluate(group('AND', [rule('f1', 'eq', 0), rule('f2', 'eq', 2)]), spy)).toBe(false);
+    expect(
+      evaluate(group('AND', [rule('f1', 'eq', 0), rule('f2', 'eq', 2)]), spy),
+    ).toBe(false);
     expect(seen).toEqual(['f1']);
 
     seen.length = 0;
-    expect(evaluate(group('OR', [rule('f2', 'eq', 2), rule('f1', 'eq', 1)]), spy)).toBe(true);
+    expect(
+      evaluate(group('OR', [rule('f2', 'eq', 2), rule('f1', 'eq', 1)]), spy),
+    ).toBe(true);
     expect(seen).toEqual(['f2']);
   });
 });
@@ -125,7 +146,10 @@ describe('simplify', () => {
   });
 
   it('returns the same reference for a group already in normal form', () => {
-    const g = group('AND', [rule('a', 'eq', 1), group('OR', [rule('b', 'eq', 2), rule('c', 'eq', 3)])]);
+    const g = group('AND', [
+      rule('a', 'eq', 1),
+      group('OR', [rule('b', 'eq', 2), rule('c', 'eq', 3)]),
+    ]);
     expect(simplify(g)).toBe(g);
     expect((simplify(g) as Group).children[1]).toBe(g.children[1]);
   });
@@ -134,7 +158,9 @@ describe('simplify', () => {
     const a = rule('a', 'eq', 1);
     const b = rule('b', 'eq', 2);
     const c = rule('c', 'eq', 3);
-    expect(simplify(group('AND', [a, group('AND', [b, c])]))).toEqual(group('AND', [a, b, c]));
+    expect(simplify(group('AND', [a, group('AND', [b, c])]))).toEqual(
+      group('AND', [a, b, c]),
+    );
   });
 
   it('keeps a nested group with a different op', () => {
@@ -147,9 +173,9 @@ describe('simplify', () => {
   it('drops empty child groups', () => {
     const a = rule('a', 'eq', 1);
     const b = rule('b', 'eq', 2);
-    expect(simplify(group('AND', [group('OR', []), a, group('AND', []), b]))).toEqual(
-      group('AND', [a, b]),
-    );
+    expect(
+      simplify(group('AND', [group('OR', []), a, group('AND', []), b])),
+    ).toEqual(group('AND', [a, b]));
   });
 
   it('collapses a single-child group to the child', () => {
@@ -185,7 +211,10 @@ describe('simplify', () => {
   });
 
   it('collapses a single-child chain that ends in a mixed group', () => {
-    const inner = group('OR', [rule('x', 'eq', 1), group('AND', [rule('y', 'eq', 2)])]);
+    const inner = group('OR', [
+      rule('x', 'eq', 1),
+      group('AND', [rule('y', 'eq', 2)]),
+    ]);
     const out = simplify(group('AND', [group('OR', [inner])]));
     expect(out).toEqual(group('OR', [rule('x', 'eq', 1), rule('y', 'eq', 2)]));
   });
@@ -215,7 +244,9 @@ describe('simplify', () => {
       group('AND', []),
       group('AND', [
         rule('country', 'eq', 'US'),
-        group('OR', [group('OR', [rule('plan', 'in', ['pro']), rule('spend', 'gt', 500)])]),
+        group('OR', [
+          group('OR', [rule('plan', 'in', ['pro']), rule('spend', 'gt', 500)]),
+        ]),
       ]),
     ]);
     const clean = simplify(messy);
@@ -225,7 +256,8 @@ describe('simplify', () => {
       { ...contact, country: 'CA' },
       {},
     ];
-    for (const r of records) expect(evaluate(clean, r)).toBe(evaluate(messy, r));
+    for (const r of records)
+      expect(evaluate(clean, r)).toBe(evaluate(messy, r));
     expect(simplify(clean)).toBe(clean);
   });
 });

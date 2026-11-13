@@ -32,7 +32,9 @@ describe('parseCron', () => {
   });
 
   it('supports ranged steps and mixed lists, sorted and de-duplicated', () => {
-    expect(parseCron('0 0 1-30/5 * *').dayOfMonth).toEqual([1, 6, 11, 16, 21, 26]);
+    expect(parseCron('0 0 1-30/5 * *').dayOfMonth).toEqual([
+      1, 6, 11, 16, 21, 26,
+    ]);
     expect(parseCron('5,1,1-2,*/30 * * * *').minute).toEqual([0, 1, 2, 5, 30]);
     expect(parseCron('0 22-23,0-1 * * *').hour).toEqual([0, 1, 22, 23]);
   });
@@ -65,7 +67,17 @@ describe('parseCron', () => {
   });
 
   it('throws SyntaxError on malformed tokens', () => {
-    for (const bad of ['abc * * * *', '5-1 * * * *', '*/0 * * * *', '1- * * * *', '-5 * * * *', '1,,2 * * * *', '* * * MON *', '*/a * * * *', '5/3 * * * *']) {
+    for (const bad of [
+      'abc * * * *',
+      '5-1 * * * *',
+      '*/0 * * * *',
+      '1- * * * *',
+      '-5 * * * *',
+      '1,,2 * * * *',
+      '* * * MON *',
+      '*/a * * * *',
+      '5/3 * * * *',
+    ]) {
       expect(() => parseCron(bad)).toThrow(SyntaxError);
     }
   });
@@ -109,7 +121,9 @@ describe('matches', () => {
 
 describe('nextRuns — stepping', () => {
   it('*/15 from 09:07 goes to 09:15 and keeps stepping', () => {
-    expect(iso(nextRuns('*/15 * * * *', utc('2025-01-01T09:07:00Z'), 4))).toEqual([
+    expect(
+      iso(nextRuns('*/15 * * * *', utc('2025-01-01T09:07:00Z'), 4)),
+    ).toEqual([
       '2025-01-01T09:15:00.000Z',
       '2025-01-01T09:30:00.000Z',
       '2025-01-01T09:45:00.000Z',
@@ -130,17 +144,15 @@ describe('nextRuns — stepping', () => {
   });
 
   it('resets minutes when jumping to a later hour', () => {
-    expect(iso(nextRuns('5,50 10 * * *', utc('2025-01-01T09:55:00Z'), 2))).toEqual([
-      '2025-01-01T10:05:00.000Z',
-      '2025-01-01T10:50:00.000Z',
-    ]);
+    expect(
+      iso(nextRuns('5,50 10 * * *', utc('2025-01-01T09:55:00Z'), 2)),
+    ).toEqual(['2025-01-01T10:05:00.000Z', '2025-01-01T10:50:00.000Z']);
   });
 
   it('rolls over to the next day when today has no remaining candidates', () => {
-    expect(iso(nextRuns('30 8 * * *', utc('2025-01-31T09:00:00Z'), 2))).toEqual([
-      '2025-02-01T08:30:00.000Z',
-      '2025-02-02T08:30:00.000Z',
-    ]);
+    expect(iso(nextRuns('30 8 * * *', utc('2025-01-31T09:00:00Z'), 2))).toEqual(
+      ['2025-02-01T08:30:00.000Z', '2025-02-02T08:30:00.000Z'],
+    );
   });
 
   it('returns [] for count <= 0 and does not mutate from', () => {
@@ -155,7 +167,9 @@ describe('nextRuns — stepping', () => {
 
 describe('nextRuns — calendar', () => {
   it('weekdays at 09:00 skip the weekend', () => {
-    expect(iso(nextRuns('0 9 * * 1-5', utc('2025-01-03T10:00:00Z'), 3))).toEqual([
+    expect(
+      iso(nextRuns('0 9 * * 1-5', utc('2025-01-03T10:00:00Z'), 3)),
+    ).toEqual([
       '2025-01-06T09:00:00.000Z', // Mon
       '2025-01-07T09:00:00.000Z',
       '2025-01-08T09:00:00.000Z',
@@ -175,10 +189,9 @@ describe('nextRuns — calendar', () => {
   });
 
   it('skips months that are not allowed', () => {
-    expect(iso(nextRuns('0 12 * 6 *', utc('2025-01-01T00:00:00Z'), 2))).toEqual([
-      '2025-06-01T12:00:00.000Z',
-      '2025-06-02T12:00:00.000Z',
-    ]);
+    expect(iso(nextRuns('0 12 * 6 *', utc('2025-01-01T00:00:00Z'), 2))).toEqual(
+      ['2025-06-01T12:00:00.000Z', '2025-06-02T12:00:00.000Z'],
+    );
     expect(iso(nextRuns('0 0 1 1 *', utc('2025-01-01T00:00:00Z'), 2))).toEqual([
       '2026-01-01T00:00:00.000Z',
       '2027-01-01T00:00:00.000Z',
@@ -186,33 +199,37 @@ describe('nextRuns — calendar', () => {
   });
 
   it('February has no 30th: the 30th of each month skips to March', () => {
-    expect(iso(nextRuns('0 0 30 * *', utc('2025-02-01T00:00:00Z'), 2))).toEqual([
-      '2025-03-30T00:00:00.000Z',
-      '2025-04-30T00:00:00.000Z',
-    ]);
-    expect(iso(nextRuns('0 0 31 * *', utc('2025-01-31T12:00:00Z'), 3))).toEqual([
-      '2025-03-31T00:00:00.000Z',
-      '2025-05-31T00:00:00.000Z',
-      '2025-07-31T00:00:00.000Z',
-    ]);
+    expect(iso(nextRuns('0 0 30 * *', utc('2025-02-01T00:00:00Z'), 2))).toEqual(
+      ['2025-03-30T00:00:00.000Z', '2025-04-30T00:00:00.000Z'],
+    );
+    expect(iso(nextRuns('0 0 31 * *', utc('2025-01-31T12:00:00Z'), 3))).toEqual(
+      [
+        '2025-03-31T00:00:00.000Z',
+        '2025-05-31T00:00:00.000Z',
+        '2025-07-31T00:00:00.000Z',
+      ],
+    );
   });
 
   it('finds Feb 29 only in leap years', () => {
-    expect(iso(nextRuns('0 0 29 2 *', utc('2025-01-01T00:00:00Z'), 2))).toEqual([
-      '2028-02-29T00:00:00.000Z',
-      '2032-02-29T00:00:00.000Z',
-    ]);
+    expect(iso(nextRuns('0 0 29 2 *', utc('2025-01-01T00:00:00Z'), 2))).toEqual(
+      ['2028-02-29T00:00:00.000Z', '2032-02-29T00:00:00.000Z'],
+    );
   });
 
   it('crosses a year boundary', () => {
-    expect(iso(nextRuns('59 23 31 12 *', utc('2025-12-31T23:59:00Z'), 1))).toEqual([
-      '2026-12-31T23:59:00.000Z',
-    ]);
+    expect(
+      iso(nextRuns('59 23 31 12 *', utc('2025-12-31T23:59:00Z'), 1)),
+    ).toEqual(['2026-12-31T23:59:00.000Z']);
   });
 
   it('throws RangeError for a date that can never occur', () => {
-    expect(() => nextRuns('0 0 30 2 *', utc('2025-01-01T00:00:00Z'), 1)).toThrow(RangeError);
-    expect(() => nextRuns('0 0 31 4,6,9,11 *', utc('2025-01-01T00:00:00Z'), 1)).toThrow(RangeError);
+    expect(() =>
+      nextRuns('0 0 30 2 *', utc('2025-01-01T00:00:00Z'), 1),
+    ).toThrow(RangeError);
+    expect(() =>
+      nextRuns('0 0 31 4,6,9,11 *', utc('2025-01-01T00:00:00Z'), 1),
+    ).toThrow(RangeError);
   });
 
   it('every returned date satisfies matches()', () => {
@@ -222,7 +239,8 @@ describe('nextRuns — calendar', () => {
     expect(runs).toHaveLength(40);
     for (let i = 0; i < runs.length; i++) {
       expect(matches(spec, runs[i])).toBe(true);
-      if (i > 0) expect(runs[i].getTime()).toBeGreaterThan(runs[i - 1].getTime());
+      if (i > 0)
+        expect(runs[i].getTime()).toBeGreaterThan(runs[i - 1].getTime());
     }
   });
 });

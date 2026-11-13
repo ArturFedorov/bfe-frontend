@@ -1,3 +1,25 @@
+/**
+ * 077. Retry with Exponential Backoff — reference solution
+ *
+ * Approach: a plain `for` loop over attempts 0..retries. Each iteration awaits
+ * `fn(attempt)` and returns on success. On failure:
+ *   1. a non-retryable error is re-thrown immediately (no further attempts,
+ *      no sleep);
+ *   2. if this was the last allowed attempt we stop without sleeping and
+ *      reject with that final error;
+ *   3. otherwise compute the delay for retry `attempt`:
+ *        min(baseMs * 2^attempt, maxMs), then optionally full-jitter it with
+ *        floor(delay * random()) — jitter is applied AFTER the cap so the
+ *        jittered value never exceeds maxMs.
+ *      and await the injectable `sleep`.
+ *
+ * `sleep` and `random` are injected so tests can record the schedule without
+ * wall-clock time; the default sleep is setTimeout-based so Jest fake timers
+ * drive it.
+ *
+ * Time: O(retries) attempts. Space: O(1).
+ */
+
 const defaultSleep = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -45,7 +67,8 @@ export async function retry<T>(
     } catch (error) {
       lastError = error;
       if (!isRetryable(error)) throw error;
-      if (attempt === retries) break;
+      if (attempt === retries) break; // exhausted: no sleep after final failure
+
       let delay = Math.min(baseMs * 2 ** attempt, maxMs);
       if (jitter) delay = Math.floor(delay * random());
       await sleep(delay);

@@ -1,21 +1,20 @@
 export function promiseAny<T>(promises: (T | Promise<T>)[]): Promise<T> {
   return new Promise((resolve, reject) => {
-    const errors: Error[] = [];
+    const errors: unknown[] = [];
+    let remaining = promises.length;
 
-    if (promises.length === 0) {
+    if (remaining === 0) {
       reject(new AggregateError([], 'All promises were rejected'));
+      return;
     }
 
-    promises.forEach((promise) => {
-      Promise.resolve(promise)
-        .then(resolve)
-        .catch((err: Error) => {
-          errors.push(err);
-
-          if (errors.length === promises.length) {
-            reject(new AggregateError(errors, 'An error occurred'));
-          }
-        });
+    promises.forEach((promise, index) => {
+      Promise.resolve(promise).then(resolve, (error: unknown) => {
+        errors[index] = error;
+        if (--remaining === 0) {
+          reject(new AggregateError(errors, 'All promises were rejected'));
+        }
+      });
     });
   });
 }

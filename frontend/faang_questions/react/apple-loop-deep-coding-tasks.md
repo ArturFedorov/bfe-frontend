@@ -1,7 +1,7 @@
-# Apple Prep — Deep Coding Task Catalog (074–101)
+# Deep Coding Task Catalog (074–111)
 
 Task catalog for the 60-minute builds. The learning plan (order, mixing with algo and the project, talk topics)
-lives in [`../APPLE_PLAN.md`](../APPLE_PLAN.md). Every folder under `frontend/faang_questions/react/<NNN>_<folder>/`
+lives in [`../FRONTEND_PLAN.md`](../FRONTEND_PLAN.md). Every folder under `frontend/faang_questions/react/<NNN>_<folder>/`
 holds `README.md` + typed stub + tests (the grader) + `demo.tsx` for the playground (`npm run dev:react`).
 Shared test fakes: `_helpers/`. Difficulty **M** Medium · **H** Hard · **VH** Very Hard. Priority **P1** most likely · **P2** likely · **P3** stretch.
 
@@ -71,6 +71,25 @@ design systems / Tailwind-style utilities, micro-frontends, REST/GraphQL, event-
 
 ---
 
+## Tier 6 — Classic UI Widgets (102–111, Google / Apple UI rounds, added Nov 2026)
+
+35–45 minute builds from a blank file; accessibility graded inline. Scenario flavour: an internal media-operations console.
+
+| # | Folder | Scenario | Diff | Prio |
+|---|---|---|---|---|
+| 102 | `file_explorer_tree` | Tree with nested checkboxes: folders derive `mixed`, ARIA tree keyboard, leaf-only value. | M | P1 |
+| 103 | `image_carousel` | Prev/next/dots, autoplay pausing on hover/focus, swipe, lazy neighbours, live status. | M | P1 |
+| 104 | `star_rating` | Radiogroup stars, hover preview, half stars, keyboard, readOnly, controlled/uncontrolled. | E | P1 |
+| 105 | `transfer_list` | Two multi-select listboxes with filters and move buttons; highlight ≠ membership. | M | P2 |
+| 106 | `kanban_board` | Columns + cards, keyboard move mode with announcements, pointer drag, structural sharing. | H | P2 |
+| 107 | `nested_comments` | Thread from a flat list, optimistic reply with id swap, collapse, depth cap. | M | P1 |
+| 108 | `date_range_picker` | ARIA grid calendar, range selection with hover preview, cross-month arrow navigation. | H | P1 |
+| 109 | `json_tree_viewer` | Lazy flatten of large JSON, search expanding ancestors, copy path, 100-item chunks. | M | P2 |
+| 110 | `connect_four` | Board reducer with gravity, O(1) win check on the last move, undo, grid ARIA. | M | P2 |
+| 111 | `job_board_feed` | Two-step API with a concurrency pool, ordered rendering, per-item retry, load more. | M | P1 |
+
+---
+
 ## Progress
 
 | #   | Folder | Scenario | Diff | Done |
@@ -104,6 +123,16 @@ design systems / Tailwind-style utilities, micro-frontends, REST/GraphQL, event-
 | 099 | `micro_frontend_shell` | Remote loading shell: Suspense, boundaries, event bus | H |      |
 | 100 | `feature_flag_context` | Flag store on useSyncExternalStore with overrides | M |      |
 | 101 | `campaign_approval_grid` | URL-synced grid, selection across pages, optimistic bulk approve | H |      |
+| 102 | `file_explorer_tree` | Nested indeterminate checkbox tree | M |      |
+| 103 | `image_carousel` | Carousel with autoplay, swipe, lazy slides | M |      |
+| 104 | `star_rating` | Radiogroup star rating | E |      |
+| 105 | `transfer_list` | Dual listbox with filters | M |      |
+| 106 | `kanban_board` | Keyboard + pointer kanban | H |      |
+| 107 | `nested_comments` | Threaded comments, optimistic reply | M |      |
+| 108 | `date_range_picker` | ARIA grid range calendar | H |      |
+| 109 | `json_tree_viewer` | Lazy JSON tree with search | M |      |
+| 110 | `connect_four` | Game reducer with O(1) win check | M |      |
+| 111 | `job_board_feed` | Pooled two-step feed | M |      |
 
 Re-solve rule: anything solved with hints goes back in the queue for a blank-file redo a week later.
 

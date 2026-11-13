@@ -1,13 +1,21 @@
 import { tokenize, render, placeholders, Token } from './template_tokenizer';
 
 const text = (value: string): Token => ({ type: 'text', value });
-const ph = (name: string, raw: string, fallback: string | null = null): Token => ({
+const ph = (
+  name: string,
+  raw: string,
+  fallback: string | null = null,
+): Token => ({
   type: 'placeholder',
   name,
   fallback,
   raw,
 });
-const err = (message: string, index: number): Token => ({ type: 'error', message, index });
+const err = (message: string, index: number): Token => ({
+  type: 'error',
+  message,
+  index,
+});
 
 describe('tokenize — basics', () => {
   it('returns [] for an empty template and one text token for plain text', () => {
@@ -32,7 +40,9 @@ describe('tokenize — basics', () => {
     expect(tokenize('{{ first_name | there }}')).toEqual([
       ph('first_name', '{{ first_name | there }}', 'there'),
     ]);
-    expect(tokenize('{{ a | b | c }}')).toEqual([ph('a', '{{ a | b | c }}', 'b | c')]);
+    expect(tokenize('{{ a | b | c }}')).toEqual([
+      ph('a', '{{ a | b | c }}', 'b | c'),
+    ]);
   });
 
   it('distinguishes no fallback (null) from an empty fallback ("")', () => {
@@ -54,12 +64,17 @@ describe('tokenize — basics', () => {
 
 describe('tokenize — adjacency and escapes', () => {
   it('lexes adjacent placeholders with no text token between them', () => {
-    expect(tokenize('{{a}}{{b}}')).toEqual([ph('a', '{{a}}'), ph('b', '{{b}}')]);
+    expect(tokenize('{{a}}{{b}}')).toEqual([
+      ph('a', '{{a}}'),
+      ph('b', '{{b}}'),
+    ]);
     expect(tokenize('{{a}}{{b}}{{c}}')).toHaveLength(3);
   });
 
   it('turns \\{{ into literal {{ text and drops the backslash', () => {
-    expect(tokenize('Use \\{{ like this }}')).toEqual([text('Use {{ like this }}')]);
+    expect(tokenize('Use \\{{ like this }}')).toEqual([
+      text('Use {{ like this }}'),
+    ]);
   });
 
   it('an escape followed by a real placeholder lexes both correctly', () => {
@@ -67,21 +82,31 @@ describe('tokenize — adjacency and escapes', () => {
       text('{{ not }} '),
       ph('real', '{{ real }}'),
     ]);
-    expect(tokenize('\\{{{{ real }}')).toEqual([text('{{'), ph('real', '{{ real }}')]);
+    expect(tokenize('\\{{{{ real }}')).toEqual([
+      text('{{'),
+      ph('real', '{{ real }}'),
+    ]);
   });
 
   it('a backslash anywhere else is ordinary text', () => {
-    expect(tokenize('a\\b \\ {{ x }}')).toEqual([text('a\\b \\ '), ph('x', '{{ x }}')]);
+    expect(tokenize('a\\b \\ {{ x }}')).toEqual([
+      text('a\\b \\ '),
+      ph('x', '{{ x }}'),
+    ]);
   });
 
   it('a lone { or } is ordinary text', () => {
-    expect(tokenize('{ not } a }} placeholder')).toEqual([text('{ not } a }} placeholder')]);
+    expect(tokenize('{ not } a }} placeholder')).toEqual([
+      text('{ not } a }} placeholder'),
+    ]);
   });
 
   it('never emits two adjacent text tokens or empty text tokens', () => {
     const toks = tokenize('a\\{{b\\{{c {{ 1bad }} d {{ 2bad }}{{ ok }}');
     for (let i = 1; i < toks.length; i++) {
-      expect(toks[i - 1].type === 'text' && toks[i].type === 'text').toBe(false);
+      expect(toks[i - 1].type === 'text' && toks[i].type === 'text').toBe(
+        false,
+      );
     }
     for (const t of toks) if (t.type === 'text') expect(t.value).not.toBe('');
   });
@@ -97,10 +122,16 @@ describe('tokenize — errors', () => {
   });
 
   it('flags names with spaces, dashes, or empty names', () => {
-    expect(tokenize('{{ first name }}')[0]).toEqual(err('Invalid placeholder name "first name"', 0));
-    expect(tokenize('{{ first-name }}')[0]).toEqual(err('Invalid placeholder name "first-name"', 0));
+    expect(tokenize('{{ first name }}')[0]).toEqual(
+      err('Invalid placeholder name "first name"', 0),
+    );
+    expect(tokenize('{{ first-name }}')[0]).toEqual(
+      err('Invalid placeholder name "first-name"', 0),
+    );
     expect(tokenize('{{}}')[0]).toEqual(err('Invalid placeholder name ""', 0));
-    expect(tokenize('{{ | x }}')[0]).toEqual(err('Invalid placeholder name ""', 0));
+    expect(tokenize('{{ | x }}')[0]).toEqual(
+      err('Invalid placeholder name ""', 0),
+    );
   });
 
   it('the raw text of an invalid placeholder merges with the text before the next token', () => {
@@ -112,7 +143,10 @@ describe('tokenize — errors', () => {
   });
 
   it('an unclosed placeholder yields one error covering the rest and stops', () => {
-    expect(tokenize('Hi {{ name')).toEqual([text('Hi '), err('Unclosed placeholder at 3', 3)]);
+    expect(tokenize('Hi {{ name')).toEqual([
+      text('Hi '),
+      err('Unclosed placeholder at 3', 3),
+    ]);
     expect(tokenize('{{ a }} then {{ b | x and {{ c }')).toEqual([
       ph('a', '{{ a }}'),
       text(' then '),
@@ -121,11 +155,24 @@ describe('tokenize — errors', () => {
   });
 
   it('an unclosed placeholder right at the end still reports its index', () => {
-    expect(tokenize('abc{{')).toEqual([text('abc'), err('Unclosed placeholder at 3', 3)]);
+    expect(tokenize('abc{{')).toEqual([
+      text('abc'),
+      err('Unclosed placeholder at 3', 3),
+    ]);
   });
 
   it('never throws on hostile input', () => {
-    for (const s of ['{{', '}}', '{{}}}}', '\\', '\\{{', '{{{{', '{{ a {{ b }}', '|', '{{|}}']) {
+    for (const s of [
+      '{{',
+      '}}',
+      '{{}}}}',
+      '\\',
+      '\\{{',
+      '{{{{',
+      '{{ a {{ b }}',
+      '|',
+      '{{|}}',
+    ]) {
       expect(() => tokenize(s)).not.toThrow();
     }
   });
@@ -133,11 +180,15 @@ describe('tokenize — errors', () => {
 
 describe('render', () => {
   it('substitutes known names and uses fallbacks for unknown ones', () => {
-    expect(render('Hi {{ first_name | there }}, {{ plan }}!', { plan: 'Pro' })).toEqual({
+    expect(
+      render('Hi {{ first_name | there }}, {{ plan }}!', { plan: 'Pro' }),
+    ).toEqual({
       text: 'Hi there, Pro!',
       unknown: [],
     });
-    expect(render('Hi {{ first_name | there }}', { first_name: 'Ada' }).text).toBe('Hi Ada');
+    expect(
+      render('Hi {{ first_name | there }}', { first_name: 'Ada' }).text,
+    ).toBe('Hi Ada');
   });
 
   it('keeps raw and records unknown names once, in first-seen order', () => {
@@ -167,21 +218,32 @@ describe('render', () => {
   });
 
   it('renders the remainder verbatim after an unclosed placeholder', () => {
-    expect(render('Hi {{ a }}, {{ b', { a: 'Ada' })).toEqual({ text: 'Hi Ada, {{ b', unknown: [] });
+    expect(render('Hi {{ a }}, {{ b', { a: 'Ada' })).toEqual({
+      text: 'Hi Ada, {{ b',
+      unknown: [],
+    });
   });
 
   it('resolves dotted names as flat keys in vars', () => {
-    expect(render('{{ user.first_name }}', { 'user.first_name': 'Ada' }).text).toBe('Ada');
+    expect(
+      render('{{ user.first_name }}', { 'user.first_name': 'Ada' }).text,
+    ).toBe('Ada');
   });
 });
 
 describe('placeholders', () => {
   it('lists unique valid names in order of first appearance', () => {
-    expect(placeholders('{{a}} {{ b | x }} {{a}} {{ c.d }}')).toEqual(['a', 'b', 'c.d']);
+    expect(placeholders('{{a}} {{ b | x }} {{a}} {{ c.d }}')).toEqual([
+      'a',
+      'b',
+      'c.d',
+    ]);
   });
 
   it('ignores invalid, escaped, and unclosed placeholders', () => {
-    expect(placeholders('\\{{ e }} {{ 1x }} {{ ok }} {{ unclosed')).toEqual(['ok']);
+    expect(placeholders('\\{{ e }} {{ 1x }} {{ ok }} {{ unclosed')).toEqual([
+      'ok',
+    ]);
     expect(placeholders('plain')).toEqual([]);
   });
 });

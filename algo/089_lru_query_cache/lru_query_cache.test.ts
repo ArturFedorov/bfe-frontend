@@ -117,7 +117,11 @@ describe('createLruCache — eviction and recency', () => {
 describe('createLruCache — ttl', () => {
   it('returns values before expiry and misses at/after expiry', () => {
     let t = 0;
-    const cache = createLruCache<string, string>({ max: 5, ttlMs: 1000, now: () => t });
+    const cache = createLruCache<string, string>({
+      max: 5,
+      ttlMs: 1000,
+      now: () => t,
+    });
     cache.set('a', 'x');
     t = 999;
     expect(cache.get('a')).toBe('x');
@@ -127,7 +131,11 @@ describe('createLruCache — ttl', () => {
 
   it('has() evicts an expired entry and reduces size', () => {
     let t = 0;
-    const cache = createLruCache<string, string>({ max: 5, ttlMs: 100, now: () => t });
+    const cache = createLruCache<string, string>({
+      max: 5,
+      ttlMs: 100,
+      now: () => t,
+    });
     cache.set('a', 'x');
     cache.set('b', 'y');
     expect(cache.size).toBe(2);
@@ -140,7 +148,11 @@ describe('createLruCache — ttl', () => {
 
   it('set resets the expiry clock for that key', () => {
     let t = 0;
-    const cache = createLruCache<string, string>({ max: 5, ttlMs: 100, now: () => t });
+    const cache = createLruCache<string, string>({
+      max: 5,
+      ttlMs: 100,
+      now: () => t,
+    });
     cache.set('a', 'x');
     t = 80;
     cache.set('a', 'y');
@@ -197,7 +209,10 @@ describe('createLruCache — getOrLoad', () => {
   it('does not dedupe across different keys', async () => {
     const cache = createLruCache<string, string>({ max: 5 });
     const loader = jest.fn(async () => 'v');
-    await Promise.all([cache.getOrLoad('a', loader), cache.getOrLoad('b', loader)]);
+    await Promise.all([
+      cache.getOrLoad('a', loader),
+      cache.getOrLoad('b', loader),
+    ]);
     expect(loader).toHaveBeenCalledTimes(2);
   });
 
@@ -242,7 +257,11 @@ describe('createLruCache — getOrLoad', () => {
 
   it('reloads after the cached value expires', async () => {
     let t = 0;
-    const cache = createLruCache<string, number>({ max: 5, ttlMs: 100, now: () => t });
+    const cache = createLruCache<string, number>({
+      max: 5,
+      ttlMs: 100,
+      now: () => t,
+    });
     const loader = jest.fn(async () => 1);
     await cache.getOrLoad('a', loader);
     t = 50;

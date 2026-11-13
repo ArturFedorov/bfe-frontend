@@ -1,6 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { union, intersect, difference, intersectMany, isSorted } from './audience_set_ops';
+import {
+  union,
+  intersect,
+  difference,
+  intersectMany,
+  isSorted,
+} from './audience_set_ops';
 
 const subscribers = ['c001', 'c002', 'c005', 'c009'];
 const attendees = ['c002', 'c003', 'c009', 'c010'];
@@ -9,7 +15,8 @@ const buyers = ['c005', 'c010'];
 /** Sorted unique ids `u0000000 ... ` for every i in [0, n) with i % step === offset. */
 function ids(n: number, step: number, offset = 0): string[] {
   const out: string[] = [];
-  for (let i = offset; i < n; i += step) out.push('u' + String(i).padStart(7, '0'));
+  for (let i = offset; i < n; i += step)
+    out.push('u' + String(i).padStart(7, '0'));
   return out;
 }
 
@@ -30,13 +37,26 @@ describe('isSorted', () => {
 
 describe('union', () => {
   it('merges two sorted lists without duplicates', () => {
-    expect(union(subscribers, attendees)).toEqual(['c001', 'c002', 'c003', 'c005', 'c009', 'c010']);
+    expect(union(subscribers, attendees)).toEqual([
+      'c001',
+      'c002',
+      'c003',
+      'c005',
+      'c009',
+      'c010',
+    ]);
   });
 
   it('handles disjoint lists and lists where one is a tail of the other', () => {
     expect(union(['a', 'b'], ['x', 'y'])).toEqual(['a', 'b', 'x', 'y']);
     expect(union(['x', 'y'], ['a', 'b'])).toEqual(['a', 'b', 'x', 'y']);
-    expect(union(['a', 'b', 'c'], ['b', 'c', 'd', 'e'])).toEqual(['a', 'b', 'c', 'd', 'e']);
+    expect(union(['a', 'b', 'c'], ['b', 'c', 'd', 'e'])).toEqual([
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+    ]);
   });
 
   it('returns a new array even when one side is empty', () => {
@@ -92,7 +112,9 @@ describe('difference', () => {
 
 describe('intersectMany', () => {
   it('intersects every list', () => {
-    expect(intersectMany([subscribers, attendees, ['c009', 'c011']])).toEqual(['c009']);
+    expect(intersectMany([subscribers, attendees, ['c009', 'c011']])).toEqual([
+      'c009',
+    ]);
     expect(intersectMany([subscribers, attendees])).toEqual(['c002', 'c009']);
   });
 
@@ -177,7 +199,10 @@ describe('scale', () => {
 });
 
 describe('senior: implementation hygiene', () => {
-  const source = fs.readFileSync(path.join(__dirname, 'audience_set_ops.ts'), 'utf8');
+  const source = fs.readFileSync(
+    path.join(__dirname, 'audience_set_ops.ts'),
+    'utf8',
+  );
 
   it('does not use Set', () => {
     expect(source).not.toMatch(/\bnew\s+Set\b|\bSet\s*[<(]/);

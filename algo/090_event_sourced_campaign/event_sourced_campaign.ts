@@ -1,4 +1,9 @@
-export type CampaignStatus = 'draft' | 'scheduled' | 'sending' | 'paused' | 'archived';
+export type CampaignStatus =
+  | 'draft'
+  | 'scheduled'
+  | 'sending'
+  | 'paused'
+  | 'archived';
 
 interface EventBase {
   /** Globally unique id; used for idempotency. */
@@ -56,7 +61,10 @@ export const initialState: CampaignState = Object.freeze({
  * Otherwise consumes the event (lastSeq, seenEventIds) and applies the
  * transition if the table allows it; nothing after `archived` has an effect.
  */
-export function apply(state: CampaignState, event: CampaignEvent): CampaignState {
+export function apply(
+  state: CampaignState,
+  event: CampaignEvent,
+): CampaignState {
   // TODO: implement
   throw new Error('Not implemented');
 }
@@ -74,7 +82,10 @@ export function snapshot(state: CampaignState): Snapshot {
 }
 
 /** Resumes folding from `snap`; equals `rebuild(all)` for any split point. */
-export function rebuildFrom(snap: Snapshot, eventsAfter: CampaignEvent[]): CampaignState {
+export function rebuildFrom(
+  snap: Snapshot,
+  eventsAfter: CampaignEvent[],
+): CampaignState {
   // TODO: implement
   throw new Error('Not implemented');
 }

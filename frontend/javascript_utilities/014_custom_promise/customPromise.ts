@@ -16,25 +16,26 @@ export class MyPromise<T> {
   private locked = false;
 
   constructor(executor: Executor<T>) {
-    const resolve = (value: T | MyPromise<T>) => this.resolveWith(value);
+    const resolve = (value: T | MyPromise<T>) => this.resolveValue(value);
     const reject = (reason?: unknown) => this.settle('rejected', reason);
 
     try {
       executor(resolve, reject);
-    } catch (error: unknown) {
-      reject(error);
+    } catch (err: unknown) {
+      reject(err);
     }
   }
 
-  private resolveWith(value: T | MyPromise<T>): void {
+  private resolveValue(value: T | MyPromise<T>): void {
     if (this.state !== 'pending' || this.locked) return;
-
     if (value instanceof MyPromise) {
       this.locked = true;
+
       value.then(
         (inner) => this.settle('fulfilled', inner),
         (reason) => this.settle('rejected', reason),
       );
+
       return;
     }
 
@@ -60,14 +61,14 @@ export class MyPromise<T> {
       const reaction: Reaction = () => {
         try {
           if (this.state === 'fulfilled') {
-            if (!onFulfilled) return resolve(this.value as unknown as U); // pass-through
+            if (!onFulfilled) return resolve(this.value as unknown as U);
             resolve(onFulfilled(this.value as T));
           } else {
-            if (!onRejected) return reject(this.reason); // propagate down the chain
-            resolve(onRejected(this.reason)); // a handled rejection recovers
+            if (!onRejected) return reject(this.reason);
+            reject(onRejected(this.reason));
           }
-        } catch (error: unknown) {
-          reject(error); // a throwing handler rejects the next promise
+        } catch (err: unknown) {
+          reject(err);
         }
       };
 
@@ -79,9 +80,9 @@ export class MyPromise<T> {
     return this.then(undefined, onRejected);
   }
   static resolve<T>(value: T): MyPromise<T> {
-    return new MyPromise<T>((resolve) => resolve(value));
+    return new MyPromise((resolve) => resolve(value));
   }
   static reject(reason: any): MyPromise<never> {
-    return new MyPromise<never>((_, reject) => reject(reason));
+    return new MyPromise((_, reject) => reject(reason));
   }
 }

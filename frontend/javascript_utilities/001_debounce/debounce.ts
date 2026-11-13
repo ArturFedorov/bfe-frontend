@@ -4,12 +4,13 @@ export interface DebounceOptions {
 }
 
 export function debounce<T extends (...args: any[]) => any>(
-  fn: T,
-  delay: number,
-  options: DebounceOptions = {},
+  func: T,
+  wait: number,
+  options?: DebounceOptions,
 ): (...args: Parameters<T>) => void {
-  const { leading = false, trailing = true } = options;
-  let timer: NodeJS.Timeout | null = null;
+  const { leading = false, trailing = true } = options || {};
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
   let lastArgs: Parameters<T> | null = null;
   let lastThis: any = null;
 
@@ -19,19 +20,21 @@ export function debounce<T extends (...args: any[]) => any>(
 
     const isFirstCall = timer === null;
 
-    clearTimeout(timer as NodeJS.Timeout);
+    clearTimeout(timer as ReturnType<typeof setTimeout>);
+
     timer = setTimeout(() => {
       if (trailing && lastArgs !== null) {
-        fn.apply(lastThis, lastArgs);
+        func.apply(lastThis, lastArgs);
       }
+
       timer = null;
       lastArgs = null;
       lastThis = null;
-    }, delay);
+    }, wait);
 
     if (leading && isFirstCall) {
-      fn.apply(lastThis, lastArgs);
-      lastArgs = null; // signal: no pending trailing call unless more calls arrive
+      func.apply(lastThis, lastArgs);
+      lastArgs = null;
     }
   };
 }

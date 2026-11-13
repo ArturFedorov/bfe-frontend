@@ -36,7 +36,10 @@ const looping: Graph = {
 };
 
 /** Asserts `path` is a well-formed cycle in `g`: closes on itself and every hop is an edge. */
-function expectValidCycle(g: Graph, path: string[] | null): asserts path is string[] {
+function expectValidCycle(
+  g: Graph,
+  path: string[] | null,
+): asserts path is string[] {
   expect(path).not.toBeNull();
   const p = path as string[];
   expect(p.length).toBeGreaterThanOrEqual(2);
@@ -92,7 +95,13 @@ describe('topoOrder', () => {
       }),
     ).toEqual(['x', 'y']);
     expect(
-      topoOrder({ nodes: ['x', 'y'], edges: [['y', 'x'], ['x', 'nope']] }),
+      topoOrder({
+        nodes: ['x', 'y'],
+        edges: [
+          ['y', 'x'],
+          ['x', 'nope'],
+        ],
+      }),
     ).toEqual(['y', 'x']);
   });
 
@@ -127,10 +136,15 @@ describe('findCycle', () => {
   });
 
   it('reports a self-loop as [id, id]', () => {
-    expect(findCycle({ nodes: ['a', 'b'], edges: [['a', 'b'], ['b', 'b']] })).toEqual([
-      'b',
-      'b',
-    ]);
+    expect(
+      findCycle({
+        nodes: ['a', 'b'],
+        edges: [
+          ['a', 'b'],
+          ['b', 'b'],
+        ],
+      }),
+    ).toEqual(['b', 'b']);
   });
 
   it('reports exactly one cycle when two disjoint cycles exist', () => {
@@ -188,15 +202,14 @@ describe('unreachable', () => {
     expect(unreachable(linear, 'offer')).toEqual(['welcome', 'wait']);
     expect(unreachable(looping, 'a')).toEqual(['d']);
     expect(
-      unreachable(
-        { nodes: ['z', 'y', 'x', 'w'], edges: [['y', 'w']] },
-        'y',
-      ),
+      unreachable({ nodes: ['z', 'y', 'x', 'w'], edges: [['y', 'w']] }, 'y'),
     ).toEqual(['z', 'x']);
   });
 
   it('follows edges in the forward direction only', () => {
-    expect(unreachable({ nodes: ['a', 'b'], edges: [['b', 'a']] }, 'a')).toEqual(['b']);
+    expect(
+      unreachable({ nodes: ['a', 'b'], edges: [['b', 'a']] }, 'a'),
+    ).toEqual(['b']);
   });
 
   it('throws RangeError for an unknown start', () => {

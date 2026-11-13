@@ -19,7 +19,10 @@ export function tokenize(src: string): Token[] {
  * Substitutes placeholders from `vars`; falls back to the placeholder's
  * fallback, else keeps the raw text and records the name in `unknown` once.
  */
-export function render(src: string, vars: Vars): { text: string; unknown: string[] } {
+export function render(
+  src: string,
+  vars: Vars,
+): { text: string; unknown: string[] } {
   // TODO: implement
   throw new Error('Not implemented');
 }

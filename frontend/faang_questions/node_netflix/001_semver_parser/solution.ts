@@ -1,4 +1,9 @@
-import { ParsedVersion } from './semver_parser';
+export interface ParsedVersion {
+  major: number;
+  minor: number;
+  patch: number;
+  prerelease: string | null;
+}
 
 /**
  * Parse a semver string such as `1.2.3` or `1.2.3-beta.1` into its parts.

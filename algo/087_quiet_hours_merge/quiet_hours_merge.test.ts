@@ -28,7 +28,9 @@ describe('toMinutes', () => {
 describe('fromDate', () => {
   it('uses UTC getters with Monday as day 0', () => {
     // 2026-11-10 is a Tuesday
-    expect(fromDate(new Date('2026-11-10T22:00:00Z'))).toBe(toMinutes('Tue 22:00'));
+    expect(fromDate(new Date('2026-11-10T22:00:00Z'))).toBe(
+      toMinutes('Tue 22:00'),
+    );
     // 2026-11-15 is a Sunday
     expect(fromDate(new Date('2026-11-15T23:59:00Z'))).toBe(WEEK_MINUTES - 1);
     // 2026-11-09 is a Monday
@@ -110,11 +112,13 @@ describe('normalize', () => {
 
   it('throws RangeError on out-of-bounds windows', () => {
     expect(() => normalize([{ start: -1, end: 10 }])).toThrow(RangeError);
-    expect(() => normalize([{ start: WEEK_MINUTES, end: WEEK_MINUTES + 5 }])).toThrow(
+    expect(() =>
+      normalize([{ start: WEEK_MINUTES, end: WEEK_MINUTES + 5 }]),
+    ).toThrow(RangeError);
+    expect(() => normalize([{ start: 100, end: 50 }])).toThrow(RangeError);
+    expect(() => normalize([{ start: 0, end: WEEK_MINUTES + 1 }])).toThrow(
       RangeError,
     );
-    expect(() => normalize([{ start: 100, end: 50 }])).toThrow(RangeError);
-    expect(() => normalize([{ start: 0, end: WEEK_MINUTES + 1 }])).toThrow(RangeError);
   });
 });
 
@@ -157,7 +161,8 @@ describe('isQuiet', () => {
 
     const startedAt = Date.now();
     let quiet = 0;
-    for (let m = 0; m < 200_000; m++) if (isQuiet(sparse, m % WEEK_MINUTES)) quiet++;
+    for (let m = 0; m < 200_000; m++)
+      if (isQuiet(sparse, m % WEEK_MINUTES)) quiet++;
     expect(Date.now() - startedAt).toBeLessThan(1000);
     // minutes 0..9999 (even ones quiet) repeated ~19.8 times in 200k queries
     expect(quiet).toBeGreaterThan(0);
@@ -189,7 +194,9 @@ describe('nextAllowed', () => {
   });
 
   it('wraps to minute 0 when the Sunday window ends exactly at midnight', () => {
-    const q2 = normalize([{ start: toMinutes('Sun 22:00'), end: WEEK_MINUTES }]);
+    const q2 = normalize([
+      { start: toMinutes('Sun 22:00'), end: WEEK_MINUTES },
+    ]);
     expect(nextAllowed(q2, toMinutes('Sun 23:00'))).toBe(0);
   });
 

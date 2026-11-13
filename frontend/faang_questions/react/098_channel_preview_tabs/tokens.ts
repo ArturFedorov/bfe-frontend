@@ -21,7 +21,12 @@ export const channelWidth = { email: 600, push: 360, 'in-app': 320 } as const;
 
 export type Channel = keyof typeof channelWidth;
 
-export type ClassValue = string | false | null | undefined | Record<string, boolean>;
+export type ClassValue =
+  | string
+  | false
+  | null
+  | undefined
+  | Record<string, boolean>;
 
 /**
  * Joins class names: truthy strings and the keys of objects whose value is

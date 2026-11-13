@@ -1,3 +1,19 @@
+/**
+ * Router Reachability — reference solution.
+ *
+ * Directed implicit graph: A → B exists iff dist(A, B) <= A.range. Rather
+ * than materializing the whole O(n²) adjacency list up front, the BFS
+ * discovers each router's out-edges lazily by scanning all routers when it
+ * is dequeued. Every router is dequeued at most once, so the total work is
+ * the same O(n²) as explicit construction, but we stop early on a hit and
+ * never build edges for unreachable routers. Distances are compared squared
+ * to avoid `Math.sqrt` (and the `<=` keeps the boundary hop valid). The
+ * visited set guarantees termination on cycles.
+ *
+ * Time:  O(n²) worst case (each dequeued router scans n candidates).
+ * Space: O(n) for the id index, visited set and queue.
+ */
+
 export interface Router {
   id: string;
   x: number;
@@ -16,6 +32,7 @@ export function canReach(
   if (!source || !byId.has(targetId)) return false;
   if (sourceId === targetId) return true;
 
+  /** Directed check: uses only the sender's range. */
   const inRange = (from: Router, to: Router): boolean => {
     const dx = from.x - to.x;
     const dy = from.y - to.y;
@@ -26,6 +43,7 @@ export function canReach(
   const visited = new Set<string>([sourceId]);
   const queue: Router[] = [source];
 
+  // Index-based queue: O(1) dequeue without Array#shift.
   for (let i = 0; i < queue.length; i++) {
     const current = queue[i];
     for (const candidate of routers) {

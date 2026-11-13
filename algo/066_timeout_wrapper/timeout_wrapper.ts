@@ -7,19 +7,6 @@ export class TimeoutError extends Error {
 }
 
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(new TimeoutError());
-    }, ms);
-
-    promise
-      .then((data) => {
-        resolve(data);
-        clearTimeout(timer);
-      })
-      .catch((e) => {
-        reject(e);
-        clearTimeout(timer);
-      });
-  });
+  // TODO: implement
+  throw new Error('Not implemented');
 }

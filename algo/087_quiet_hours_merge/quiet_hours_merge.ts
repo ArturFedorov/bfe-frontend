@@ -33,7 +33,10 @@ export function isQuiet(normalized: Window[], minuteOfWeek: number): boolean {
  * window modulo 10080 (Sunday night resolves to Monday morning).
  * Throws RangeError when the whole week is quiet.
  */
-export function nextAllowed(normalized: Window[], minuteOfWeek: number): number {
+export function nextAllowed(
+  normalized: Window[],
+  minuteOfWeek: number,
+): number {
   // TODO: implement
   throw new Error('Not implemented');
 }

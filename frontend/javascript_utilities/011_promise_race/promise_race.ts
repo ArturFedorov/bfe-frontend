@@ -1,5 +1,7 @@
 export function promiseRace<T>(promises: (T | Promise<T>)[]): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    for (const item of promises) Promise.resolve(item).then(resolve, reject);
+  return new Promise((resolve, reject) => {
+    promises.forEach((promise) => {
+      Promise.resolve(promise).then(resolve, reject);
+    });
   });
 }

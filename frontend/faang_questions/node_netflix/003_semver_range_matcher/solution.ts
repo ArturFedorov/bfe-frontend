@@ -1,4 +1,4 @@
-import { compare } from '../002_semver_comparator/semver_comparator';
+import { compare } from '../002_semver_comparator/solution';
 
 /**
  * Return true if `version` satisfies the given `range`.
