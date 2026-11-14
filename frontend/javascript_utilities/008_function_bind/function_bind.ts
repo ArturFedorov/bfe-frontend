@@ -3,5 +3,14 @@ export function myBind(
   thisArg: any,
   ...boundArgs: any[]
 ): (...args: any[]) => any {
-  return function () {};
+  function boundFn(this: any, ...callArgs: any[]) {
+    const context = this instanceof boundFn ? this : thisArg;
+    return fn.apply(context, [...boundArgs, ...callArgs]);
+  }
+
+  if (fn.prototype) {
+    boundFn.prototype = Object.create(fn.prototype);
+  }
+
+  return boundFn;
 }
