@@ -31,11 +31,14 @@ export function PartnerList({ endpoint = '/api/partners' }: PartnerListProps): R
     // that lands after unmount (or after `endpoint` changed) is dropped
     // instead of calling setState on a dead/stale effect.
     let ignore = false;
+    // One controller per effect run: cleanup aborts the network request itself,
+    // not just the state update, so an unmounted list stops consuming bandwidth.
+    const controller = new AbortController();
 
     // Reset to loading when the endpoint changes (no-op on first mount).
     setState({ status: 'loading' });
 
-    fetch(endpoint)
+    fetch(endpoint, { signal: controller.signal })
       .then((res) => {
         // fetch only rejects on network failure; HTTP errors must be raised
         // by hand so they fall through to the same catch as rejections.
@@ -47,7 +50,8 @@ export function PartnerList({ endpoint = '/api/partners' }: PartnerListProps): R
         setState({ status: 'success', partners });
       })
       .catch((err: unknown) => {
-        if (ignore) return;
+        // Our own abort is not an error the user should see.
+        if (ignore || (err instanceof Error && err.name === 'AbortError')) return;
         setState({
           status: 'error',
           message: err instanceof Error ? err.message : String(err),
@@ -56,6 +60,7 @@ export function PartnerList({ endpoint = '/api/partners' }: PartnerListProps): R
 
     return () => {
       ignore = true;
+      controller.abort();
     };
   }, [endpoint]);
 

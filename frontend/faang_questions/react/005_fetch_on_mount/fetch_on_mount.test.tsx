@@ -34,7 +34,8 @@ const PARTNERS: Partner[] = [
 ];
 
 describe('PartnerList', () => {
-  const fetchMock = jest.fn<Promise<Response>, [string]>();
+  const fetchMock = jest.fn<Promise<Response>, [string, RequestInit?]>();
+  const withSignal = expect.objectContaining({ signal: expect.any(AbortSignal) });
 
   beforeEach(() => {
     fetchMock.mockReset();
@@ -46,14 +47,14 @@ describe('PartnerList', () => {
     render(<PartnerList />);
     await screen.findByRole('list', { name: 'Partners' });
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('/api/partners');
+    expect(fetchMock).toHaveBeenCalledWith('/api/partners', withSignal);
   });
 
   it('fetches a custom endpoint', async () => {
     fetchMock.mockResolvedValue(jsonResponse(PARTNERS));
     render(<PartnerList endpoint="/api/partners?region=emea" />);
     await screen.findByRole('list', { name: 'Partners' });
-    expect(fetchMock).toHaveBeenCalledWith('/api/partners?region=emea');
+    expect(fetchMock).toHaveBeenCalledWith('/api/partners?region=emea', withSignal);
   });
 
   it('shows the loading state while the request is pending', () => {
@@ -113,5 +114,15 @@ describe('PartnerList', () => {
     });
     expect(errorSpy).not.toHaveBeenCalled();
     errorSpy.mockRestore();
+  });
+
+  it('aborts the in-flight request on unmount', async () => {
+    const request = deferred<Response>();
+    fetchMock.mockReturnValue(request.promise);
+    const { unmount } = render(<PartnerList />);
+    const [, init] = fetchMock.mock.calls[0];
+    expect(init?.signal?.aborted).toBe(false);
+    unmount();
+    expect(init?.signal?.aborted).toBe(true);
   });
 });
