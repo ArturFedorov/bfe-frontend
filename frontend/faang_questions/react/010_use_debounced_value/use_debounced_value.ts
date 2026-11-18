@@ -1,4 +1,15 @@
+import { useEffect, useState } from 'react';
+
 export function useDebouncedValue<T>(value: T, ms: number): T {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const [debounced, setDebounced] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebounced(value);
+    }, ms);
+
+    return () => clearTimeout(timer);
+  }, [value, ms]);
+
+  return debounced;
 }

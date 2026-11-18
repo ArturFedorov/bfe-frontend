@@ -1,6 +1,6 @@
 # Frontend / UI Engineer Interview Plan
 
-**Targets, in priority order:** Apple → Netflix → Google → Meta (last; few UI openings). Written 2026-11-13.
+**Targets, in priority order:** Netflix → Apple → Google → Meta (last; few UI openings). Written 2026-11-13, reordered 2026-11-18.
 The earlier AIML Annotation Platform loop is closed; its tasks stay because AI product UI (streaming,
 long-running agent runs, approval flows) is now asked across many departments at all four companies.
 
@@ -20,14 +20,14 @@ back in the queue for a redo a week later. Status of every task: run its suite (
 
 | Company | Coding rounds look like | Weight in this plan |
 | --- | --- | --- |
+| Netflix | Per a current Netflix UI engineer (Nov 2026): LeetCode-easy only, ordinary recursion; emphasis on React with a small real-life task; emphasis on core JS — async operations and functional programming; plus an **AI round** where you code with an agent and are judged on best practices. Culture memo ("Dream Team", "Informed Captain"). UI openings are rare, so be ready when one appears. | Blocks 0, 1, 2 (classics), 3, 8, `node_netflix`, 7 |
 | Apple | Practical component builds in CoderPad/loop (async, state, a11y), JS fundamentals questions woven into the conversation (closures, `this`, event loop, promises), design-system and architecture discussion, team-specific domain (ASE: React Query, router, MFE, event-driven) | Blocks 0, 1, 3, 4, 5 |
-| Netflix | Practical async orchestration and parser-style tasks in plain TS, culture memo ("Dream Team", "Informed Captain") | Blocks 0, 1, 3, `node_netflix`, 7 |
 | Google | 1 DSA round even for frontend (trees, graphs, sliding window, intervals), 1–2 UI rounds building a widget from scratch with a11y, 1 frontend system design, behavioural ("Googleyness") | Blocks 1, 2, 6, 7 |
 | Meta | Pure-JS phone screen (debounce, promise utils, flatten, event emitter), 35-min UI widget, frontend system design | Blocks 0, 2, 7 |
 
 ---
 
-## Block 0 — JS fundamentals (Apple conversation, Netflix plain-TS, Meta phone screen)
+## Block 0 — JS fundamentals (Netflix core-JS round, Apple conversation, Meta phone screen)
 
 Pure TypeScript, 15–25 minutes each, no React. Do one as the warm-up of every sitting in blocks 1–5; the first row of each table below is the suggested pairing. The point is fluency: talk through `this`, closures, the microtask queue and timer semantics while typing. Status: run the suite (older stubs return a never-settling promise, so grep won't tell you).
 
@@ -37,6 +37,7 @@ Pure TypeScript, 15–25 minutes each, no React. Do one as the warm-up of every 
 | Promises and the event loop | js_utilities 010 all, 011 race, 012 allSettled, 013 any, 014 custom Promise (redo); async_patterns 004 sleep (abortable), 005 sequential vs parallel, 006 lazy promise, 010 promisify | Microtasks vs macrotasks, then-chaining, `AggregateError`, thenable assimilation, why `await` in a loop serialises |
 | Async orchestration | async_patterns 001 concurrency limiter, 002 retry with backoff, 003 cancelable promise, 007 async generator, 008 rate limiter, 009 batch requests, 011 paginated fetcher | Pool vs batch, settle-then-schedule, jitter, `for await`, abort propagation |
 | Functions and `this` | js_utilities 008 bind, 009 call/apply, 018 curry, 023 object assign, 024 object create | Explicit vs implicit binding, arrow functions, partial application, prototype chain |
+| Functional programming (Netflix) | js_utilities 031 compose/pipe, 032 partial with placeholder, 033 groupBy, 034 chunk/zip, 035 immutable setIn/updateIn, 036 deepFreeze, 037 reduce-only toolkit, 038 pure-function audit; then 018 curry and 017 memoize again | Purity and referential transparency, immutability with structural sharing, higher-order functions, composition vs inheritance, why reducers must not mutate, point-free when it helps and when it hurts |
 | Arrays and objects | js_utilities 002–007 array methods, 005 / 030 flat (recursive and iterative), 019 deep clone, 020 deep equal, 021 JSON stringify, 022 JSON parse, 025 keys/values/entries, 027 string trim | Sparse arrays and holes, cycles in clone/equal, Dates and `NaN` in equality, recursion vs explicit stack |
 | Events and DOM | js_utilities 026 event emitter; dom_and_browser 001–003 selectors, 004 event delegation, 005 flatten DOM tree, 006 serialize, 007 virtual DOM diff, 008 MutationObserver, 010 tree builder | Bubbling vs capture, `closest`, tree traversal order, keyed diffing, observer batching |
 
@@ -99,9 +100,9 @@ Tier 6, tasks 102–111, plus the older component tasks. Build from a blank file
 | js_utilities 020 deep equal (what `memo` actually compares) | react 040–044 render/memo labs (10 min each), 046 lazy panel, 045 / 087 virtual lists | — |
 | — | react 089 URL state, 038 row selection, 088 data grid | — |
 
-## Block 6 — DSA refresh (Google; Apple sometimes)
+## Block 6 — DSA refresh (Google; Apple sometimes; Netflix needs only the recursion rows)
 
-Pure TypeScript, 20 minutes each, narrate complexity. From `algo/TASKS.md` Tier 1:
+Pure TypeScript, 20 minutes each, narrate complexity. For Netflix, the Trees row plus Block 0 recursion (deep clone, flatten, JSON) is enough. From `algo/TASKS.md` Tier 1:
 - Trees: 032 depth, 033 render order, 037 iterative traversal, 038 LCA, 040 diameter, 041 duplicate subtrees
 - Graphs: 044 reachability, 047 permission reach, 052/053 build order (Kahn + DFS), 057 cycle reporter
 - Sliding window / two pointers: 012 longest unique run, 015 min coverage window, 019 pair sum, 025 event timeline
@@ -121,7 +122,31 @@ Worked prompts to prepare (15 minutes each, out loud):
 5. Image carousel / media gallery at scale (lazy loading, prefetch, LQIP, CLS budget).
 6. Internal admin console with role-based access and micro-frontends (shell, routing, shared state, versioning).
 
-**Behavioural:** Apple ownership and design-partnership stories; Netflix culture memo vocabulary; Google "Googleyness" (ambiguity, collaboration, bias to action); Meta impact and conflict stories. Collect 6 stories (ownership, conflict, failure, ambiguity, mentoring, performance win) from GitLab work and map each to all four vocabularies.
+**Behavioural:** Netflix culture memo vocabulary first (candour, context not control, freedom and responsibility, Informed Captain); Apple ownership and design-partnership stories; Google "Googleyness" (ambiguity, collaboration, bias to action); Meta impact and conflict stories. Collect 6 stories (ownership, conflict, failure, ambiguity, mentoring, performance win) from GitLab work and map each to all four vocabularies.
+
+## Block 8 — AI pairing round (Netflix; spreading elsewhere)
+
+The round: you share a screen, drive a coding agent (Claude Code, Cursor or whatever they provide) on a small feature, and are judged on *how* you work, not on typing speed. Signals they look for: a crisp brief, a plan before code, reading every diff, insisting on tests, catching the agent's mistakes, small commits, and knowing when to stop delegating and write the line yourself.
+
+**Protocol (narrate each step out loud)**
+1. **Brief** — restate the task in your own words, name constraints (a11y, no new deps, existing patterns) and the acceptance test. Write it as the first prompt.
+2. **Plan first** — ask for a plan and file list, not code. Push back on anything that touches files it should not.
+3. **Smallest slice** — have it implement one slice with a test. Read the diff line by line before running anything.
+4. **Verify** — run the tests yourself; when a test fails, decide whether the test or the code is wrong before asking the agent.
+5. **Review like a colleague** — ask for the trade-offs it made; check for hallucinated APIs, swallowed errors, missing cleanup, `any`, mutated props.
+6. **Refactor and commit** — ask for a focused cleanup, then commit with a message you wrote.
+7. **Retro** — say what you would have done differently and where the agent saved or cost time.
+
+**Rehearsals** (45 min each, timer on, record yourself once)
+
+| Rehearsal | Material | What to practise |
+| --- | --- | --- |
+| R1 | `campaign_studio` milestone 02 data layer, built with the agent from the README | Brief + plan + slice loop; refuse code before plan |
+| R2 | react 103 image carousel from its README with the agent | Catching a11y and timer-cleanup mistakes in generated code; demanding the senior tests pass |
+| R3 | Pick one green task (e.g. 024 autocomplete) and ask the agent to add a feature the README lists as a follow-up | Reviewing a diff against an existing codebase; keeping scope tight |
+| R4 | Give the agent a deliberately vague brief for 022 polling and let it go wrong | Practising recovery: diagnose, re-brief, bisect the diff |
+
+**Say out loud during the round:** "I'll ask for a plan first", "let me read this diff before we run it", "this test is asserting the wrong thing, the code is right", "I'd write this line myself, it's faster than explaining", "let's commit this slice before the next one".
 
 ## Stretch — Annotation interfaces (if time)
 
@@ -147,7 +172,8 @@ react 070 label hotkeys, 071 span labeler, 081 overlaps, 082 command history, 08
 | REST vs GraphQL, BFF | Over-fetching vs caching/N+1; when a BFF earns its keep | `faang_questions/node` |
 | Event-driven architecture | Idempotency by id, ordering by seq, replay, snapshots + deltas | react 069, 078; algo 090 |
 | Design systems | Tokens, compound components, controlled/uncontrolled, flagging pattern breaks | react 026, 027, 098 |
-| AI-assisted coding | Generated tests as grader, hand-solved stubs, reviewing generated code | this repo |
+| Functional programming | Purity, immutability + structural sharing, HOFs, compose/pipe, currying vs partial, reduce as the universal fold | js_utilities 031–038, 017, 018 |
+| AI-assisted coding | Brief → plan → slice → verify → review; generated tests as grader; where agents fail (cleanup, a11y, invented APIs) | Block 8, this repo |
 
 ## Interview habits (every task)
 
