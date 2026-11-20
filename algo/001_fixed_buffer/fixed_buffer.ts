@@ -1,7 +1,10 @@
+const isInValid = (capacity: number) =>
+  !Number.isInteger(capacity) || capacity < 0;
+
 export class FixedBuffer<T> {
-  private readonly capacity: number;
-  private readonly buffer: T[];
-  private count: number = 0;
+  private bufferSize = 0;
+  private capacity = 0;
+  private buffer: T[];
 
   constructor(capacity: number) {
     if (!Number.isInteger(capacity) || capacity <= 0)
@@ -12,19 +15,21 @@ export class FixedBuffer<T> {
   }
 
   push(item: T): void {
-    if (this.count === this.capacity) throw new RangeError('Buffer is full');
+    if (this.bufferSize >= this.capacity) {
+      throw new Error('Buffer is full');
+    }
 
-    this.buffer[this.count++] = item;
+    this.buffer[this.bufferSize++] = item;
   }
 
   get(index: number): T {
-    if (index >= this.count || index < 0 || !Number.isInteger(index))
+    if (index >= this.bufferSize || index < 0 || !Number.isInteger(index))
       throw new RangeError('Wrong index');
 
     return this.buffer[index];
   }
 
   size(): number {
-    return this.count;
+    return this.bufferSize;
   }
 }

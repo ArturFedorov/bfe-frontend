@@ -5,13 +5,14 @@ export class UndoHistory<T> {
   private start: number;
 
   constructor(maxDepth: number) {
-    if (!Number.isInteger(maxDepth) || maxDepth <= 0)
-      throw new RangeError('Max depth must be a positive integer.');
+    if (!Number.isInteger(maxDepth) || maxDepth <= 0) {
+      throw new RangeError('Max depth must be a positive number');
+    }
 
-    this.buffer = new Array<T>(maxDepth);
+    this.maxDepth = maxDepth;
     this.count = 0;
     this.start = 0;
-    this.maxDepth = maxDepth;
+    this.buffer = new Array<T>(maxDepth);
   }
 
   push(snapshot: T): void {
@@ -26,15 +27,16 @@ export class UndoHistory<T> {
 
   current(): T {
     if (this.count < 1) {
-      throw new Error('History is empty');
+      throw new Error('History is  empty');
     }
 
     return this.buffer[(this.start + this.count - 1) % this.maxDepth];
   }
 
   jumpTo(index: number): T {
-    if (!Number.isInteger(index) || index < 0 || index >= this.count)
-      throw new RangeError('Index must be a positive integer.');
+    if (index >= this.count || index < 0 || !Number.isInteger(index)) {
+      throw new RangeError('Index should be a positive integer');
+    }
 
     this.count = index + 1;
 

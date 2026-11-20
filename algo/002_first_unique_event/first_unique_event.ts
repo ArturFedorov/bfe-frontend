@@ -1,12 +1,11 @@
 export function firstUniqueEvent(events: string[]): string | null {
-  const lookUp = new Map<string, number>();
+  const dict: Map<string, number> = new Map<string, number>();
 
   for (const event of events) {
-    const value = lookUp.get(event) || 0;
-    lookUp.set(event, value + 1);
+    dict.set(event, (dict.get(event) ?? 0) + 1);
   }
 
-  for (const [event, count] of lookUp) {
+  for (const [event, count] of dict) {
     if (count === 1) return event;
   }
 

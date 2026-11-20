@@ -1,12 +1,12 @@
 export class DynamicArray<T> {
+  private _resizeCount = 0;
+  private count = 0;
   private _capacity: number;
-  private count: number = 0;
   private buffer: Array<T>;
-  private _resizeCount: number = 0;
 
   constructor(initialCapacity: number = 4) {
     if (!Number.isInteger(initialCapacity) || initialCapacity <= 0) {
-      throw new RangeError('Invalid capacity');
+      throw new RangeError('initialCapacity must be a positive integer');
     }
 
     this._capacity = initialCapacity;
@@ -28,12 +28,12 @@ export class DynamicArray<T> {
   push(item: T): void {
     if (this.count >= this.capacity) {
       this._capacity *= 2;
-      const copy = new Array<T>(this._capacity);
 
-      for (let i = 0; i < this.count; i++) copy[i] = this.buffer[i];
+      const target = new Array<T>(this._capacity);
 
-      this.buffer = copy;
-      this._resizeCount++;
+      for (let i = 0; i < this.count; i++) target[i] = this.buffer[i];
+      this.buffer = target;
+      this._resizeCount += 1;
     }
 
     this.buffer[this.count++] = item;

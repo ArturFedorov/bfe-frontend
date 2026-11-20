@@ -9,6 +9,12 @@ long-running agent runs, approval flows) is now asked across many departments at
 Tests are the grader; a task is done when its suite is green from a blank file. Anything solved with hints goes
 back in the queue for a redo a week later. Status of every task: run its suite (`npx jest <folder>`).
 
+**Algo track.** Blocks 1–5 each carry an algo table covering the same seven topics (arrays/hashing, sliding window and
+two pointers, intervals, stacks/queues, trees, graphs, async). Difficulty climbs block to block: Block 1 is Very Easy/Easy
+(the Netflix bar), Block 2 Easy/Medium, Block 3 Medium, Block 4 Medium/Hard, Block 5 Hard, Block 6 is timed redos. Take
+one or two algo tasks per sitting next to the build. Every `algo/` folder has a `solution.ts` reference — open it only
+after the suite is green or after a 25-minute stall. All `algo/` stubs were reset to blank on 2026-11-20.
+
 **Where things live**
 - `algo/<NNN>_*` — pure TS (`algo/TASKS.md`: Topics 1–8 DSA, 9 async, 10 marketing utilities)
 - `frontend/javascript_utilities`, `frontend/async_patterns`, `frontend/dom_and_browser` — JS fundamentals
@@ -47,11 +53,24 @@ Solved at least once: js_utilities 001, 008, 010–014, 017, 026; async_patterns
 
 | Warm-up (algo / JS) | Build (React) | Why |
 | --- | --- | --- |
-| js_utilities 010 all, 011 race (redo from blank) | react 005 fetch states → 006 race-free search | The race is the single most common loop prompt |
-| async_patterns 003 cancelable, 004 sleep, algo 066 timeout | react 012 useFetch, 014 useAsync | Same race as hooks; stable identities, stale closures |
+| js_utilities 010 all, 011 race (redo from blank), algo 074 sequential vs parallel | react 005 fetch states → 006 race-free search | The race is the single most common loop prompt |
+| async_patterns 003 cancelable, 004 sleep, algo 066 timeout, 075 lazy promise, 076 cancelable promise | react 012 useFetch, 014 useAsync | Same race as hooks; stable identities, stale closures |
 | js_utilities 017 memoize, algo 067 in-flight dedupe, 070 stale-while-revalidate | react 018 async states panel | Discriminated unions, impossible states |
-| async_patterns 002 retry, 001 limiter, 008 rate limiter | react 022 polling widget, 021 retry panel | Settle-then-schedule, backoff, terminal states |
-| js_utilities 001 debounce, 015 throttle | react 010 useDebouncedValue → 024 autocomplete | Debounce + abort + combobox a11y |
+| async_patterns 002 retry, 001 limiter, 008 rate limiter, algo 077 retry backoff, 078 concurrency pool, 079 token bucket | react 022 polling widget, 021 retry panel | Settle-then-schedule, backoff, terminal states |
+| js_utilities 001 debounce, 015 throttle, algo 080 request batcher, 011 request rate alarm | react 010 useDebouncedValue → 024 autocomplete | Debounce + abort + combobox a11y |
+
+**Algo track — Very Easy / Easy** (15–20 min each; this is the whole Netflix DSA bar, so aim for clean code and stated complexity, not speed)
+
+| Topic | Tasks (in order) | Pattern to name out loud |
+| --- | --- | --- |
+| Arrays and hashing | algo 001 fixed buffer, 002 first unique event, 003 dynamic array, 004 undo history | Map keeps insertion order; amortised O(1) push from doubling |
+| Sliding window | algo 009 moving average, 010 busiest period | Fixed window: add the new, subtract the old |
+| Two pointers | algo 017 dedupe subscribers, 018 merge sorted logs, 019 gift card pair, 084 audience set ops | Read/write pointers, parallel pointers, converging pointers on sorted input |
+| Intervals | algo 024 double booking, 025 event timeline, 026 merge busy slots | Sort by start, compare with the previous; multi-key comparators |
+| Stacks | algo 058 bracket validator, 059 undo/redo | Last-in-first-out matching; a new action clears redo |
+| Trees | algo 032 component depth, 033 render order, 083 rule tree evaluate | Recursion = return value from children; pre/in/post order |
+| Graphs | algo 043 service map, 051 has dependency | Adjacency list from edges; DFS with a visited set |
+| Async | algo 066, 074–080 (in the warm-up column above) | Promise construction, results in input order, timers that are always cleared |
 
 ## Block 2 — Classic UI widgets (Google / Apple UI rounds, 35–45 min each)
 
@@ -71,6 +90,19 @@ Tier 6, tasks 102–111, plus the older component tasks. Build from a blank file
 | react 111 | Job board feed over a two-step API | Concurrency pool, ordering, per-item retry |
 | react 020, 027, 028, 029, 030, 032 | Infinite feed, tabs, accordion, modal, dropdown, toasts | The older classics |
 
+**Algo track — Easy / Medium** (20 min each; several pair with a widget above)
+
+| Topic | Tasks (in order) | Pattern to name out loud |
+| --- | --- | --- |
+| Arrays and hashing | algo 005 filename grouper, 006 image row rotate, 007 sparse grid | Canonical map keys; reversal trick for in-place rotation; `"r,c"` keys for sparse storage |
+| Sliding window | algo 011 request rate alarm, 012 longest unique run | Queue-based time window; variable window with a set |
+| Two pointers | algo 020 archive completed, 021 typed input compare, 022 calendar intersection | Stable in-place partition; walking from the end; interval two-pointer walk |
+| Intervals | algo 027 insert meeting | Three phases: before, overlapping, after |
+| Stacks and queues | algo 060 path normalizer, 061 log ring buffer | Stack of segments; `% capacity` instead of shifting |
+| Trees | algo 034 level snapshot, 035 folder sizes (pairs with react 102), 036 symmetric layout check | BFS by level; post-order aggregation; twin-cursor recursion |
+| Graphs | algo 045 rack outage clusters (pairs with react 110), 052 build order (Kahn) | Grid as an implicit graph; in-degrees + queue |
+| Async | algo 068 async queue (pairs with react 111) | Promise chain as a serial queue; one failure must not stall it |
+
 ## Block 3 — AI product UI (all four; many departments)
 
 | Warm-up | Build | Why |
@@ -79,6 +111,18 @@ Tier 6, tasks 102–111, plus the older component tasks. Build from a blank file
 | algo 082 fiber tree walk | react 077 stick-to-bottom log, 075 reconnecting event source | Scroll + reconnect around the stream |
 | algo 090 event-sourced campaign | react 078 agent event reducer → 079 approval gate → 080 cancel/resume | Event-driven state, exactly-once, run-id guards |
 | — | react 073 agent run timeline (capstone redo) | Combines everything above |
+
+**Algo track — Medium** (20–25 min each)
+
+| Topic | Tasks (in order) | Pattern to name out loud |
+| --- | --- | --- |
+| Sliding window | algo 013 error variety window, 014 bandwidth burst | At most k distinct with a count map; shrink while the sum still meets the target |
+| Two pointers | algo 023 capacity triplet | Sort, pin one, converge the other two, skip duplicates |
+| Intervals | algo 028 free gaps, 029 min rooms | Inverse of merging; sweep line or heap of end times |
+| Stacks and queues | algo 062 queue from stacks, 063 build speed watch | Amortised O(1) dequeue; monotonic stack for next-greater |
+| Trees | algo 037 iterative traversal, 039 minimap view | Explicit stack instead of recursion; last node per level |
+| Graphs | algo 044 router reachability, 046 intro path, 047 permission reach | Build edges from geometry; BFS + parent map for the path; multi-source, cycle-safe |
+| Async | algo 069 circuit breaker (pairs with react 075), 072 cancellable pipeline (pairs with react 080) | State machine with an injected clock; abort propagation with cleanup in `finally` |
 
 ## Block 4 — Tooling apps (Apple ASE, Netflix practicals) + project evenings 2–4
 
@@ -90,6 +134,18 @@ Tier 6, tasks 102–111, plus the older component tasks. Build from a blank file
 | algo 085 template tokenizer | react 095 template editor | — |
 | `node_netflix` 001–007 (parsers, dependency graphs) | react 101 approval grid | — |
 
+**Algo track — Medium / Hard** (25 min each)
+
+| Topic | Tasks (in order) | Pattern to name out loud |
+| --- | --- | --- |
+| Arrays | algo 008 time series downsample | Bucket boundaries without drift; min/max/avg in one pass |
+| Sliding window | algo 015 min coverage window | Need/have counts; shrink only while the window is valid |
+| Sorting | algo 030 stable table sort | Merge sort and why stability matters for multi-column sorts |
+| Stacks | algo 064 formula calculator (pairs with algo 085 tokenizer) | Two stacks or recursive descent; precedence and parentheses |
+| Trees | algo 038 common container, 040 component diameter | LCA by returning found nodes up; combine the two deepest child paths |
+| Graphs | algo 048 outage spread, 053 build order (DFS three-colour), 054 parallel stages, 055 migration order | Multi-source BFS by minute; white/grey/black cycle detection; level-based Kahn; heap for deterministic ties |
+| Async | algo 071 priority job runner (pairs with react 092) | Concurrency pool where the queue is a heap |
+
 ## Block 5 — Architecture, performance, a11y signals + project evenings 5–7
 
 | Warm-up | Build | Project evening |
@@ -100,15 +156,33 @@ Tier 6, tasks 102–111, plus the older component tasks. Build from a blank file
 | js_utilities 020 deep equal (what `memo` actually compares) | react 040–044 render/memo labs (10 min each), 046 lazy panel, 045 / 087 virtual lists | — |
 | — | react 089 URL state, 038 row selection, 088 data grid | — |
 
-## Block 6 — DSA refresh (Google; Apple sometimes; Netflix needs only the recursion rows)
+**Algo track — Hard** (30 min each; Google-level, skip for a Netflix-only loop)
 
-Pure TypeScript, 20 minutes each, narrate complexity. For Netflix, the Trees row plus Block 0 recursion (deep clone, flatten, JSON) is enough. From `algo/TASKS.md` Tier 1:
-- Trees: 032 depth, 033 render order, 037 iterative traversal, 038 LCA, 040 diameter, 041 duplicate subtrees
-- Graphs: 044 reachability, 047 permission reach, 052/053 build order (Kahn + DFS), 057 cycle reporter
-- Sliding window / two pointers: 012 longest unique run, 015 min coverage window, 019 pair sum, 025 event timeline
-- Intervals: 026 merge busy slots, 027 insert meeting, 029 min rooms
-- Stacks/queues: 058 bracket validator, 061 ring buffer, 065 sliding max
-Then Tier 2 Topics 11–14 (binary search, heaps, linked lists, caches) if a Google loop is confirmed.
+| Topic | Tasks (in order) | Pattern to name out loud |
+| --- | --- | --- |
+| Tree + window | algo 016 search highlight (your Google question) | DFS to a word stream tagged with node ids, then match the query across node boundaries |
+| Intervals | algo 031 team free time | Merge k calendars, then find the gaps |
+| Deques | algo 065 sliding max latency | Monotonic deque; each index enters and leaves once |
+| Trees | algo 041 duplicate subtrees, 042 layout clipboard | Canonical serialisation as a map key; round-trip with null markers |
+| Graphs | algo 049 shift split, 050 badge access path, 056 spreadsheet recalc, 057 cycle reporter | Bipartite colouring over every component; BFS over (position, doors used); topo sort of the affected subgraph; recover the cycle from the DFS stack |
+| Async | algo 073 dependency task runner | Kahn + concurrency pool: start each task the moment its last dependency settles |
+
+## Block 6 — DSA under the clock (Google; Apple sometimes; Netflix needs only the Block 1 algo track and the recursion rows)
+
+Everything here is a **redo from a blank file** of a task already solved in Blocks 1–5, now timed like a real round: 45 minutes for two problems, one Medium then one Hard, narrating brute force → target complexity → code → tests. For Netflix, Block 1's algo track plus Block 0 recursion (deep clone, flatten, JSON) is enough.
+
+| Mock | Medium (20 min) | Hard (25 min) |
+| --- | --- | --- |
+| M1 — windows | algo 012 longest unique run | algo 015 min coverage window |
+| M2 — intervals | algo 027 insert meeting | algo 031 team free time |
+| M3 — trees | algo 037 iterative traversal | algo 041 duplicate subtrees |
+| M4 — graphs | algo 046 intro path | algo 050 badge access path |
+| M5 — dependency graphs | algo 053 build order (DFS) | algo 057 cycle reporter |
+| M6 — stacks and deques | algo 063 build speed watch | algo 065 sliding max latency |
+| M7 — async | algo 078 concurrency pool | algo 073 dependency task runner |
+| M8 — your real questions | algo 044 router reachability | algo 016 search highlight |
+
+Then Tier 2 Topics 11–14 (binary search, heaps, linked lists, caches) if a Google loop is confirmed. Those are listed in `algo/TASKS.md` (091+) but have no folders yet — ask for them to be scaffolded first.
 
 ## Block 7 — Frontend system design and behavioural (talk only)
 
