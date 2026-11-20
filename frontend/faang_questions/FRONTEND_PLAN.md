@@ -26,7 +26,7 @@ after the suite is green or after a 25-minute stall. All `algo/` stubs were rese
 
 | Company | Coding rounds look like | Weight in this plan |
 | --- | --- | --- |
-| Netflix | Per a current Netflix UI engineer (Nov 2026): LeetCode-easy only, ordinary recursion; emphasis on React with a small real-life task; emphasis on core JS — async operations and functional programming; plus an **AI round** where you code with an agent and are judged on best practices. Culture memo ("Dream Team", "Informed Captain"). UI openings are rare, so be ready when one appears. | Blocks 0, 1, 2 (classics), 3, 8, `node_netflix`, 7 |
+| Netflix | Per a current Netflix UI engineer (Nov 2026): LeetCode-easy only, ordinary recursion; emphasis on React with a small real-life task; emphasis on core JS — async operations and functional programming; plus an **AI round** where you code with an agent and are judged on best practices. Culture memo ("Dream Team", "Informed Captain"). UI openings are rare, so be ready when one appears. | Block 9 for the Talent Tech role, then 0, 1, 2 (classics), 3, 8, `node_netflix`, 7 |
 | Apple | Practical component builds in CoderPad/loop (async, state, a11y), JS fundamentals questions woven into the conversation (closures, `this`, event loop, promises), design-system and architecture discussion, team-specific domain (ASE: React Query, router, MFE, event-driven) | Blocks 0, 1, 3, 4, 5 |
 | Google | 1 DSA round even for frontend (trees, graphs, sliding window, intervals), 1–2 UI rounds building a widget from scratch with a11y, 1 frontend system design, behavioural ("Googleyness") | Blocks 1, 2, 6, 7 |
 | Meta | Pure-JS phone screen (debounce, promise utils, flatten, event emitter), 35-min UI widget, frontend system design | Blocks 0, 2, 7 |
@@ -225,6 +225,51 @@ The round: you share a screen, drive a coding agent (Claude Code, Cursor or what
 ## Stretch — Annotation interfaces (if time)
 
 react 070 label hotkeys, 071 span labeler, 081 overlaps, 082 command history, 084 review queue lease, 085 autosave conflict editor, 086 suggestions panel, 083 bbox annotator.
+
+## Block 9 — Netflix Talent Tech (UI Engineer 4/5, Warsaw, onsite)
+
+The role: internal HR products across the employee lifecycle (hiring → talent management → HR operations), "consumer-grade internal products", workflow-heavy and integration-heavy, with on-call and incident reviews. Stack named in the posting: React, TypeScript, GraphQL, Node.js. The Netflix core-JS/FP round and the AI pairing round (Block 8) still apply. Work the tables top to bottom: React first, then JS, then algo, then the rest.
+
+**1. React — workflow UIs (highest priority)**
+
+| Order | Task | Why for this role |
+| --- | --- | --- |
+| 1 | react 034 wizard reducer | Multi-step forms with per-step validation: an offer or onboarding flow |
+| 2 | react 079 approval gate, 078 event reducer | A hiring pipeline is an approval state machine; guard illegal transitions |
+| 3 | react 101 approval grid | Bulk approve/reject with per-row status and partial failure |
+| 4 | react 088 data grid, 038 row selection, 089 URL state | Candidate and employee tables: sort, filter, select, shareable URLs |
+| 5 | react 092 mini React Query, 037 normalized store | Data layer over many backend systems; cache, dedupe, invalidation |
+| 6 | react 085 autosave conflict editor | Long forms that never lose work; two people editing one record |
+| 7 | react 094 segment builder, 097 journey builder | Rule and workflow builders, the "tooling app" shape |
+| 8 | react 018 async states, 024 autocomplete, 029 modal, 032 toasts | Everyday internal-tool pieces; people pickers are autocompletes |
+
+**2. JS fundamentals**
+
+| Task | Why for this role |
+| --- | --- |
+| js_utilities 012 allSettled, 010 all | Fan-out to several HR systems; show what succeeded and what failed |
+| js_utilities 001 debounce | Autosave and search-as-you-type |
+| js_utilities 020 deep equal, 035 immutable setIn/updateIn | Dirty-checking form state; nested form updates without mutation |
+| js_utilities 031 compose/pipe, 033 groupBy, 017 memoize | FP round; grouping candidates by stage; derived views |
+| js_utilities 026 event emitter | Cross-widget events in a large internal app |
+
+**3. Algo**
+
+| Task | Why for this role |
+| --- | --- |
+| algo 090 event-sourced campaign | Audit trail of a candidate record: idempotent events, replay, snapshots |
+| algo 088 journey cycle check | Validating a configurable pipeline of stages (no cycles, no dead stages) |
+| algo 083 rule tree evaluate | Eligibility and routing rules ("if level ≥ 5 and region = EU, add approver") |
+| algo 077 retry backoff, 069 circuit breaker, 067 in-flight dedupe | Flaky third-party integrations (ATS, payroll) |
+| algo 089 LRU query cache | What the data layer caches and when it drops it |
+| algo 026 merge busy slots, 031 team free time | Interview scheduling across several calendars |
+
+**4. The rest**
+
+- **Node / backend contracts:** `node` 013 request validation, 014 idempotency keys, 012 list query semantics — the API side of a workflow UI.
+- **GraphQL (talk; no task yet):** normalised client cache by `__typename:id`, fragments co-located with components, partial data plus `errors`, optimistic mutations with rollback, N+1 and DataLoader on the server.
+- **System design prompt:** "Design the recruiter's candidate pipeline UI" — board and table views, stage transitions with approvals, bulk actions, audit history, permissions per role, integrations failing independently.
+- **Behavioural:** an on-call/incident-review story; "worked with design to fix a painful internal workflow"; GitLab Security Policies approval flows as the domain match (enterprise workflows, permissions, approvals).
 
 ---
 
