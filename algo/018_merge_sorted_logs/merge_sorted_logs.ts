@@ -20,12 +20,12 @@ export function mergeSortedLogs(a: LogEntry[], b: LogEntry[]): LogEntry[] {
   let i = 0;
   let j = 0;
 
-  while(i < a.length && j < b.length) {
-    if(a[i].timestamp <= b[j].timestamp) mergedLogs.push(a[i++]);
+  while (i < a.length && j < b.length) {
+    if (a[i].timestamp <= b[j].timestamp) mergedLogs.push(a[i++]);
     else mergedLogs.push(b[j++]);
   }
 
-  while(i < a.length) mergedLogs.push(a[i++]);
+  while (i < a.length) mergedLogs.push(a[i++]);
   while (j < b.length) mergedLogs.push(b[j++]);
 
   return mergedLogs;

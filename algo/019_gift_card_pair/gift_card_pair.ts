@@ -13,6 +13,15 @@ export function giftCardPair(
   prices: number[],
   balance: number,
 ): [number, number] | null {
-  // TODO: implement
-  throw new Error('Not implemented');
+  let left = 0;
+  let right = prices.length - 1;
+
+  while (left < right) {
+    const sum = prices[left] + prices[right];
+    if (sum === balance) return [left, right];
+    if (sum < balance) left++;
+    else right--;
+  }
+
+  return null;
 }
