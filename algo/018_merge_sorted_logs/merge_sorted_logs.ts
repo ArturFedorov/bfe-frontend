@@ -15,6 +15,18 @@ export interface LogEntry {
  * @returns a new merged array sorted by timestamp ascending
  */
 export function mergeSortedLogs(a: LogEntry[], b: LogEntry[]): LogEntry[] {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const mergedLogs: LogEntry[] = [];
+
+  let i = 0;
+  let j = 0;
+
+  while(i < a.length && j < b.length) {
+    if(a[i].timestamp <= b[j].timestamp) mergedLogs.push(a[i++]);
+    else mergedLogs.push(b[j++]);
+  }
+
+  while(i < a.length) mergedLogs.push(a[i++]);
+  while (j < b.length) mergedLogs.push(b[j++]);
+
+  return mergedLogs;
 }
