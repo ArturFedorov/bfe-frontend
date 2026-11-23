@@ -56,7 +56,7 @@ Solved at least once: js_utilities 001, 008, 010–014, 017, 026; async_patterns
 | js_utilities 010 all, 011 race (redo from blank), algo 074 sequential vs parallel | react 005 fetch states → 006 race-free search | The race is the single most common loop prompt |
 | async_patterns 003 cancelable, 004 sleep, algo 066 timeout, 075 lazy promise, 076 cancelable promise | react 012 useFetch, 014 useAsync | Same race as hooks; stable identities, stale closures |
 | js_utilities 017 memoize, algo 067 in-flight dedupe, 070 stale-while-revalidate | react 018 async states panel | Discriminated unions, impossible states |
-| async_patterns 002 retry, 001 limiter, 008 rate limiter, algo 077 retry backoff, 078 concurrency pool, 079 token bucket | react 022 polling widget, 021 retry panel | Settle-then-schedule, backoff, terminal states |
+| async_patterns 002 retry, 001 limiter, 008 rate limiter, algo 077 retry backoff, 078 concurrency pool, 079 token bucket | react 022 polling widget, 021 retry panel, 112 download export button | Settle-then-schedule, backoff, terminal states; async job → poll → download once |
 | js_utilities 001 debounce, 015 throttle, algo 080 request batcher, 011 request rate alarm | react 010 useDebouncedValue → 024 autocomplete | Debounce + abort + combobox a11y |
 
 **Algo track — Very Easy / Easy** (15–20 min each; this is the whole Netflix DSA bar, so aim for clean code and stated complexity, not speed)
@@ -241,7 +241,8 @@ The role: internal HR products across the employee lifecycle (hiring → talent 
 | 5 | react 092 mini React Query, 037 normalized store | Data layer over many backend systems; cache, dedupe, invalidation |
 | 6 | react 085 autosave conflict editor | Long forms that never lose work; two people editing one record |
 | 7 | react 094 segment builder, 097 journey builder | Rule and workflow builders, the "tooling app" shape |
-| 8 | react 018 async states, 024 autocomplete, 029 modal, 032 toasts | Everyday internal-tool pieces; people pickers are autocompletes |
+| 8 | react 112 download export button | "Export candidates to CSV": async job, poll until ready, download once, mock backend first |
+| 9 | react 018 async states, 024 autocomplete, 029 modal, 032 toasts | Everyday internal-tool pieces; people pickers are autocompletes |
 
 **2. JS fundamentals**
 
