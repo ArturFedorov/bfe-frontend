@@ -18,6 +18,39 @@ export function cancelable<T>(
   signal: AbortSignal,
   cleanup?: () => void,
 ): Promise<T> {
-  // TODO: implement
-  throw new Error('Not implemented');
+  return new Promise<T>((resolve, reject) => {
+    let settled = false;
+
+    const finish = (settle: () => void): void => {
+      if (settled) return;
+      settled = true;
+      signal.removeEventListener('abort', onAbort);
+      cleanup?.();
+      settle();
+    };
+
+    function onAbort(): void {
+      finish(() => reject(new AbortError()));
+    }
+
+    if (signal.aborted) {
+      onAbort();
+      return;
+    }
+
+    signal.addEventListener('abort', onAbort, { once: true });
+
+    let promise: Promise<T>;
+    try {
+      promise = promiseFactory();
+    } catch (error) {
+      finish(() => reject(error));
+      return;
+    }
+
+    return promise.then(
+      (value) => finish(() => resolve(value)),
+      (error: unknown) => finish(() => reject(error)),
+    );
+  });
 }

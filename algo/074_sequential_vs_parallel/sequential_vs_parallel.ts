@@ -7,7 +7,7 @@ export type Task<T> = () => Promise<T>;
 export async function runSequential<T>(tasks: Array<Task<T>>): Promise<T[]> {
   let results: T[] = [];
 
-  for(let i = 0; i < tasks.length; i++) {
+  for (let i = 0; i < tasks.length; i++) {
     results[i] = await tasks[i]();
   }
 

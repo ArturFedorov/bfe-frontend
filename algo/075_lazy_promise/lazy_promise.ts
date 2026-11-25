@@ -10,7 +10,7 @@ export type Executor<T> = (
 export class LazyPromise<T> implements PromiseLike<T> {
   private promise: Promise<T> | null = null;
 
-  constructor(private readonly executor: Executor<T>) {};
+  constructor(private readonly executor: Executor<T>) {}
 
   then<TResult1 = T, TResult2 = never>(
     onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null,
