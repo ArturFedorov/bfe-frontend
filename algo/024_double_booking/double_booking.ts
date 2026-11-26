@@ -4,6 +4,11 @@ export interface Interval {
 }
 
 export function hasDoubleBooking(meetings: Interval[]): boolean {
-  // TODO: implement
-  throw new Error('Not implemented');
+  const sorted = [...meetings].sort((a, b) => a.start - b.start);
+
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i].start < sorted[i - 1].end) return true;
+  }
+
+  return false;
 }
