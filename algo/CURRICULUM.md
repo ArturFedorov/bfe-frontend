@@ -1,311 +1,345 @@
-# Data Structures Deep-Dive — Full Curriculum
+# Algorithms — Learning and Solving Plan
 
-**Student:** Artur Fedorov — Senior Frontend Engineer (Vue.js, TypeScript, Go)
-**Target:** Google L5 Senior SWE
-**Focus:** Data structure *internals* — how they actually work under the hood, not just how to use them to solve LeetCode problems
-**Relationship to existing course:** This runs **parallel** to your practical DSA/LeetCode course. That course drills problem patterns; this one drills the structures themselves — the way the Go Language Deep-Dive runs parallel to the Go Ecosystem course.
-**Depth:** Internals-level (mechanism, invariants, tradeoffs) — not full source-code depth, not just definitions
+**Goal:** pass a LeetCode-style round (Meta: two Mediums in about 40 minutes, often without running
+the code) by recognising the pattern fast, writing a correct first draft, and proving it by hand.
 
----
+**Material:** `algo/001–090` (scenario-framed classics, see `TASKS.md`) and `algo/meta/001–047`
+(LeetCode-framed Meta favourites). Every folder has `README.md`, a stub, a test suite and a
+`solution.ts`. Run one task with `npx jest algo/<folder>`.
 
-## Course Mechanics
-
-### Lesson Format
-Each lesson covers:
-- Concept explanation with intuition — *why* the structure is built this way, not just what it does
-- A Big-O table for every operation (not just "it's fast" — the actual complexity per operation, average vs. worst case)
-- Canonical Go implementation sketch where it clarifies the mechanism
-- 1–2 trap mistakes / interview gotchas
-- Common Google interview questions tied to the structure
-
-### Verification Loop (every lesson)
-1. **Quick Check** — exactly 2 conceptual questions, no coding. Wait for answers.
-2. **Diagnose** — identify gaps, re-explain only the weak points.
-3. **Unlock** — proceed only once the mental model is solid.
-
-This course is theory-only (no coding challenges) — matches your Go Language Deep-Dive format. Coding practice on these structures stays in the LeetCode course.
-
-### Study Modes
-- **"computer" / "bed"** — doesn't change format here since it's theory-only either way, but say which and I'll match pacing.
+This plan has five parts: **how to solve one problem**, **how to recognise the pattern**, **the
+templates to know cold**, **how to learn so it sticks**, and **the order to work in**.
 
 ---
 
-## Phase 1: Linear Structures, Revisited Deeper
+## 1. How to solve one problem (the 40-minute method)
 
-### Lesson 1: Arrays & Dynamic Arrays Internals
-- Contiguous memory layout, why indexing is O(1)
-- Dynamic array growth: doubling strategy, amortized O(1) append — the actual proof sketch
-- Why shrinking arrays usually *doesn't* halve capacity immediately (thrashing)
-- Cache locality — why arrays outperform linked lists in practice despite same Big-O
+Use the same steps every time, out loud, even when practising alone. In the interview this *is*
+the communication score.
 
-| Operation | Average | Worst | Note |
-|---|---|---|---|
-| Access by index | O(1) | O(1) | direct offset calc |
-| Append | O(1) amortized | O(n) | triggers resize |
-| Insert at index | O(n) | O(n) | shifts elements |
-| Delete at index | O(n) | O(n) | shifts elements |
-| Search (unsorted) | O(n) | O(n) | — |
+| Step | Time | What you do | What you say |
+| --- | --- | --- | --- |
+| 1. Understand | 3 min | Restate the problem, walk through one example by hand, list edge cases | "So I need… For `[2,7,11]` the answer is… What about empty input, duplicates, negatives?" |
+| 2. Match | 2 min | Find the signal in the statement (section 2) and name the pattern | "Sorted input and a target pair, so two pointers" |
+| 3. Brute force | 1 min | One sentence plus complexity; do not code it | "Check every pair, O(n²); we can do better" |
+| 4. Plan | 3 min | Name the data structure, the invariant and the loop; write 3–5 comment lines | "The window always has at most k distinct values…" |
+| 5. Code | 10 min | Write it straight from the comments; clear names; no clever one-liners | Narrate only decisions, not keystrokes |
+| 6. Prove | 3 min | Dry-run the smallest interesting example line by line; then each edge case | "i=0, sum=2, map={0:1}…" |
+| 7. Analyse | 1 min | Time and space, and why | "Each index enters and leaves the window once: O(n)" |
+| 8. Follow-up | rest | Answer the README's interviewer follow-up | "As a stream I'd keep only…" |
 
-### Lesson 2: Linked Lists — All Variants
-- Singly vs. doubly vs. circular — memory overhead per node
-- Why linked lists lose the cache-locality war despite O(1) insert/delete
-- Skip list preview (full lesson later) as "linked list + probabilistic shortcuts"
+**If you are stuck after 5 minutes on step 2:** solve a smaller version (n = 2, n = 3), or ask
+"what would make this easy?" (sorted? a map? processed from the end?). Saying this out loud
+earns credit even before the idea arrives.
 
-| Operation | Singly | Doubly |
-|---|---|---|
-| Access by index | O(n) | O(n) |
-| Insert at head | O(1) | O(1) |
-| Insert at tail (no tail ptr) | O(n) | O(1) w/ tail ptr |
-| Delete (given node) | O(n)* | O(1) |
-| Delete (given node)* | *needs prev pointer* | — |
-
-### Lesson 3: Stacks & Queues — Implementation Internals
-- Array-backed vs. linked-list-backed tradeoffs
-- Circular buffer queue — why `%capacity` avoids the O(n) shift trap
-- Deque internals (why Go's `container/list` beats slice-shifting)
+**Before saying "done", check:** off-by-one at both ends, empty input, single element, all
+duplicates, negative numbers, and that you return in every branch.
 
 ---
 
-## Phase 2: Trees — Deep Dive
+## 2. Pattern recognition — signal → pattern
 
-*(This is the phase you flagged — going past "trees" as one topic into each structural variant and why it exists.)*
-
-### Lesson 4: Binary Trees — Fundamentals & Traversal Internals
-- Full / complete / perfect / balanced — precise definitions, not interchangeable
-- Recursive vs. iterative traversal (explicit stack mechanics for iterative in/pre/postorder)
-- Morris traversal — O(1) space traversal using threaded pointers (Google favorite "can you do it without recursion or a stack")
-
-### Lesson 5: Binary Search Trees — Invariants & Degeneration
-- The BST invariant and why it alone guarantees nothing about balance
-- Degenerate case: sorted insertion order → O(n) linked list in disguise
-- Why "BST" without a balancing guarantee is an interview trap if you don't call it out
-
-| Operation | Average | Worst (degenerate) |
-|---|---|---|
-| Search | O(log n) | O(n) |
-| Insert | O(log n) | O(n) |
-| Delete | O(log n) | O(n) |
-
-### Lesson 6: AVL Trees — Self-Balancing via Rotations
-- Balance factor invariant: height(left) − height(right) ∈ {−1, 0, 1}
-- Four rotation cases: LL, RR, LR, RL — the actual pointer surgery
-- Why AVL trees are more rigidly balanced than Red-Black (more rotations on insert, faster lookups)
-
-| Operation | Guaranteed |
-|---|---|
-| Search | O(log n) |
-| Insert | O(log n) (≤2 rotations) |
-| Delete | O(log n) (up to O(log n) rotations) |
-
-### Lesson 7: Red-Black Trees — Balancing via Color Invariants
-- The 5 red-black invariants (root black, red node's children black, equal black-height on every path, etc.)
-- Why "approximately balanced" (height ≤ 2·log(n+1)) is the tradeoff for fewer rotations than AVL
-- Insert/delete recoloring + rotation cases — the mechanism, not full case-by-case memorization
-- **Trap:** interviewers rarely ask you to implement one from scratch — they ask *why* Java's TreeMap / C++'s std::map / Go's absence of one matters
-
-| Operation | Guaranteed |
-|---|---|
-| Search | O(log n) |
-| Insert | O(log n) (≤2 rotations, O(log n) recolors) |
-| Delete | O(log n) (≤3 rotations) |
-
-**AVL vs. Red-Black, side by side:**
-
-| | AVL | Red-Black |
-|---|---|---|
-| Balance strictness | Tighter | Looser |
-| Lookup speed | Faster | Slightly slower |
-| Insert/delete speed | Slower (more rotations) | Faster (fewer rotations) |
-| Typical use | Read-heavy workloads | Write-heavy workloads (e.g. Linux CFS scheduler, Java TreeMap) |
-
-### Lesson 8: B-Trees & B+ Trees — Disk-Oriented Structures
-- Why binary trees are wrong for disk/DB indexes (each pointer-hop = a disk seek)
-- B-Tree: multi-key nodes, minimize tree height to minimize disk reads
-- B+ Tree: data only in leaves, leaves linked — why every real database index uses this, not a B-Tree
-- Order/branching factor and how it's chosen relative to disk page size
-
-| Operation | B-Tree / B+ Tree |
-|---|---|
-| Search | O(log_b n) — b = branching factor |
-| Insert | O(log_b n) |
-| Delete | O(log_b n) |
-| Range query | O(log_b n + k) — B+ Tree only, via leaf linked list |
-
-### Lesson 9: Tries & Radix Trees
-- Standard trie: O(1)-ish per-character array/map, memory cost per node
-- Radix tree (compressed trie): collapsing single-child chains — why it trades memory for a bit more traversal logic
-- Ternary search trees as a memory-efficient alternative to array-per-node tries
-
-| Operation | Standard Trie | Radix Tree |
-|---|---|---|
-| Insert | O(m) — m = key length | O(m) |
-| Search | O(m) | O(m) |
-| Space | O(alphabet × nodes) | O(nodes), fewer nodes |
-
-### Lesson 10: Segment Trees — Range Queries & Lazy Propagation
-- Build: O(n) bottom-up, array-backed binary tree over ranges
-- Range query / point update vs. range update with lazy propagation
-- Why segment trees beat prefix-sum arrays when updates are frequent
-
-| Operation | Without Lazy Prop | With Lazy Prop |
-|---|---|---|
-| Build | O(n) | O(n) |
-| Point update | O(log n) | O(log n) |
-| Range update | O(n) | O(log n) |
-| Range query | O(log n) | O(log n) |
-
-### Lesson 11: Fenwick Trees (Binary Indexed Trees)
-- The bit-manipulation trick (`i & -i`) that makes BITs simpler than segment trees for prefix sums
-- When to reach for a Fenwick tree instead of a segment tree (simpler, less memory, but less flexible)
-
-| Operation | Complexity |
-|---|---|
-| Build | O(n log n) or O(n) with a trick |
-| Point update | O(log n) |
-| Prefix sum query | O(log n) |
+| If the problem says… | Think | Practise on |
+| --- | --- | --- |
+| Sorted array, find a pair or triple | Two pointers from both ends | algo 019, 023; meta 001 |
+| Contiguous subarray or substring, "longest/shortest with condition" | Sliding window (grow right, shrink left) | algo 012–015; meta 016 |
+| Subarray **sum** equals or divisible by k, negatives allowed | Prefix sum + hash map of seen sums | meta 011, 012 |
+| Many range queries, or weighted random | Prefix sums (+ binary search) | meta 013 |
+| Sorted, or "minimum value that works" / monotonic yes-no | Binary search (on index or on the answer) | meta 019–022 |
+| "k largest / k closest / k most frequent", merge k sorted | Heap of size k, or quickselect | meta 023–026 |
+| Matching brackets, nested structure, undo, "previous smaller/greater" | Stack, monotonic stack | algo 058, 060, 063, 064; meta 002, 003 |
+| Max or min over a moving window | Monotonic deque | algo 065 |
+| Intervals, meetings, overlaps | Sort by start, then sweep | algo 024–031 |
+| Tree: depth, path, subtree property | DFS returning a value from children | algo 032–041; meta 033, 037 |
+| Tree: by level, by column, closest to root | BFS with a queue | algo 034, 039; meta 030 |
+| BST | Use the order: in-order is sorted, prune by range | meta 032, 034, 036 |
+| Grid, islands, flood fill | DFS/BFS on implicit graph, mark visited | algo 045; meta 041 |
+| Shortest path, unweighted | BFS (level = distance) | algo 046, 050; meta 038 |
+| Dependencies, prerequisites, ordering | Topological sort (Kahn or DFS colours) | algo 051–057 |
+| Groups that merge, "connected" equivalence | Union-find | meta 040 |
+| Copy a structure with pointers | Map from old node to new node | meta 027, 039 |
+| "All combinations / subsets / permutations" | Backtracking (choose, explore, unchoose) | meta 043–045, 047 |
+| "Can it be split / how many ways", overlapping subproblems | DP (memoised recursion first, then table) | meta 046 |
+| Design a class with O(1) operations | Map + array, or Map + linked list | algo 089; meta 017 |
 
 ---
 
-## Phase 3: Heaps & Priority Structures
+## 3. Templates to know cold (TypeScript)
 
-### Lesson 12: Binary Heaps Internals
-- Array representation: why `2i+1`/`2i+2`/`(i-1)/2` works without pointers
-- Sift-up (insert) vs. sift-down (extract) — the actual comparison/swap chain
-- Why heapify-from-bottom is O(n), not O(n log n) — the proof intuition, not just the fact
+Write each from memory in under 3 minutes. JavaScript has **no built-in heap or deque**, so the
+heap is the one most worth drilling.
 
-| Operation | Complexity |
-|---|---|
-| Peek | O(1) |
-| Insert | O(log n) |
-| Extract-min/max | O(log n) |
-| Build heap (heapify) | O(n) |
+```ts
+// Binary search — first index where pred(i) is true (lower bound)
+let lo = 0, hi = n; // answer in [lo, hi]
+while (lo < hi) {
+  const mid = lo + ((hi - lo) >> 1);
+  if (pred(mid)) hi = mid; else lo = mid + 1;
+}
+return lo;
+```
 
-### Lesson 13: d-ary Heaps & Advanced Heap Variants
-- d-ary heap: tradeoff of shallower tree (faster decrease-key-ish ops) vs. more comparisons per sift-down
-- Fibonacci heap & pairing heap — conceptual only: why Dijkstra's *theoretical* O(E + V log V) needs one, and why almost nobody implements them in practice
+```ts
+// Sliding window — longest window that satisfies a condition
+let left = 0, best = 0;
+for (let right = 0; right < s.length; right++) {
+  add(s[right]);
+  while (!valid()) remove(s[left++]);
+  best = Math.max(best, right - left + 1);
+}
+```
 
----
+```ts
+// Prefix sum + map — count subarrays with sum k
+const seen = new Map<number, number>([[0, 1]]);
+let sum = 0, count = 0;
+for (const x of nums) {
+  sum += x;
+  count += seen.get(sum - k) ?? 0;
+  seen.set(sum, (seen.get(sum) ?? 0) + 1);
+}
+```
 
-## Phase 4: Graphs Deep Dive
+```ts
+// BFS on a grid — queue with a head index (Array.shift is O(n))
+const queue: Array<[number, number]> = [[sr, sc]];
+seen[sr][sc] = true;
+for (let head = 0; head < queue.length; head++) {
+  const [r, c] = queue[head];
+  for (const [dr, dc] of DIRS) {
+    const nr = r + dr, nc = c + dc;
+    if (nr < 0 || nc < 0 || nr >= rows || nc >= cols || seen[nr][nc] || grid[nr][nc] === 1) continue;
+    seen[nr][nc] = true;
+    queue.push([nr, nc]);
+  }
+}
+```
 
-### Lesson 14: Graph Representations & Tradeoffs
-- Adjacency list vs. adjacency matrix vs. edge list — when each wins
-- Dense vs. sparse graph threshold for choosing representation
+```ts
+// Min-heap — the one data structure JS does not give you
+class MinHeap<T> {
+  private items: T[] = [];
+  constructor(private less: (a: T, b: T) => boolean) {}
+  get size() { return this.items.length; }
+  peek() { return this.items[0]; }
+  push(x: T) {
+    const a = this.items; a.push(x);
+    for (let i = a.length - 1; i > 0; ) {
+      const p = (i - 1) >> 1;
+      if (!this.less(a[i], a[p])) break;
+      [a[i], a[p]] = [a[p], a[i]]; i = p;
+    }
+  }
+  pop(): T | undefined {
+    const a = this.items; const top = a[0]; const last = a.pop();
+    if (a.length > 0 && last !== undefined) {
+      a[0] = last;
+      for (let i = 0; ; ) {
+        const l = 2 * i + 1, r = l + 1; let m = i;
+        if (l < a.length && this.less(a[l], a[m])) m = l;
+        if (r < a.length && this.less(a[r], a[m])) m = r;
+        if (m === i) break;
+        [a[i], a[m]] = [a[m], a[i]]; i = m;
+      }
+    }
+    return top;
+  }
+}
+```
 
-| Representation | Space | Edge lookup | Iterate neighbors |
-|---|---|---|---|
-| Adjacency list | O(V+E) | O(degree) | O(degree) |
-| Adjacency matrix | O(V²) | O(1) | O(V) |
-| Edge list | O(E) | O(E) | O(E) |
+```ts
+// Union-find with path compression and union by size
+const parent = Array.from({ length: n }, (_, i) => i);
+const size = new Array(n).fill(1);
+const find = (x: number): number => (parent[x] === x ? x : (parent[x] = find(parent[x])));
+const union = (a: number, b: number) => {
+  let ra = find(a), rb = find(b);
+  if (ra === rb) return;
+  if (size[ra] < size[rb]) [ra, rb] = [rb, ra];
+  parent[rb] = ra; size[ra] += size[rb];
+};
+```
 
-### Lesson 15: Union-Find (Disjoint Set Union)
-- Path compression + union by rank/size — why combined they get you α(n), effectively O(1)
-- Where this beats DFS-based cycle detection (Kruskal's MST, dynamic connectivity)
+```ts
+// Backtracking — choose, explore, unchoose
+const out: number[][] = [];
+const path: number[] = [];
+const dfs = (start: number) => {
+  out.push([...path]);
+  for (let i = start; i < nums.length; i++) {
+    path.push(nums[i]);
+    dfs(i + 1);
+    path.pop();
+  }
+};
+dfs(0);
+```
 
-| Operation | Without optimization | With path compression + union by rank |
-|---|---|---|
-| Find | O(n) | O(α(n)) ≈ O(1) |
-| Union | O(n) | O(α(n)) ≈ O(1) |
+Also know: DFS on a tree returning a value (height, sum), iterative in-order with a stack,
+Kahn's topological sort, monotonic stack ("next greater"), and merging two sorted lists.
 
-### Lesson 16: Minimum Spanning Trees — Prim's & Kruskal's
-- Kruskal's: sort edges + Union-Find, greedy edge selection
-- Prim's: grow from a vertex with a min-heap, greedy edge selection
-- When to pick which (dense graph → Prim's with adjacency matrix; sparse → Kruskal's)
+### JavaScript traps that cost interviews
 
-| Algorithm | Complexity |
-|---|---|
-| Kruskal's (with Union-Find) | O(E log E) |
-| Prim's (with min-heap) | O(E log V) |
-
-### Lesson 17: Shortest Path Algorithms
-- Dijkstra: greedy + min-heap, why it fails with negative weights
-- Bellman-Ford: relax all edges V−1 times, detects negative cycles
-- Floyd-Warshall: all-pairs via DP, why it's O(V³) but simple
-
-| Algorithm | Complexity | Handles negative weights? |
-|---|---|---|
-| Dijkstra (min-heap) | O((V+E) log V) | No |
-| Bellman-Ford | O(V·E) | Yes (detects negative cycles) |
-| Floyd-Warshall | O(V³) | Yes |
-
-### Lesson 18: Strongly Connected Components & Articulation Points
-- Tarjan's algorithm (single-pass, low-link values)
-- Kosaraju's algorithm (two-pass, DFS + transpose graph)
-- Articulation points / bridges — discovery time vs. low-link comparison
-
-| Algorithm | Complexity |
-|---|---|
-| Tarjan's SCC | O(V+E) |
-| Kosaraju's SCC | O(V+E) |
-| Articulation points / bridges | O(V+E) |
-
----
-
-## Phase 5: Specialized & Probabilistic Structures
-
-### Lesson 19: Skip Lists
-- Layered linked lists with probabilistic "express lanes"
-- Why average O(log n) despite being "just a linked list" — the coin-flip intuition
-- Where used in practice (Redis sorted sets)
-
-| Operation | Average | Worst |
-|---|---|---|
-| Search | O(log n) | O(n) |
-| Insert | O(log n) | O(n) |
-| Delete | O(log n) | O(n) |
-
-### Lesson 20: Bloom Filters
-- Bit array + k hash functions — why false positives are possible but false negatives never are
-- Sizing: tradeoff between bit array size, hash count, and false positive rate
-
-| Operation | Complexity |
-|---|---|
-| Insert | O(k) — k = number of hash functions |
-| Query | O(k) |
-| Space | O(m) — m = bit array size, independent of n |
-
-### Lesson 21: LFU Cache & Advanced Eviction Structures
-- LRU recap (HashMap + doubly linked list) vs. LFU's extra dimension: frequency
-- O(1) LFU: frequency buckets, each a doubly linked list of same-frequency keys
-
-| Operation | LRU | LFU (O(1) design) |
-|---|---|---|
-| Get | O(1) | O(1) |
-| Put | O(1) | O(1) |
-
-### Lesson 22: Consistent Hashing (System-Design Adjacent)
-- The ring, virtual nodes, why it minimizes remapping when nodes join/leave
-- Bridges directly into your Hash Maps theory (already complete) and system design rounds
-
----
-
-## Progress Tracker
-
-| Lesson | Topic | Status |
-|---|---|---|
-| 1 | Arrays & Dynamic Arrays Internals | Not started |
-| 2 | Linked Lists — All Variants | Not started |
-| 3 | Stacks & Queues Internals | Not started |
-| 4 | Binary Trees — Fundamentals & Traversal | Not started |
-| 5 | Binary Search Trees — Invariants | Not started |
-| 6 | AVL Trees | Not started |
-| 7 | Red-Black Trees | Not started |
-| 8 | B-Trees & B+ Trees | Not started |
-| 9 | Tries & Radix Trees | Not started |
-| 10 | Segment Trees | Not started |
-| 11 | Fenwick Trees (BIT) | Not started |
-| 12 | Binary Heaps Internals | Not started |
-| 13 | d-ary & Advanced Heaps | Not started |
-| 14 | Graph Representations | Not started |
-| 15 | Union-Find | Not started |
-| 16 | MST — Prim's & Kruskal's | Not started |
-| 17 | Shortest Path Algorithms | Not started |
-| 18 | SCC & Articulation Points | Not started |
-| 19 | Skip Lists | Not started |
-| 20 | Bloom Filters | Not started |
-| 21 | LFU Cache & Eviction Structures | Not started |
-| 22 | Consistent Hashing | Not started |
+- `arr.sort()` sorts **as strings**: always `arr.sort((a, b) => a - b)`.
+- `Array.shift()` is O(n): use a head index for queues.
+- Spreading or slicing inside a loop (`[...path]`, `s.slice()`) is O(n) per step: say so when
+  you do it.
+- Strings are immutable: build with an array and `join('')`.
+- Integers are exact only up to 2^53: mention it for large sums and products.
+- Recursion depth is roughly 10k frames: for 10^5-deep lists or trees, go iterative.
+- `Math.floor((lo + hi) / 2)` is fine in JS (no overflow), but `lo + ((hi - lo) >> 1)` shows you know why.
+- `new Array(n).fill([])` shares **one** array: use `Array.from({ length: n }, () => [])`.
 
 ---
 
-*Data Structures Deep-Dive · Artur Fedorov · Generated by Claude*
+## 4. How to learn so it sticks
+
+**One problem, one attempt loop**
+1. Read only the README. Set a 25-minute timer (40 for Hard).
+2. Solve with the method in section 1. Run the tests only after a hand dry-run.
+3. Stuck? Use the hint ladder, one rung at a time, 5 minutes apart:
+   README **Target** line → the pattern table in section 2 → the matching template in section 3 →
+   `solution.ts`.
+4. After green, read `solution.ts` anyway and note one thing it does better.
+5. Log it (section 6) as **clean** (no hints, under time), **hinted**, or **failed**.
+
+**Spaced repetition** — redo from a blank file:
+- **hinted or failed:** after 1 day, 3 days, then 7 days, until it is clean twice in a row.
+- **clean:** once after 14 days, then only in mocks.
+
+Reset a task with `git checkout <commit-with-stub> -- <file>`, or keep a blank copy and solve in
+a scratch file.
+
+**Mistake journal:** one line per bug you made ("forgot `seen.set(0, 1)` in prefix sum").
+Re-read it before every mock. Most interview failures repeat the same five mistakes.
+
+---
+
+## 5. Order of work
+
+A sequence, not a calendar. Move on when the stage's exit check passes.
+
+| Stage | Goal | Volume | Exit check |
+| --- | --- | --- | --- |
+| A | Turn the LeetCode classics you already solved into interview speed | 19 tasks, 20 min each | 15 of 19 clean |
+| B | Close the Meta gaps topic by topic | 47 tasks in `algo/meta/` | Each topic: every task clean once; you can name each pattern from the title |
+| C | Practise the real format: two problems, 40 minutes | At least 10 pairs | 8 of the last 10 pairs both correct in time |
+| D | Peak for the interview, no new material | 7 days | Every hinted/failed task clean twice |
+
+### Stage A — Classics you already have (redo from blank, 20 min each)
+
+The repo tasks use scenario names; the LeetCode column says which classic each one is.
+
+| Topic | Task | LeetCode | Difficulty | Pattern |
+| --- | --- | --- | --- | --- |
+| Stacks | algo 058 bracket validator | 20 | Easy | Stack |
+| Stacks | algo 060 path normalizer | 71 | Medium | Stack of segments |
+| Stacks | algo 063 build speed watch | 739 | Medium | Monotonic stack |
+| Stacks | algo 064 formula calculator | 227 | Medium | Stack / recursive descent |
+| Two pointers | algo 019 gift card pair | 167 | Medium | Converging pointers |
+| Two pointers | algo 023 capacity triplet | 15 | Medium | Sort + pinned pointer |
+| Two pointers | algo 022 calendar intersection | 986 | Medium | Two pointers over intervals |
+| Sliding window | algo 012 longest unique run | 3 | Medium | Variable window + set |
+| Sliding window | algo 015 min coverage window | 76 | Hard | Need/have counts |
+| Sliding window | algo 065 sliding max latency | 239 | Hard | Monotonic deque |
+| Intervals | algo 026 merge busy slots | 56 | Medium | Sort + sweep |
+| Intervals | algo 029 min rooms | 253 | Medium | Sweep line or heap |
+| Trees | algo 034 level snapshot | 102 | Medium | BFS by level |
+| Trees | algo 039 minimap view | 199 | Medium | BFS, last node per level |
+| Trees | algo 040 component diameter | 543 | Easy | Height + global best |
+| Trees | algo 038 common container | 236 | Medium | Return found nodes up |
+| Graphs | algo 045 rack outage clusters | 200 | Medium | Grid DFS/BFS |
+| Graphs | algo 052 build order (Kahn) | 207 | Medium | Topological sort |
+| Design | algo 089 LRU query cache | 146 | Medium | Map in insertion order |
+
+### Stage B — Meta gaps (`algo/meta/`, Easy first within each topic)
+
+| Topic | Task | LeetCode | Difficulty | Pattern |
+| --- | --- | --- | --- | --- |
+| Strings | meta 001 valid palindrome II | 680 | Easy | Two pointers, one skip |
+| Strings | meta 004 valid word abbreviation | 408 | Easy | Two pointers + number parsing |
+| Strings | meta 007 add strings and binary | 415, 67 | Easy | Digit-by-digit with carry |
+| Strings | meta 002 min remove to make valid | 1249 | Medium | Stack of indices |
+| Strings | meta 003 min add to make valid | 921 | Medium | Balance counter |
+| Strings | meta 005 custom sort string | 791 | Medium | Counting |
+| Strings | meta 006 group shifted strings | 249 | Medium | Canonical key |
+| Strings | meta 008 maximum swap | 670 | Medium | Last index of each digit |
+| Arrays and math | meta 009 next permutation | 31 | Medium | Pivot, swap, reverse suffix |
+| Arrays and math | meta 010 pow(x, n) | 50 | Medium | Fast exponentiation |
+| Prefix sums | meta 011 subarray sum equals k | 560 | Medium | Prefix sum + map |
+| Prefix sums | meta 012 continuous subarray sum | 523 | Medium | Prefix mod + first index |
+| Prefix sums | meta 013 random pick with weight | 528 | Medium | Prefix sums + binary search |
+| Hashing | meta 014 sparse vector dot product | 1570 | Medium | Index → value map |
+| Arrays | meta 015 buildings with an ocean view | 1762 | Medium | Scan from the right |
+| Sliding window | meta 016 max consecutive ones III | 1004 | Medium | Window with at most k zeros |
+| Design | meta 017 insert delete getRandom O(1) | 380 | Medium | Map + array, swap-remove |
+| Arrays | meta 018 diagonal traverse | 498 | Medium | Index arithmetic by diagonal |
+| Binary search | meta 020 kth missing positive | 1539 | Easy | Search on missing count |
+| Binary search | meta 019 find peak element | 162 | Medium | Compare with neighbour |
+| Binary search | meta 021 first and last position | 34 | Medium | Lower and upper bound |
+| Binary search | meta 022 search in rotated array | 33 | Medium | Find the sorted half |
+| Heaps | meta 023 kth largest element | 215 | Medium | Quickselect or size-k heap |
+| Heaps | meta 024 k closest points | 973 | Medium | Size-k max-heap |
+| Heaps | meta 025 top k frequent | 347 | Medium | Count + bucket sort or heap |
+| Heaps | meta 026 merge k sorted lists | 23 | Hard | Heap of list heads |
+| Linked lists | meta 029 add two numbers | 2 | Medium | Walk both lists with carry |
+| Linked lists | meta 027 copy list with random pointer | 138 | Medium | Old → new node map |
+| Linked lists | meta 028 insert into sorted circular list | 708 | Medium | Find the gap or the wrap |
+| Trees | meta 032 range sum of BST | 938 | Easy | DFS with pruning |
+| Trees | meta 034 closest BST value | 270 | Easy | Walk one root-to-leaf path |
+| Trees | meta 033 sum root to leaf numbers | 129 | Medium | DFS carrying the number |
+| Trees | meta 030 vertical order traversal | 314 | Medium | BFS with column index |
+| Trees | meta 031 LCA with parent pointers | 1650 | Medium | Two pointers that switch lists |
+| Trees | meta 035 all nodes distance k | 863 | Medium | Parent map + BFS |
+| Trees | meta 036 BST to sorted doubly linked list | 426 | Medium | In-order, link prev and current |
+| Trees | meta 037 binary tree max path sum | 124 | Hard | Gain from each side + global best |
+| Graphs | meta 042 nested list weight sum | 339 | Medium | DFS with depth |
+| Graphs | meta 038 shortest path in binary matrix | 1091 | Medium | BFS, 8 directions |
+| Graphs | meta 039 clone graph | 133 | Medium | Old → new node map |
+| Graphs | meta 040 accounts merge | 721 | Medium | Union-find on emails |
+| Graphs | meta 041 making a large island | 827 | Hard | Island ids + area map |
+| Backtracking | meta 043 subsets | 78 | Medium | Choose / skip |
+| Backtracking | meta 044 permutations | 46 | Medium | Used flags |
+| Backtracking | meta 045 letter combinations | 17 | Medium | One digit per level |
+| DP | meta 046 word break | 139 | Medium | Prefix DP or memoised DFS |
+| Backtracking | meta 047 remove invalid parentheses | 301 | Hard | BFS by removals, or counted DFS |
+
+### Stage C — Timed pairs (40 minutes, no running code until both are dry-run)
+
+Each pair mixes a task you have seen with one from a different topic, so you can't guess the
+pattern in advance. Do them in order, then repeat with your own shuffles.
+
+| Pair | Problem 1 (seen pattern) | Problem 2 (different topic) |
+| --- | --- | --- |
+| 1 | meta 001 valid palindrome II | meta 011 subarray sum equals k |
+| 2 | algo 026 merge intervals | meta 039 clone graph |
+| 3 | meta 002 min remove to make valid | meta 030 vertical order |
+| 4 | algo 038 lowest common ancestor | meta 023 kth largest |
+| 5 | meta 015 buildings ocean view | meta 038 shortest path in binary matrix |
+| 6 | meta 004 valid word abbreviation | meta 013 random pick with weight |
+| 7 | algo 039 right side view | meta 040 accounts merge |
+| 8 | meta 016 max consecutive ones III | meta 027 copy random list |
+| 9 | meta 022 search rotated array | meta 035 all nodes distance k |
+| 10 | algo 015 minimum window | meta 024 k closest points |
+
+### Stage D — The last week
+
+| Day | Do | Then |
+| --- | --- | --- |
+| 1 | One timed pair, out loud | Re-read the mistake journal |
+| 2 | One timed pair, recorded; watch it back | Redo two hinted/failed tasks |
+| 3 | One timed pair | Write the heap and union-find templates from memory |
+| 4 | One timed pair | Redo two hinted/failed tasks |
+| 5 | One timed pair with someone else as interviewer, if possible | Re-read section 3 traps |
+| 6 | One easy pair for confidence | Redo anything still not clean twice |
+| 7 | Rest; skim the pattern table in section 2 | Sleep |
+
+---
+
+## 6. Progress log
+
+Copy a row per attempt. Status: **C** clean, **H** hinted, **F** failed.
+
+| Date | Task | Status | Time | Mistake or insight |
+| --- | --- | --- | --- | --- |
+| | | | | |

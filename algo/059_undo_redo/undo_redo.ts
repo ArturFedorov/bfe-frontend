@@ -7,47 +7,38 @@
  * - Every operation is O(1).
  */
 export class UndoRedoManager<T> {
-  private current: T;
-  private readonly undoStack: T[] = [];
-  private redoStack: T[] = [];
-
   constructor(initialState: T) {
-    this.current = initialState;
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 
   getState(): T {
-    return this.current;
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 
   do(nextState: T): void {
-    this.undoStack.push(this.current);
-    this.current = nextState;
-    this.redoStack = [];
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 
   undo(): T {
-    if (this.undoStack.length === 0) {
-      throw new Error('Nothing to undo');
-    }
-    this.redoStack.push(this.current);
-    this.current = this.undoStack.pop() as T;
-    return this.current;
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 
   redo(): T {
-    if (this.redoStack.length === 0) {
-      throw new Error('Nothing to redo');
-    }
-    this.undoStack.push(this.current);
-    this.current = this.redoStack.pop() as T;
-    return this.current;
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 
   canUndo(): boolean {
-    return this.undoStack.length > 0;
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 
   canRedo(): boolean {
-    return this.redoStack.length > 0;
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 }

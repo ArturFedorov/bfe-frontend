@@ -9,13 +9,6 @@
  * @returns the number of unique emails
  */
 export function dedupeSubscribers(emails: string[]): number {
-  if (emails.length === 0) return 0;
-
-  let k = 1;
-
-  for (let read = 1; read < emails.length; read++) {
-    if (emails[read] !== emails[k - 1]) emails[k++] = emails[read];
-  }
-
-  return k;
+  // TODO: implement
+  throw new Error('Not implemented');
 }

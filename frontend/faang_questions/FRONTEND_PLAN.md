@@ -1,6 +1,6 @@
 # Frontend / UI Engineer Interview Plan
 
-**Targets, in priority order:** Netflix → Apple → Google → Meta (last; few UI openings). Written 2026-11-13, reordered 2026-11-18.
+**Targets, in priority order:** Meta (Software Engineer, Product, London — Block 9) → Netflix → Apple → Google. Written 2026-11-13, reordered 2026-11-27.
 The earlier AIML Annotation Platform loop is closed; its tasks stay because AI product UI (streaming,
 long-running agent runs, approval flows) is now asked across many departments at all four companies.
 
@@ -26,10 +26,10 @@ after the suite is green or after a 25-minute stall. All `algo/` stubs were rese
 
 | Company | Coding rounds look like | Weight in this plan |
 | --- | --- | --- |
-| Netflix | Per a current Netflix UI engineer (Nov 2026): LeetCode-easy only, ordinary recursion; emphasis on React with a small real-life task; emphasis on core JS — async operations and functional programming; plus an **AI round** where you code with an agent and are judged on best practices. Culture memo ("Dream Team", "Informed Captain"). UI openings are rare, so be ready when one appears. | Block 9 for the Talent Tech role, then 0, 1, 2 (classics), 3, 8, `node_netflix`, 7 |
+| Netflix | Per a current Netflix UI engineer (Nov 2026): LeetCode-easy only, ordinary recursion; emphasis on React with a small real-life task; emphasis on core JS — async operations and functional programming; plus an **AI round** where you code with an agent and are judged on best practices. Culture memo ("Dream Team", "Informed Captain"). UI openings are rare, so be ready when one appears. | Blocks 0, 1, 2 (classics), 3, 8, `node_netflix`, 7 (Talent Tech role on freeze) |
 | Apple | Practical component builds in CoderPad/loop (async, state, a11y), JS fundamentals questions woven into the conversation (closures, `this`, event loop, promises), design-system and architecture discussion, team-specific domain (ASE: React Query, router, MFE, event-driven) | Blocks 0, 1, 3, 4, 5 |
 | Google | 1 DSA round even for frontend (trees, graphs, sliding window, intervals), 1–2 UI rounds building a widget from scratch with a11y, 1 frontend system design, behavioural ("Googleyness") | Blocks 1, 2, 6, 7 |
-| Meta | Pure-JS phone screen (debounce, promise utils, flatten, event emitter), 35-min UI widget, frontend system design | Blocks 0, 2, 7 |
+| Meta | **Software Engineer, Product — London (referral, Nov 2026):** LeetCode round(s) — two Mediums in ~40 min — plus an AI-enabled coding round (multi-file project with an AI assistant), behavioural. Frontend roles add a pure-JS screen and a UI widget. | **Block 9**, then 6, 8, 7 |
 
 ---
 
@@ -226,51 +226,105 @@ The round: you share a screen, drive a coding agent (Claude Code, Cursor or what
 
 react 070 label hotkeys, 071 span labeler, 081 overlaps, 082 command history, 084 review queue lease, 085 autosave conflict editor, 086 suggestions panel, 083 bbox annotator.
 
-## Block 9 — Netflix Talent Tech (UI Engineer 4/5, Warsaw, onsite)
+## Block 9 — Meta Software Engineer, Product (London; referral)
 
-The role: internal HR products across the employee lifecycle (hiring → talent management → HR operations), "consumer-grade internal products", workflow-heavy and integration-heavy, with on-call and incident reviews. Stack named in the posting: React, TypeScript, GraphQL, Node.js. The Netflix core-JS/FP round and the AI pairing round (Block 8) still apply. Work the tables top to bottom: React first, then JS, then algo, then the rest.
+**Status:** active target (Netflix Talent Tech is on freeze). Posting: **Software Engineer, Product — London, UK** (Engineering). Rounds below come from the referrer (27 Nov 2026) plus Meta's public loop format; confirm the level and rounds with the recruiter.
 
-**1. React — workflow UIs (highest priority)**
+**What the posting signals**
+- **Product engineering, not infrastructure:** "build new features… across mobile devices and web applications", "implement custom user interfaces", work with product, design and operations. Your frontend depth is an asset here, so it belongs in the design and behavioural rounds.
+- **Senior scope:** "set direction and goals for teams, lead major initiatives, mentor, onboard", "drive large efforts to reduce technical debt", "establish ownership… with expert end-to-end understanding". Expect the bar for E5 (senior) and stories at that scale.
+- **Data-driven:** "utilizing data and analysis to explain technical problems" — have numbers in your stories (latency, error rates, adoption, time saved).
+- **AI is now a stated qualification:** "integrate AI tools to optimize/redesign workflows and drive measurable impact", "responsible, ethical AI practices", "prompt/context engineering, agent orchestration". This lines up with the AI-enabled coding round and needs its own behavioural story.
+- Languages: any is fine for coding rounds; JavaScript/TypeScript is listed.
 
-| Order | Task | Why for this role |
+**What the loop looks like**
+- **LeetCode round** (screen and onsite): typically **two Mediums in ~40 minutes**, often without running the code. Speed and a clean first draft matter more than cleverness. Expect a follow-up twist on each ("now as a stream", "now O(1) space", "now with negative numbers").
+- **AI-enabled coding round:** a HackerRank/CoderPad-style multi-file project with an AI assistant available. Several stages (understand the code, implement a feature, fix failing tests, extend). Judged on problem solving, code quality and how you verify what the AI writes — not on whether you use it.
+- **Product architecture design** (for Product SWE at senior level, instead of distributed-systems design): design a user-facing feature end to end — client, API, data model, pagination, real-time updates, scale. See section 4.
+- **Behavioural:** conflict, ambiguity, impact, growth, leading without authority — reuse the six stories from Block 7 and add the ones in section 5.
+- Referrer's read: "not very hard if you solve LeetCode well".
+
+**Rules for every LeetCode session**
+1. Two problems, 40 minutes, timer on, no running code until you have dry-run one example by hand out loud.
+2. Say brute force + complexity in one sentence, then the target, then code.
+3. After green: answer the follow-up in the README out loud.
+4. JavaScript has **no built-in heap or deque** — be able to write a 25-line binary heap from memory (the algo 055 solution has one).
+
+**1. Already in the repo — the LeetCode classic each task really is** (redo from blank, 20 min each)
+
+| LeetCode | Repo task | Pattern |
 | --- | --- | --- |
-| 1 | react 034 wizard reducer | Multi-step forms with per-step validation: an offer or onboarding flow |
-| 2 | react 079 approval gate, 078 event reducer | A hiring pipeline is an approval state machine; guard illegal transitions |
-| 3 | react 101 approval grid | Bulk approve/reject with per-row status and partial failure |
-| 4 | react 088 data grid, 038 row selection, 089 URL state | Candidate and employee tables: sort, filter, select, shareable URLs |
-| 5 | react 092 mini React Query, 037 normalized store | Data layer over many backend systems; cache, dedupe, invalidation |
-| 6 | react 085 autosave conflict editor | Long forms that never lose work; two people editing one record |
-| 7 | react 094 segment builder, 097 journey builder | Rule and workflow builders, the "tooling app" shape |
-| 8 | react 112 download export button | "Export candidates to CSV": async job, poll until ready, download once, mock backend first |
-| 9 | react 018 async states, 024 autocomplete, 029 modal, 032 toasts | Everyday internal-tool pieces; people pickers are autocompletes |
+| 49 Group Anagrams | algo 005 filename grouper | Canonical key |
+| 189 Rotate Array | algo 006 image row rotate | Three reversals |
+| 346 Moving Average from Data Stream | algo 009 moving average | Ring buffer |
+| 3 Longest Substring Without Repeating | algo 012 longest unique run | Variable window + set |
+| 340 At Most K Distinct Characters | algo 013 error variety window | Window + count map |
+| 76 Minimum Window Substring | algo 015 min coverage window | Need/have counts |
+| 88 Merge Sorted Array | algo 018 merge sorted logs | Merge from the back for in-place |
+| 167 Two Sum II / 15 3Sum | algo 019 gift card pair, 023 capacity triplet | Converging pointers |
+| 283 Move Zeroes | algo 020 archive completed | Read/write pointers |
+| 844 Backspace String Compare | algo 021 typed input compare | Walk from the end |
+| 986 Interval List Intersections | algo 022 calendar intersection | Two-pointer over intervals |
+| 56 Merge Intervals / 57 Insert Interval | algo 026, 027 | Sort + sweep |
+| 253 Meeting Rooms II | algo 029 min rooms | Sweep line or heap |
+| 102 Level Order / 199 Right Side View | algo 034 level snapshot, 039 minimap view | BFS by level |
+| 236 Lowest Common Ancestor | algo 038 common container | Return found nodes up |
+| 543 Diameter of Binary Tree | algo 040 component diameter | Height + global best |
+| 297 Serialize and Deserialize Binary Tree | algo 042 layout clipboard | Pre-order with null markers |
+| 200 Number of Islands | algo 045 rack outage clusters | Grid DFS/BFS |
+| 785 Is Graph Bipartite | algo 049 shift split | Two-colouring |
+| 207/210 Course Schedule I/II | algo 052, 053 build order | Kahn / DFS three colours |
+| 20 Valid Parentheses | algo 058 bracket validator | Stack |
+| 71 Simplify Path | algo 060 path normalizer | Stack of segments |
+| 739 Daily Temperatures | algo 063 build speed watch | Monotonic stack |
+| 227/224 Basic Calculator II/I | algo 064 formula calculator | Stack / recursive descent |
+| 239 Sliding Window Maximum | algo 065 sliding max latency | Monotonic deque |
+| 146 LRU Cache | algo 089 LRU query cache | Map in insertion order |
 
-**2. JS fundamentals**
+**2. Meta favourites added as `algo/meta/001–047`** (LeetCode-style statements, tests + `solution.ts` like the rest; per-task order and patterns in `algo/CURRICULUM.md` Stage B)
 
-| Task | Why for this role |
+| Topic | Problems |
 | --- | --- |
-| js_utilities 012 allSettled, 010 all | Fan-out to several HR systems; show what succeeded and what failed |
-| js_utilities 001 debounce | Autosave and search-as-you-type |
-| js_utilities 020 deep equal, 035 immutable setIn/updateIn | Dirty-checking form state; nested form updates without mutation |
-| js_utilities 031 compose/pipe, 033 groupBy, 017 memoize | FP round; grouping candidates by stage; derived views |
-| js_utilities 026 event emitter | Cross-widget events in a large internal app |
+| Strings | 680 Valid Palindrome II, 1249 Minimum Remove to Make Valid Parentheses, 408 Valid Word Abbreviation, 791 Custom Sort String, 415 Add Strings, 31 Next Permutation, 50 Pow(x, n) |
+| Prefix sums and hashing | 560 Subarray Sum Equals K, 523 Continuous Subarray Sum, 528 Random Pick with Weight, 1570 Dot Product of Sparse Vectors, 1762 Buildings With an Ocean View, 1004 Max Consecutive Ones III, 380 Insert Delete GetRandom O(1) |
+| Binary search | 162 Find Peak Element, 1539 Kth Missing Positive Number, 34 First and Last Position, 33 Search in Rotated Sorted Array |
+| Heaps and selection | 215 Kth Largest Element (quickselect + heap), 973 K Closest Points to Origin, 347 Top K Frequent Elements, 23 Merge k Sorted Lists |
+| Linked lists | 138 Copy List with Random Pointer, 708 Insert into a Sorted Circular Linked List, 2 Add Two Numbers |
+| Trees | 314 Binary Tree Vertical Order Traversal, 1650 LCA III (parent pointers), 938 Range Sum of BST, 129 Sum Root to Leaf Numbers, 426 BST to Sorted Doubly Linked List, 124 Binary Tree Maximum Path Sum |
+| Graphs | 1091 Shortest Path in Binary Matrix, 133 Clone Graph, 721 Accounts Merge (union-find), 827 Making a Large Island, 339 Nested List Weight Sum |
+| Backtracking and light DP | 78 Subsets, 46 Permutations, 17 Letter Combinations, 139 Word Break, 301 Remove Invalid Parentheses |
 
-**3. Algo**
+Order: Strings → Prefix sums → Binary search → Heaps → Trees → Graphs → Linked lists → Backtracking. Then mock pairs: one problem from section 1 plus one from section 2, 40 minutes.
 
-| Task | Why for this role |
+**3. AI-enabled coding round**
+
+Use the Block 8 protocol (brief → plan → smallest slice → verify → review → commit), with these changes for Meta:
+- The codebase is unfamiliar and multi-file: spend the first 5 minutes reading — entry point, data model, existing tests — and say what you found.
+- Prompt for small, checkable steps; read every suggestion; run the tests after each stage.
+- Write the core algorithm yourself when it is short — interviewers want to see you can, and it is faster than reviewing a wrong one.
+- Rehearse on code you did not write: `node_netflix` 001–007, `frontend/react_apps/campaign_studio`, or a fresh scaffolded `algo/meta/` folder with an AI assistant on and a 60-minute timer.
+
+**4. Product architecture design** (45 min, talk + diagram; use the RADIO framework from Block 7, but spend more time on API and data model than on UI components)
+
+| Prompt | Go deep on |
 | --- | --- |
-| algo 090 event-sourced campaign | Audit trail of a candidate record: idempotent events, replay, snapshots |
-| algo 088 journey cycle check | Validating a configurable pipeline of stages (no cycles, no dead stages) |
-| algo 083 rule tree evaluate | Eligibility and routing rules ("if level ≥ 5 and region = EU, add approver") |
-| algo 077 retry backoff, 069 circuit breaker, 067 in-flight dedupe | Flaky third-party integrations (ATS, payroll) |
-| algo 089 LRU query cache | What the data layer caches and when it drops it |
-| algo 026 merge busy slots, 031 team free time | Interview scheduling across several calendars |
+| News feed (Facebook / Instagram) | Cursor pagination, ranking vs chronological, fan-out on write vs read, client cache, optimistic likes |
+| Comments with nested replies and live updates | Data model for threads, pagination inside threads, WebSocket vs polling, ordering, moderation hooks |
+| Messenger / WhatsApp chat | Message ids and ordering, delivery/read receipts, offline queue and retry, idempotent send |
+| Instagram Stories or photo upload | Upload flow (pre-signed URLs, resumable chunks), processing jobs, CDN, expiry |
+| Notifications | Fan-out, dedupe, user preferences, quiet hours, batching |
+| Typeahead search (people, pages) | Prefix index, ranking, debounce + cache on the client, privacy filtering |
 
-**4. The rest**
+Existing material: Block 7 prompts 1–3 and 5, `faang_questions/node` 012 list query semantics (cursor pagination), 014 idempotency keys, react 112 (async job + polling). For each prompt be able to write the core API (`GET /feed?cursor=…`, request/response shapes) and the main tables.
 
-- **Node / backend contracts:** `node` 013 request validation, 014 idempotency keys, 012 list query semantics — the API side of a workflow UI.
-- **GraphQL (talk; no task yet):** normalised client cache by `__typename:id`, fragments co-located with components, partial data plus `errors`, optimistic mutations with rollback, N+1 and DataLoader on the server.
-- **System design prompt:** "Design the recruiter's candidate pipeline UI" — board and table views, stage transitions with approvals, bulk actions, audit history, permissions per role, integrations failing independently.
-- **Behavioural:** an on-call/incident-review story; "worked with design to fix a painful internal workflow"; GitLab Security Policies approval flows as the domain match (enterprise workflows, permissions, approvals).
+**5. Behavioural — stories this posting asks for**
+- Leading a major initiative across teams (set direction, got buy-in, delivered).
+- Reducing tech debt or fixing a performance problem, with before/after numbers.
+- Raising quality through code review, testing, rollout and monitoring.
+- **AI in your workflow with measurable impact** — e.g. building or adopting AI-assisted workflows on the GitLab Security Policies team: what changed, how you measured it, how you kept quality (review, tests, guardrails).
+- Mentoring and onboarding someone.
+
+**Lower priority for this loop:** UI widget builds, a11y deep-dives and the Apple/Netflix-specific blocks. Product SWE does build UIs, so keep Block 7 system design and one or two React builds warm, but the LeetCode and AI rounds decide the loop.
 
 ---
 

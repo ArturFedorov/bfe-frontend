@@ -15,43 +15,15 @@ export interface RetryOptions {
   random?: () => number;
 }
 
-const defaultSleep = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
 /**
  * Calls fn (passing the 0-based attempt number) and retries failed attempts
  * with capped exponential backoff. Non-retryable errors reject immediately;
  * exhausting retries rejects with the last error.
  */
-export async function retry<T>(
+export function retry<T>(
   fn: (attempt: number) => Promise<T>,
   options: RetryOptions,
 ): Promise<T> {
-  const {
-    retries,
-    baseMs,
-    maxMs = Infinity,
-    jitter = false,
-    isRetryable = () => true,
-    sleep = defaultSleep,
-    random = Math.random,
-  } = options;
-
-  let lastError: unknown;
-
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      return await fn(attempt);
-    } catch (error) {
-      lastError = error;
-      if (!isRetryable(error)) throw error;
-      if (attempt === retries) break;
-
-      let delay = Math.min(baseMs * 2 ** attempt, maxMs);
-      if (jitter) delay = Math.floor(delay * random());
-      await sleep(delay);
-    }
-  }
-
-  throw lastError;
+  // TODO: implement
+  throw new Error('Not implemented');
 }

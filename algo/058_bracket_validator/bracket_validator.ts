@@ -4,26 +4,26 @@
  * Never throws.
  */
 
-const CLOSER_FOR: Record<string, string> = {
+const CLOSED_MAP: Record<string, string> = {
   '(': ')',
-  '[': ']',
   '{': '}',
-};
+  '[': ']',
+}
 
-const CLOSES = new Set([')', '}', ']']);
+const CLOSED = new Set<string>([']', '}', ')']);
 
 export function validateBrackets(snippet: string): boolean {
-  const expected = [];
+  const stack: string[] = [];
 
-  for (const ch of snippet) {
-    const closer = CLOSER_FOR[ch];
+  for(const ch of snippet) {
+    const closer = CLOSED_MAP[ch];
 
-    if (closer !== undefined) {
-      expected.push(closer);
-    } else if (CLOSES.has(ch)) {
-      if (expected.pop() !== ch) return false;
+    if(closer !== undefined) {
+      stack.push(closer);
+    } else if (CLOSED.has(ch)) {
+      if(stack.pop() !== ch) return false;
     }
   }
 
-  return expected.length === 0;
+  return stack.length === 0;
 }

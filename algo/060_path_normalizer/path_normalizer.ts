@@ -9,6 +9,23 @@
  * Do not use the `path` module.
  */
 export function normalizePath(path: string): string {
-  // TODO: implement
-  throw new Error('Not implemented');
+  if(!path.startsWith('/')) {
+    throw new Error(`Expected an absolute path, got "${path}"`);
+  }
+
+  const stack: string[] = [];
+
+  for(const segment of path.split('/')) {
+    if(segment === '' || segment === '.') {
+      continue;
+    }
+
+    if(segment === '..') {
+      stack.pop();
+    } else {
+      stack.push(segment);
+    }
+  }
+
+  return '/' + stack.join('/');
 }

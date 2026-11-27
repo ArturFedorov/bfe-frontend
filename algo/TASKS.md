@@ -1,6 +1,6 @@
 # Algo Practice Tasks — Practical DSA in TypeScript
 
-**Companion to:** [CURRICULUM.md](./CURRICULUM.md) (theory) — this file is the coding side.
+**Companion to:** [CURRICULUM.md](./CURRICULUM.md) — how to solve, recognise patterns, and the order of work. ("Lesson N" tags below refer to the previous theory curriculum, still in git history.)
 **Style:** No LeetCode framing. Every task is a realistic engineering scenario (build tools, editors, networking, monitoring, calendars), the way FAANG actually asks them.
 **Language:** TypeScript, pure functions/classes — no browser, no DOM APIs. A "web page" is just a tree object.
 **Ordering:** Topics are sorted by **probability of appearing in an interview**, weighted for Netflix first, then Google/Meta/Amazon. Work top to bottom.

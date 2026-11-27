@@ -5,19 +5,13 @@
  * everything seen so far. Each `next` call must run in O(1).
  */
 export class MovingAverage {
-  private readonly window: number[];
-  private count = 0;
-  private head = 0;
-  private sum = 0;
-  private k: number;
-
+  /**
+   * @param k - window size; integer >= 1
+   * @throws RangeError when `k` is not a positive integer
+   */
   constructor(k: number) {
-    if (!Number.isInteger(k) || k < 1) {
-      throw new RangeError('k must be a positive integer');
-    }
-
-    this.k = k;
-    this.window = new Array<number>(k);
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 
   /**
@@ -25,16 +19,7 @@ export class MovingAverage {
    * (or of all readings, while fewer than `k` have arrived).
    */
   next(reading: number): number {
-    if (this.count === this.k) {
-      this.sum -= this.window[this.head];
-    } else {
-      this.count++;
-    }
-
-    this.window[this.head] = reading;
-    this.sum += reading;
-    this.head = (this.head + 1) % this.k;
-
-    return this.sum / this.count;
+    // TODO: implement
+    throw new Error('Not implemented');
   }
 }
