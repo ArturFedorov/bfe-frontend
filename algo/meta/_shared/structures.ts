@@ -28,7 +28,10 @@ export function buildList(values: number[]): ListNode | null {
 }
 
 /** 1 -> 2 -> 3 -> [1, 2, 3]; throws on a cycle longer than `limit`. */
-export function listToArray(head: ListNode | null, limit = 1_000_000): number[] {
+export function listToArray(
+  head: ListNode | null,
+  limit = 1_000_000,
+): number[] {
   const out: number[] = [];
   for (let node = head; node; node = node.next) {
     if (out.length >= limit) throw new Error('List too long or cyclic');
